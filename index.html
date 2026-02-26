@@ -1,71 +1,26 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>নাঈম ১৮ - প্রগতি ম্যাপ</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        body { margin: 0; padding: 0; background: #f0f4f8; font-family: 'Segoe UI', sans-serif; }
-        #map { height: 100vh; width: 100vw; }
-        
-        .top-status { 
-            position: fixed; top: 0; width: 100%; z-index: 1000;
-            background: rgba(255, 255, 255, 0.9); color: #2d5a27;
-            padding: 10px; text-align: center; border-bottom: 3px solid #28a745;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+<div class="remote-access" style="position:fixed; bottom:100px; left:20px; z-index:1000;">
+    <button onclick="remoteDesign()" style="background:#007bff; color:white; border:none; padding:10px; border-radius:5px; cursor:pointer; box-shadow: 0 4px 10px rgba(0,123,255,0.3);">
+        🌍 দূরবর্তী অবস্থান থেকে নিয়ন্ত্রণ (Remote Access)
+    </button>
+</div>
+
+<script>
+    function remoteDesign() {
+        let location = prompt("আপনি এখন কোথায় আছেন? (যেমন: ঢাকা/লন্ডন/দুবাই)");
+        if(location) {
+            alert("সফলভাবে সংযুক্ত! আপনি এখন " + location + " থেকে আপনার বাড়ির উন্নয়ন তদারকি করছেন। আপনার জন্য নতুন কাজের অ্যাসাইনমেন্ট পাঠানো হচ্ছে।");
         }
+    }
 
-        /* উন্নতির ধাপ অনুযায়ী আইকন স্টাইল */
-        .progress-label {
-            background: white; border: 2px solid #28a745;
-            border-radius: 5px; padding: 2px 5px; font-weight: bold; font-size: 12px;
-        }
-    </style>
-</head>
-<body onload="initLiveMap()">
-
-    <div class="top-status">
-        <h2 style="margin:0;">নাঈম ইব্রাহিম প্রজেক্ট - লাইভ প্রগতি ম্যাপ</h2>
-        <p style="margin:0; font-size:14px;">সবার কাজের উন্নতি এবং সাজানো শহর এখানে দেখুন</p>
-    </div>
-
-    <div id="map"></div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        let map;
-
-        function initLiveMap() {
-            // উজ্জ্বল এবং ক্লিয়ার ম্যাপ লেয়ার
-            map = L.map('map', { attributionControl: false }).setView([23.8103, 90.4125], 8);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-            // মেম্বারদের কাজের উন্নতির ডাটা
-            const liveData = [
-                { name: "নাঈম (Main Project)", pos: [23.8103, 90.4125], status: "বাস্তব কাজ চলছে", level: "উন্নত" },
-                { name: "মেম্বার ১", pos: [24.3636, 88.6241], status: "বাস্তব বাগান সম্পন্ন", level: "মাঝারি" },
-                { name: "মেম্বার ২", pos: [22.3569, 91.7832], status: "ভার্চুয়াল ডিজাইন সম্পন্ন", level: "শুরু" }
-            ];
-
-            liveData.forEach(data => {
-                // লেভেল অনুযায়ী আলাদা রঙের আইকন বা ঘর
-                let color = data.level === "উন্নত" ? "green" : "blue";
-                
-                let marker = L.circleMarker(data.pos, {
-                    color: color, radius: 10, fillOpacity: 0.8
-                }).addTo(map);
-
-                marker.bindPopup(`
-                    <div style="text-align:center;">
-                        <b>${data.name}</b><br>
-                        <span style="color:green;">${data.status}</span><br>
-                        <small>ব্যক্তিগত তথ্য সুরক্ষিত</small>
-                    </div>
-                `).openPopup();
-            });
-        }
-    </script>
-</body>
-</html>
+    // ম্যাপে ইউজারের বাড়ির তথ্যে চাকরির স্ট্যাটাস যোগ করা
+    function addWorkStatus(name) {
+        return `
+            <div style="text-align:left;">
+                <b>${name}</b><br>
+                🏠 স্থিতি: পাবনা (নিজ বাড়ি)<br>
+                💼 বর্তমান কাজ: অনলাইন প্রজেক্ট ম্যানেজার<br>
+                <span style="color:blue;">● দূরে যাওয়ার প্রয়োজন নেই, কাজ বাড়ি থেকেই চলছে।</span>
+            </div>
+        `;
+    }
+</script>
