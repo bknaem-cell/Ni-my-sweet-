@@ -3,70 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Ni-My-Sweet: Virtual World</title>
+    <title>Ni-My-Sweet: Virtual World V2</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        /* পুরো স্ক্রিন জুড়েই ম্যাপ থাকবে এবং অটো-রোটেশন কাজ করবে */
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #000; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
         #map { height: 100vh; width: 100vw; }
-
-        /* বাহিরে (Exit) বাটন ডিজাইন */
-        .exit-btn {
-            position: absolute; top: 20px; right: 20px; z-index: 2000;
-            background: #ff4444; color: white; border: none; padding: 12px 20px;
-            border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        /* স্বাগতম মেসেজ */
-        .welcome-box {
-            position: absolute; top: 20px; left: 20px; z-index: 2000;
-            background: rgba(255, 255, 255, 0.9); padding: 10px 15px;
-            border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            font-size: 14px; border-left: 5px solid #2196F3;
-        }
+        .controls { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; gap: 10px; }
+        .btn { padding: 12px 20px; border-radius: 25px; border: none; font-weight: bold; cursor: pointer; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .home-btn { background: #4CAF50; }
+        .shop-btn { background: #FF9800; }
+        .exit-btn { position: absolute; top: 20px; right: 20px; z-index: 2000; background: #f44336; }
+        .header { position: absolute; top: 20px; left: 20px; z-index: 2000; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 8px; border-left: 4px solid #2196F3; }
     </style>
 </head>
 <body>
-
-    <button class="exit-btn" onclick="window.close(); alert('বাহির হওয়ার জন্য ট্যাবটি বন্ধ করুন')">বাহির (Exit)</button>
-
-    <div class="welcome-box">
-        <b>নাঈম ইব্রাহিম</b><br>
-        মিশন: ১০ কিলো স্কয়ার
-    </div>
-
+    <button class="btn exit-btn" onclick="window.close()">বাহির</button>
+    <div class="header"><b>নাঈম ইব্রাহিম</b><br>মিশন: ১০ কিলো স্কয়ার (ভার্সন ২)</div>
     <div id="map"></div>
-
+    <div class="controls">
+        <button class="btn home-btn" onclick="addDigitalHome()">🏠 ঘর তৈরি</button>
+        <button class="btn shop-btn" onclick="alert('হালাল বাজার শীঘ্রই আসছে!')">🛒 বাজার</button>
+    </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // ম্যাপ সেটআপ: স্যাটেলাইট ভিউ এবং জুম কন্ট্রোল
         var map = L.map('map', { zoomControl: false }).setView([23.8103, 90.4125], 18);
-
-        // বাস্তব পৃথিবীর ছবি (Satellite View) যাতে মানুষ নিজের ঘর চিনতে পারে
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri'
-        }).addTo(map);
-
-        // ইউজারের বর্তমান লোকেশন (দোকান বা বাড়ি) অটোমেটিক খুঁজে বের করা
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
+        var userLocation;
         map.locate({setView: true, maxZoom: 18, watch: true});
-
-        function onLocationFound(e) {
-            // ডিজিটাল ঘরের পিন (নীল রঙের আধুনিক আইকন)
-            var homeIcon = L.divIcon({
-                className: 'custom-icon',
-                html: "<div style='background: #2196F3; width: 18px; height: 18px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 10px blue;'></div>"
-            });
-
-            L.marker(e.latlng, {icon: homeIcon}).addTo(map)
-                .bindPopup("<b>আপনার ডিজিটাল ঘর</b><br>এখানে আপনার মিশন শুরু হবে।").openPopup();
-        }
-
-        map.on('locationfound', onLocationFound);
-
-        // মোবাইল ল্যান্ডস্কেপ বা পোর্ট্রেট হলে ম্যাপ অ্যাডজাস্ট করা
-        window.addEventListener("resize", function() {
-            setTimeout(function() { map.invalidateSize(); }, 400);
+        map.on('locationfound', function(e) {
+            userLocation = e.latlng;
+            L.circle(e.latlng, { radius: 10000, color: '#2196F3', fillOpacity: 0.1 }).addTo(map);
         });
+        function addDigitalHome() {
+            if(userLocation) {
+                var homeIcon = L.divIcon({ html: "<div style='font-size: 30px;'>🏠</div>", className: 'custom-div-icon' });
+                L.marker(userLocation, {icon: homeIcon}).addTo(map).bindPopup("<b>নাঈম ইব্রাহিম-এর ডিজিটাল ঘর</b>").openPopup();
+            }
+        }
+        window.addEventListener("resize", function() { map.invalidateSize(); });
     </script>
 </body>
 </html>
