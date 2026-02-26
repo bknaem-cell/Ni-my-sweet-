@@ -2,70 +2,114 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE DIGITAL VILLA - REALITY GAME</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>THE DIGITAL VILLA - FLOOD SYSTEM</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #050a12; color: #00ff41; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        /* ফোন বাঁকা হওয়া এবং স্ক্রল বন্ধ করার মূল সেটিংস */
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+        html, body { 
+            width: 100%; height: 100%; 
+            overflow: hidden; background: #000; 
+            position: fixed; font-family: sans-serif;
+        }
 
-        .game-header { background: #000; padding: 10px; border-bottom: 2px solid #00ff41; flex-shrink: 0; }
-        .stats-row { display: flex; justify-content: space-between; align-items: center; }
-        .wallet-box { background: rgba(0,255,65,0.1); padding: 5px 12px; border-radius: 20px; border: 1px solid #00ff41; }
-        .xp-bar { width: 100%; background: #222; height: 8px; margin-top: 8px; border-radius: 4px; overflow: hidden; }
-        .xp-fill { width: 35%; height: 100%; background: #00ff41; box-shadow: 0 0 10px #00ff41; }
+        /* ম্যাপ হবে পুরো স্ক্রিন জুড়ে ব্যাকগ্রাউন্ডে */
+        #map { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
-        #map { width: 100%; flex-grow: 1; border-bottom: 2px solid #00ff41; }
+        /* ভাসমান ওয়ালেট ও হেডার (ম্যাপের উপরে) */
+        .overlay-header {
+            position: absolute; top: 15px; left: 10px; right: 10px;
+            z-index: 10; pointer-events: none;
+        }
+        .stats-card {
+            background: rgba(0, 0, 0, 0.7); border: 1.5px solid #00ff41;
+            padding: 10px; border-radius: 12px; display: flex;
+            justify-content: space-between; align-items: center;
+            pointer-events: auto; backdrop-filter: blur(5px);
+        }
 
-        .quest-container { flex-shrink: 0; height: 35%; overflow-y: auto; padding: 10px; background: #050a12; }
-        .quest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .quest-card { background: rgba(0, 255, 65, 0.05); border: 1px solid #00ff41; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; }
+        /* ভাসমান বাটন গ্রিড (ম্যাপের নিচের অংশে ভাসমান) */
+        .overlay-footer {
+            position: absolute; bottom: 25px; left: 10px; right: 10px;
+            z-index: 10; pointer-events: none;
+        }
+        .quest-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            pointer-events: auto;
+        }
+        .quest-card {
+            background: rgba(0, 0, 0, 0.8); border: 1.5px solid #00ff41;
+            padding: 15px; border-radius: 12px; text-align: center;
+            color: #00ff41; cursor: pointer; backdrop-filter: blur(5px);
+        }
         .quest-card i { font-size: 24px; display: block; margin-bottom: 5px; }
+        .quest-card span { font-size: 11px; font-weight: bold; text-transform: uppercase; }
 
-        #quest-box { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; }
-        .modal { width: 85%; max-width: 350px; background: #111; border: 2px solid #00ff41; margin: 100px auto; padding: 20px; text-align: center; border-radius: 10px; }
+        /* পপ-আপ সেটিংস */
+        #quest-box { 
+            display: none; position: fixed; top: 0; left: 0; 
+            width: 100%; height: 100%; background: rgba(0,0,0,0.85); 
+            z-index: 9999; 
+        }
+        .modal { 
+            width: 85%; max-width: 350px; background: #0a1118; 
+            border: 2px solid #00ff41; margin: 120px auto; 
+            padding: 25px; text-align: center; border-radius: 20px; 
+            box-shadow: 0 0 20px #00ff41;
+        }
+        .btn-start {
+            background: #00ff41; color: #000; width: 100%;
+            padding: 12px; border: none; border-radius: 10px;
+            font-weight: bold; margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="game-header">
-        <div class="stats-row">
-            <div>
-                <h1 style="font-size: 14px;">LEVEL 1 PLAYER</h1>
-                <p style="font-size: 9px; color: #888;">ID: BD-ZERO-01</p>
-            </div>
-            <div class="wallet-box">
-                <span id="balance" style="font-size: 14px; font-weight: bold;">৳ ০.০০</span>
-            </div>
-        </div>
-        <div class="xp-bar"><div class="xp-fill"></div></div>
-    </div>
-
     <div id="map"></div>
 
-    <div class="quest-container">
+    <div class="overlay-header">
+        <div class="stats-card">
+            <div>
+                <h2 style="font-size: 14px; color: #00ff41;">LEVEL 1</h2>
+                <p style="font-size: 9px; color: #888;">ID: BD-ZERO-01</p>
+            </div>
+            <div style="text-align: right;">
+                <p style="font-size: 10px; color: #ccc;">ব্যালেন্স</p>
+                <h2 id="balance" style="font-size: 18px; color: #00ff41;">৳ ০.০০</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay-footer">
         <div class="quest-grid">
-            <div class="quest-card" onclick="openQuest('কুরিয়ার মিশন', 'পণ্য পৌঁছে দিয়ে ইকোনমি সচল রাখুন')"><i>🛵</i><span>ডেলিভারি রাইডার</span></div>
-            <div class="quest-card" onclick="openQuest('দোকানদার মিশন', 'পণ্য স্টক করুন ও বিক্রি শুরু করুন')"><i>🏪</i><span>বস্তি/লোকাল দোকান</span></div>
-            <div class="quest-card" onclick="openQuest('উৎপাদন মিশন', 'কৃষি ও নির্মাণ কাজ পরিচালনা করুন')"><i>🏗️</i><span>বিল্ডার/কৃষক</span></div>
-            <div class="quest-card" onclick="openQuest('সেবা মিশন', 'আপনার দৈনন্দিন প্রয়োজনীয় বাজার করুন')"><i>🛒</i><span>সাধারণ ইউজার</span></div>
+            <div class="quest-card" onclick="openQuest('কুরিয়ার মিশন', 'পণ্য পৌঁছে দিয়ে পকেট জিরো থেকে মুক্তি পান')"><i>🛵</i><span>ডেলিভারি</span></div>
+            <div class="quest-card" onclick="openQuest('দোকানদার মিশন', 'গ্রামের দোকান ডিজিটাল সিস্টেমে আনুন')"><i>🏪</i><span>লোকাল শপ</span></div>
+            <div class="quest-card" onclick="openQuest('কৃষি ও নির্মাণ', 'উৎপাদন বাড়িয়ে বন্যা সিস্টেম ছড়িয়ে দিন')"><i>🏗️</i><span>বিল্ডার/কৃষক</span></div>
+            <div class="quest-card" onclick="openQuest('সেবা ও বাজার', 'আপনার দৈনন্দিন কেনাকাটা এখান থেকেই করুন')"><i>🛒</i><span>ইউজার মোড</span></div>
         </div>
     </div>
 
     <div id="quest-box">
         <div class="modal">
             <h2 id="q-title" style="color:#00ff41;"></h2>
-            <p id="q-desc" style="margin-top:10px; font-size:13px;"></p>
-            <button onclick="startMission()" style="width:100%; background:#00ff41; color:#000; border:none; padding:12px; margin-top:20px; font-weight:bold; border-radius:5px;">মিশন শুরু করুন</button>
+            <p id="q-desc" style="margin-top:15px; font-size:14px; color:#eee;"></p>
+            <button class="btn-start" onclick="startMission()">মিশন শুরু করুন</button>
             <button onclick="closeQuest()" style="background:none; color:#777; border:none; margin-top:15px;">পিছনে যান</button>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // ম্যাপ সেটিংস
         var map = L.map('map', {zoomControl: false}).setView([23.8103, 90.4125], 13);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-        var centralZone = L.circle([23.8103, 90.4125], {color: '#00ff41', weight: 1, fillColor: '#00ff41', fillOpacity: 0.1, radius: 10000}).addTo(map);
+        
+        // আপনার সেন্ট্রাল জোন
+        var centralZone = L.circle([23.8103, 90.4125], {
+            color: '#00ff41', weight: 1, fillColor: '#00ff41', fillOpacity: 0.1, radius: 10000
+        }).addTo(map);
 
         let currentBalance = 0;
 
@@ -78,15 +122,22 @@
         function closeQuest() { document.getElementById('quest-box').style.display = 'none'; }
 
         function startMission() {
-            alert("মিশন শুরু হলো! বন্যা সিস্টেমের পরিধি আরও বৃদ্ধি পাবে।");
+            alert("মিশন শুরু! এই প্রজেক্ট বন্যার মতো ছড়িয়ে পড়ছে...");
             closeQuest();
-            // সিমুলেশন: ৫ সেকেন্ড পর টাকা যোগ হবে
+            // ৫ সেকেন্ড পর টাকা যোগ হওয়ার সিমুলেশন
             setTimeout(() => {
                 currentBalance += 10;
                 document.getElementById('balance').innerText = "৳ " + currentBalance.toFixed(2);
-                alert("মিশন সফল! আপনার ওয়ালেটে ১০ টাকা যোগ হয়েছে।");
+                alert("মিশন সফল! গ্রামের উন্নয়নে ১০ টাকা যোগ হলো।");
             }, 5000);
         }
+
+        // ফোন রোটেট হওয়া আটকাতে অতিরিক্ত সুরক্ষা
+        window.addEventListener("orientationchange", function() {
+            if (window.orientation !== 0) {
+                alert("দয়া করে ফোনটি সোজা রাখুন। এই সিস্টেমটি কেবল পোট্রেট মোডে কাজ করে।");
+            }
+        }, false);
     </script>
 </body>
 </html>
