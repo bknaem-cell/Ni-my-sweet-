@@ -1,77 +1,22 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>১০ কিলো স্কয়ার - নাঈম ইব্রাহিম</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        /* পুরো স্ক্রিন সাদা হওয়া বন্ধ করার জন্য */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; background: #0b0f19; overflow: hidden; }
+// ইউজারের লাইভ লোকেশন খুঁজে বের করার ফাংশন
+map.locate({setView: true, maxZoom: 16});
 
-        /* ম্যাপ এরিয়া */
-        #map { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+function onLocationFound(e) {
+    var radius = e.accuracy / 2;
 
-        /* উপরের স্মার্ট কন্ট্রোল প্যানেল */
-        .top-info {
-            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-            width: 90%; background: rgba(11, 15, 25, 0.9);
-            padding: 15px; border-radius: 15px; z-index: 1000;
-            border: 1px solid #28a745; text-align: center;
-            box-shadow: 0 0 20px rgba(40, 167, 69, 0.3);
-        }
-        .top-info h2 { color: #00ff41; font-size: 18px; margin-bottom: 5px; }
-        .top-info p { color: #8892b0; font-size: 12px; }
+    // আপনার বর্তমান লোকেশনে একটি নীল ডট বা মার্কার বসাবে
+    L.marker(e.latlng).addTo(map)
+        .bindPopup("আপনি এখন এখানে আছেন (ত্রিজ্যা: " + radius + " মিটার)").openPopup();
 
-        /* নিচের চাবিকাঠি মেনু */
-        .bottom-nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; z-index: 1000; display: grid;
-            grid-template-columns: repeat(4, 1fr); gap: 10px;
-        }
-        .nav-item {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
-            padding: 10px; border-radius: 12px; text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1); cursor: pointer;
-        }
-        .nav-item span { font-size: 20px; display: block; }
-        .nav-item p { font-size: 10px; color: white; margin-top: 5px; }
-    </style>
-</head>
-<body onload="startSystem()">
+    // আপনার চারপাশের এরিয়া গোল করে দেখাবে
+    L.circle(e.latlng, radius).addTo(map);
+}
 
-    <div class="top-info">
-        <h2>১০ কিলো স্কয়ার সিস্টেম</h2>
-        <p>আইডি: ১ | নাঈম ইব্রাহিম | স্ট্যাটাস: অনলাইন</p>
-    </div>
+map.on('locationfound', onLocationFound);
 
-    <div id="map"></div>
+// লোকেশন খুঁজে না পেলে এরর মেসেজ দেবে
+function onLocationError(e) {
+    alert("আপনার লোকেশন খুঁজে পাওয়া যায়নি। দয়া করে ফোনের GPS অন করুন।");
+}
 
-    <div class="bottom-nav">
-        <div class="nav-item"><span>🍱</span><p>খাবার</p></div>
-        <div class="nav-item"><span>🏗️</span><p>ডিজাইন</p></div>
-        <div class="nav-item"><span>🛒</span><p>বাজার</p></div>
-        <div class="nav-item"><span>💼</span><p>চাকরি</p></div>
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        function startSystem() {
-            // ম্যাপ লোড করা
-            var map = L.map('map', { zoomControl: false }).setView([23.8103, 90.4125], 13);
-            
-            // ডার্ক ম্যাপ স্টাইল (সাদা স্ক্রিন এড়াতে)
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-
-            // ১০ কিলো স্কয়ার এরিয়া মার্ক করা
-            L.circle([23.8103, 90.4125], {
-                color: '#28a745', fillColor: '#28a745', fillOpacity: 0.1, radius: 10000 
-            }).addTo(map);
-
-            // মেইন মার্কার
-            L.marker([23.8103, 90.4125]).addTo(map).bindPopup("<b>আপনার প্রধান কেন্দ্র</b>").openPopup();
-        }
-    </script>
-</body>
-</html>
+map.on('locationerror', onLocationError);
