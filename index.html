@@ -3,29 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>নাঈম ১৮ - মিশন কন্ট্রোল</title>
+    <title>নাঈম ১৮ - গেম মোড ম্যাপ</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #000; color: #fff; text-align: center; margin: 0; }
-        .header { background: #fff; color: #000; padding: 15px; }
-        #map-box { 
-            width: 100%; height: 400px; 
-            background: #111; border-top: 3px solid #28a745; 
-            display: flex; align-items: center; justify-content: center;
+        body { margin: 0; background: #0b1a0e; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+        
+        /* মেইন গেম ম্যাপ (COC Style) */
+        #main-map {
+            width: 200vw; height: 200vh;
+            background-image: radial-gradient(#2d5a27 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-color: #1e3d1a;
+            position: absolute; cursor: grab;
         }
-        .marker { color: #28a745; font-size: 20px; border: 2px dashed #28a745; padding: 20px; border-radius: 50%; }
-        .control-btn { background: #28a745; color: #fff; padding: 20px; border: none; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; }
+
+        /* মিনি ম্যাপ (Free Fire Style) */
+        #mini-map {
+            position: fixed; top: 20px; right: 20px;
+            width: 150px; height: 150px;
+            background: rgba(0,0,0,0.7); border: 2px solid #28a745;
+            border-radius: 10px; z-index: 100;
+        }
+
+        .base-item {
+            width: 60px; height: 60px; background: #555;
+            border: 2px solid #fff; position: absolute;
+            display: flex; align-items: center; justify-content: center; font-size: 10px;
+        }
+
+        .ui-panel {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); padding: 15px; border-radius: 50px;
+            display: flex; gap: 20px; border: 1px solid #28a745; z-index: 100;
+        }
+        
+        button { background: #28a745; border: none; color: #fff; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>নাঈম ইব্রাহিম প্রজেক্ট</h2>
-        <p>১০ কিলো স্কয়ার মিশন কন্ট্রোল</p>
+
+    <div id="main-map">
+        <div class="base-item" style="top: 400px; left: 500px;">নাঈম হাউস</div>
+        <div class="base-item" style="top: 450px; left: 600px; background: #2d5a27;">কৃষি জোন</div>
     </div>
 
-    <div id="map-box">
-        <div class="marker">🌍 ম্যাপ লোড হচ্ছে...<br>আপনার অবস্থান চিহ্নিত করুন</div>
+    <div id="mini-map">
+        <p style="font-size: 10px; text-align: center;">MINI MAP</p>
     </div>
 
-    <button class="control-btn" onclick="alert('লোকেশন ডাটাবেজে রেকর্ড হচ্ছে...')">আমার বাড়ির লোকেশন সেট করুন</button>
+    <div class="ui-panel">
+        <button onclick="alert('পুরো ম্যাপ ওপেন হচ্ছে...')">ফুল ম্যাপ</button>
+        <button onclick="alert('নতুন বাড়ি তৈরি করুন')">বিল্ড মোড</button>
+        <button>আমার তারা: ১০০</button>
+    </div>
+
 </body>
 </html>
