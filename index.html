@@ -1,25 +1,75 @@
-<div class="quest-grid">
-    <div class="quest-card" onclick="openQuest('লজিস্টিক মিশন', 'পণ্য পৌঁছে দিয়ে আপনার ডেলিভারি লেভেল বাড়ান')">
-        <i>🛵</i><span>ডেলিভারি রাইডার</span>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE DIGITAL VILLA - REALITY GAME</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #050a12; color: #00ff41; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* গেম হেডার */
+        .game-header { background: #000; padding: 10px; border-bottom: 2px solid #00ff41; text-align: center; flex-shrink: 0; }
+        .xp-bar { width: 80%; background: #222; height: 10px; margin: 5px auto; border: 1px solid #00ff41; border-radius: 5px; overflow: hidden; }
+        .xp-fill { width: 30%; height: 100%; background: #00ff41; box-shadow: 0 0 10px #00ff41; }
+
+        /* ম্যাপ এরিয়া */
+        #map { width: 100%; flex-grow: 1; min-height: 250px; border-bottom: 2px solid #00ff41; }
+
+        /* কোয়েস্ট কার্ড এরিয়া - স্ক্রলযোগ্য করা হয়েছে */
+        .quest-container { flex-shrink: 0; height: 40%; overflow-y: auto; padding: 10px; background: #050a12; }
+        .quest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .quest-card { background: rgba(0, 255, 65, 0.05); border: 1px solid #00ff41; border-radius: 8px; padding: 15px; text-align: center; cursor: pointer; }
+        .quest-card i { font-size: 24px; display: block; margin-bottom: 5px; }
+        .quest-card span { font-size: 11px; font-weight: bold; }
+
+        /* পপ-আপ সেটিংস */
+        #quest-box { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
+        .modal { width: 85%; max-width: 350px; background: #111; border: 2px solid #00ff41; margin: 100px auto; padding: 20px; text-align: center; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="game-header">
+        <h1 style="font-size: 16px;">LEVEL 1 PLAYER</h1>
+        <div class="xp-bar"><div class="xp-fill"></div></div>
+        <p style="font-size: 10px;">XP: 300 / 1000</p>
     </div>
 
-    <div class="quest-card" onclick="openQuest('মার্কেট মিশন', 'আপনার দোকানের পণ্য স্টক করুন এবং বিক্রি শুরু করুন')">
-        <i>🏪</i><span>দোকানদার মোড</span>
+    <div id="map"></div>
+
+    <div class="quest-container">
+        <div class="quest-grid">
+            <div class="quest-card" onclick="openQuest('কুরিয়ার মিশন', 'পণ্য ডেলিভারি করে ইকোনমি সচল রাখুন')"><i>🛵</i><span>কুরিয়ার এন্ট্রি</span></div>
+            <div class="quest-card" onclick="openQuest('দোকানদার মিশন', 'পণ্য স্টক করুন ও বিক্রি শুরু করুন')"><i>🏪</i><span>দোকানদার মোড</span></div>
+            <div class="quest-card" onclick="openQuest('উৎপাদন মিশন', 'কৃষি ও নির্মাণ কাজ পরিচালনা করুন')"><i>🏗️</i><span>বিল্ডার/কৃষক</span></div>
+            <div class="quest-card" onclick="openQuest('সেবা মিশন', 'আপনার দৈনন্দিন প্রয়োজনীয় বাজার করুন')"><i>🛒</i><span>সাধারণ ইউজার</span></div>
+        </div>
     </div>
 
-    <div class="quest-card" onclick="openQuest('উৎপাদন কোয়েস্ট', 'কাঁচামাল বা নির্মাণ কাজ সম্পন্ন করুন')">
-        <i>🏗️</i><span>বিল্ডার ও কৃষক</span>
+    <div id="quest-box">
+        <div class="modal">
+            <h2 id="q-title" style="color:#00ff41;"></h2>
+            <p id="q-desc" style="margin-top:10px; font-size:13px;"></p>
+            <button onclick="startMission()" style="width:100%; background:#00ff41; color:#000; border:none; padding:12px; margin-top:20px; font-weight:bold; cursor:pointer;">মিশন শুরু করুন</button>
+            <button onclick="closeQuest()" style="background:none; color:#777; border:none; margin-top:15px;">পিছনে যান</button>
+        </div>
     </div>
 
-    <div class="quest-card" onclick="openQuest('লাইফস্টাইল মিশন', 'প্রয়োজনীয় বাজার ও সেবা এখান থেকে অর্ডার করুন')">
-        <i>🛒</i><span>বাজার ও সেবা</span>
-    </div>
-</div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map', {zoomControl: false}).setView([23.8103, 90.4125], 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        L.circle([23.8103, 90.4125], {color: '#00ff41', weight: 1, fillColor: '#00ff41', fillOpacity: 0.1, radius: 10000}).addTo(map);
 
-<script>
-    // এই ফাংশনটি সবার জন্য কাজ করবে
-    function startQuest() {
-        alert("আপনার মিশন শুরু হলো। সিস্টেম এখন আপনার কাজের গতিবিধি এবং সততা ট্র্যাক করবে।");
-        closeQuest();
-    }
-</script>
+        function openQuest(title, desc) {
+            document.getElementById('q-title').innerText = title;
+            document.getElementById('q-desc').innerText = desc;
+            document.getElementById('quest-box').style.display = 'block';
+        }
+        function closeQuest() { document.getElementById('quest-box').style.display = 'none'; }
+        function startMission() { alert("মিশন এক্টিভেটেড! কাজ শেষ করে সিস্টেমে রিপোর্ট জমা দিন।"); closeQuest(); }
+    </script>
+</body>
+</html>
