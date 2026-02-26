@@ -2,53 +2,145 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TDV - Digital Villa</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TDV - Digital Villa Reality Game</title>
     <style>
-        /* ম্যাপ এবং বাটন লেআউট */
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: sans-serif; background: #000; }
-        #map { height: 100%; width: 100%; }
+        /* বেসিক স্টাইল */
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #0b141a; font-family: 'Segoe UI', sans-serif; color: #00ff41; }
 
-        /* বাটন বা ক্যাটাগরি প্যানেল (ম্যাপের ওপর ভাসমান) */
-        .controls {
-            position: absolute; bottom: 20px; left: 10px; right: 10px;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; z-index: 1000;
+        /* গেম ওয়ার্ল্ড (বার্ডস আই ভিউ) */
+        #game-world-birds-eye {
+            width: 2000px; height: 2000px; /* বড় ম্যাপ */
+            background-image: 
+                linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 65, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px; /* গ্রিড সাইজ */
+            background-color: #050a12;
+            position: absolute; top: 0; left: 0;
+            transition: transform 0.1s ease-out; /* স্মুথ ড্র্যাগিং */
+            cursor: grab;
+            display: block; /* ডিফল্ট ভিউ */
         }
-        .btn {
-            background: rgba(0, 0, 0, 0.85); border: 1px solid #00ff41;
-            color: #00ff41; padding: 15px; border-radius: 10px;
-            text-align: center; font-size: 12px; font-weight: bold;
+        #game-world-birds-eye.dragging { cursor: grabbing; }
+
+        /* গ্রাউন্ড ভিউ (এখনো খালি, পরে থ্রিডি কন্টেন্ট যোগ হবে) */
+        #game-world-ground-view {
+            width: 100%; height: 100%;
+            background: linear-gradient(to bottom, #87CEEB, #ffffff); /* হালকা আকাশ ও মাটি */
+            position: absolute; top: 0; left: 0;
+            display: none; /* ডিফল্টভাবে লুকানো */
+            justify-content: center; align-items: center;
+            font-size: 24px; text-shadow: 2px 2px #000;
         }
 
-        /* লোগো এবং স্ট্যাটাস বার (উপরে) */
-        .top-bar {
-            position: absolute; top: 10px; left: 10px; right: 10px;
-            display: flex; justify-content: space-between; z-index: 1000;
+        /* বিল্ডিংস - বার্ডস আই ভিউতে */
+        .building {
+            position: absolute; width: 80px; height: 80px;
+            background: rgba(0, 255, 65, 0.2);
+            border: 2px solid #00ff41; border-radius: 10px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #00ff41; font-size: 10px; text-align: center;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
         }
-        .logo { color: #00ff41; font-weight: bold; font-size: 20px; }
+        .building:hover { background: rgba(0, 255, 65, 0.4); transform: scale(1.1); }
+        .building i { font-size: 30px; margin-bottom: 5px; }
+
+        /* UI ওভারলে - ফ্লোটিং কন্ট্রোলস */
+        .ui-overlay {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 15px; z-index: 100;
+        }
+        .ui-btn {
+            background: #00ff41; color: #000; padding: 15px 25px; border-radius: 50px;
+            font-weight: bold; border: none; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .ui-btn.secondary { background: #ffcc00; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="logo">TDV</div>
-        <div style="background: rgba(0,0,0,0.7); padding: 5px 10px; color: #fff; border-radius: 5px; font-size: 12px;">ব্যালেন্স: ৳০</div>
+    <div id="game-world-birds-eye">
+        <div class="building" style="top: 200px; left: 300px;"><i>🏠</i><span>আমার বাড়ি</span></div>
+        <div class="building" style="top: 350px; left: 500px;"><i>🏪</i><span>লোকাল দোকান</span></div>
+        <div class="building" style="top: 150px; left: 700px;"><i>🏭</i><span>কোম্পানি</span></div>
     </div>
 
-    <div id="map"></div>
-
-    <div class="controls">
-        <div class="btn" onclick="alert('কুরিয়ার সেবা সক্রিয়')">কুরিয়ার</div>
-        <div class="btn" onclick="alert('দোকান সংযোগ')">দোকান</div>
-        <div class="btn" onclick="alert('কৃষি ম্যাপ')">কৃষি</div>
-        <div class="btn" onclick="alert('সেবা বাটন')">সেবা</div>
+    <div id="game-world-ground-view">
+        <p>মাটি থেকে দেখা যাচ্ছে... (আপনার ভার্চুয়াল জগতে স্বাগতম!)</p>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <div class="ui-overlay">
+        <button class="ui-btn" onclick="addBuilding('house')">+ বাড়ি</button>
+        <button class="ui-btn secondary" onclick="addBuilding('shop')">+ দোকান</button>
+        <button class="ui-btn" onclick="toggleView()">ভিউ পরিবর্তন</button>
+    </div>
+
     <script>
-        var map = L.map('map', {zoomControl: false}).setView([23.685, 90.356], 7);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        let worldBirdsEye = document.getElementById('game-world-birds-eye');
+        let worldGroundView = document.getElementById('game-world-ground-view');
+        let isDragging = false;
+        let startX, startY;
+        let currentTranslateX = 0;
+        let currentTranslateY = 0;
+
+        // বার্ডস আই ভিউ মুভ করার জন্য
+        worldBirdsEye.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            worldBirdsEye.classList.add('dragging');
+            startX = e.clientX;
+            startY = e.clientY;
+            e.preventDefault();
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            let dx = e.clientX - startX;
+            let dy = e.clientY - startY;
+
+            currentTranslateX += dx;
+            currentTranslateY += dy;
+
+            worldBirdsEye.style.transform = `translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+            worldBirdsEye.classList.remove('dragging');
+        });
+
+        // ভিউ টগল করার ফাংশন
+        function toggleView() {
+            if (worldBirdsEye.style.display === 'none') {
+                worldBirdsEye.style.display = 'block';
+                worldGroundView.style.display = 'none';
+            } else {
+                worldBirdsEye.style.display = 'none';
+                worldGroundView.style.display = 'flex'; // ফ্লেক্স বক্স হিসেবে দেখাবে
+            }
+        }
+
+        // বিল্ডিং যোগ করার সিমুলেশন
+        function addBuilding(type) {
+            let icon = type === 'house' ? '🏠' : '🏪';
+            let name = type === 'house' ? 'নতুন বাড়ি' : 'নতুন দোকান';
+            let newBuilding = document.createElement('div');
+            newBuilding.className = 'building';
+            newBuilding.innerHTML = `<i>${icon}</i><span>${name}</span>`;
+            
+            // র্যান্ডম পজিশনে বসানো (পরে Drag & Drop বা ক্লিক করে বসানোর অপশন আসবে)
+            let randomX = Math.random() * (worldBirdsEye.offsetWidth - 100);
+            let randomY = Math.random() * (worldBirdsEye.offsetHeight - 100);
+            newBuilding.style.left = `${randomX}px`;
+            newBuilding.style.top = `${randomY}px`;
+            
+            worldBirdsEye.appendChild(newBuilding);
+            alert(`আপনার ${name} তৈরি হয়েছে!`);
+        }
     </script>
 </body>
 </html>
