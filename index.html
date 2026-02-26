@@ -3,70 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>নাঈম ১৮ - ভার্চুয়াল সিটি বিল্ডার</title>
+    <title>নাঈম ১৮ - প্রগতি ম্যাপ</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { margin: 0; background: #0b1a0e; color: #fff; font-family: sans-serif; overflow: hidden; }
-        #game-map { 
-            width: 2000px; height: 2000px; 
-            background-color: #1e3d1a;
-            background-image: radial-gradient(#2d5a27 2px, transparent 2px);
-            background-size: 50px 50px;
-            position: relative; cursor: crosshair;
+        body { margin: 0; padding: 0; background: #f0f4f8; font-family: 'Segoe UI', sans-serif; }
+        #map { height: 100vh; width: 100vw; }
+        
+        .top-status { 
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: rgba(255, 255, 255, 0.9); color: #2d5a27;
+            padding: 10px; text-align: center; border-bottom: 3px solid #28a745;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .building { 
-            position: absolute; width: 60px; height: 60px; 
-            display: flex; align-items: center; justify-content: center;
-            font-size: 30px; cursor: move; transition: transform 0.2s;
+
+        /* উন্নতির ধাপ অনুযায়ী আইকন স্টাইল */
+        .progress-label {
+            background: white; border: 2px solid #28a745;
+            border-radius: 5px; padding: 2px 5px; font-weight: bold; font-size: 12px;
         }
-        .building:hover { transform: scale(1.2); }
-        .ui-dock {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.9); padding: 15px; border-radius: 50px;
-            display: flex; gap: 15px; border: 2px solid #ffd700; z-index: 1000;
-        }
-        .item { font-size: 25px; cursor: pointer; padding: 10px; border-radius: 50%; background: #222; }
-        .item:hover { background: #444; }
     </style>
 </head>
-<body>
+<body onload="initLiveMap()">
 
-    <div id="game-map" onclick="placeBuilding(event)">
-        </div>
-
-    <div class="ui-dock">
-        <div class="item" onclick="selectItem('🏡')">🏡</div>
-        <div class="item" onclick="selectItem('🚜')">🚜</div>
-        <div class="item" onclick="selectItem('🌳')">🌳</div>
-        <div class="item" onclick="selectItem('🏭')">🏭</div>
-        <div style="color: gold; padding-top: 10px;">আইটেম বেছে নিন</div>
+    <div class="top-status">
+        <h2 style="margin:0;">নাঈম ইব্রাহিম প্রজেক্ট - লাইভ প্রগতি ম্যাপ</h2>
+        <p style="margin:0; font-size:14px;">সবার কাজের উন্নতি এবং সাজানো শহর এখানে দেখুন</p>
     </div>
 
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        let selectedItem = '🏡';
+        let map;
 
-        function selectItem(item) {
-            selectedItem = item;
-            alert(item + " সিলেক্ট হয়েছে! এখন ম্যাপের ফাঁকা জায়গায় ক্লিক করুন।");
-        }
+        function initLiveMap() {
+            // উজ্জ্বল এবং ক্লিয়ার ম্যাপ লেয়ার
+            map = L.map('map', { attributionControl: false }).setView([23.8103, 90.4125], 8);
 
-        function placeBuilding(e) {
-            const map = document.getElementById('game-map');
-            const building = document.createElement('div');
-            building.className = 'building';
-            // মাউস বা টাচ পয়েন্ট অনুযায়ী পজিশন
-            building.style.left = (e.pageX - 30) + 'px';
-            building.style.top = (e.pageY - 30) + 'px';
-            building.innerText = selectedItem;
-            
-            // বাড়িটি ড্র্যাগ করার অপশন (ভবিষ্যতের জন্য)
-            building.onclick = function(event) {
-                event.stopPropagation();
-                if(confirm("এই বাড়িটি কি সরাতে বা ডিলিট করতে চান?")) {
-                    this.remove();
-                }
-            };
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-            map.appendChild(building);
+            // মেম্বারদের কাজের উন্নতির ডাটা
+            const liveData = [
+                { name: "নাঈম (Main Project)", pos: [23.8103, 90.4125], status: "বাস্তব কাজ চলছে", level: "উন্নত" },
+                { name: "মেম্বার ১", pos: [24.3636, 88.6241], status: "বাস্তব বাগান সম্পন্ন", level: "মাঝারি" },
+                { name: "মেম্বার ২", pos: [22.3569, 91.7832], status: "ভার্চুয়াল ডিজাইন সম্পন্ন", level: "শুরু" }
+            ];
+
+            liveData.forEach(data => {
+                // লেভেল অনুযায়ী আলাদা রঙের আইকন বা ঘর
+                let color = data.level === "উন্নত" ? "green" : "blue";
+                
+                let marker = L.circleMarker(data.pos, {
+                    color: color, radius: 10, fillOpacity: 0.8
+                }).addTo(map);
+
+                marker.bindPopup(`
+                    <div style="text-align:center;">
+                        <b>${data.name}</b><br>
+                        <span style="color:green;">${data.status}</span><br>
+                        <small>ব্যক্তিগত তথ্য সুরক্ষিত</small>
+                    </div>
+                `).openPopup();
+            });
         }
     </script>
 </body>
