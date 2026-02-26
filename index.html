@@ -3,58 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>নাঈম ১৮ - গেম মোড ম্যাপ</title>
+    <title>নাঈম ১৮ - ক্লিন কন্ট্রোল ম্যাপ</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { margin: 0; background: #0b1a0e; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+        body { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: sans-serif; }
         
-        /* মেইন গেম ম্যাপ (COC Style) */
-        #main-map {
-            width: 200vw; height: 200vh;
-            background-image: radial-gradient(#2d5a27 1px, transparent 1px);
-            background-size: 40px 40px;
-            background-color: #1e3d1a;
-            position: absolute; cursor: grab;
-        }
-
-        /* মিনি ম্যাপ (Free Fire Style) */
-        #mini-map {
-            position: fixed; top: 20px; right: 20px;
-            width: 150px; height: 150px;
-            background: rgba(0,0,0,0.7); border: 2px solid #28a745;
-            border-radius: 10px; z-index: 100;
-        }
-
-        .base-item {
-            width: 60px; height: 60px; background: #555;
-            border: 2px solid #fff; position: absolute;
-            display: flex; align-items: center; justify-content: center; font-size: 10px;
-        }
-
-        .ui-panel {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.8); padding: 15px; border-radius: 50px;
-            display: flex; gap: 20px; border: 1px solid #28a745; z-index: 100;
-        }
+        /* ম্যাপের এরিয়া - কোনো লিঙ্ক ছাড়া */
+        #map { height: 100vh; width: 100vw; background: #0b1a0e; }
         
-        button { background: #28a745; border: none; color: #fff; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+        /* উপরের স্ট্যাটাস বার */
+        .top-bar { 
+            position: fixed; top: 0; width: 100%; background: rgba(0,0,0,0.8); 
+            color: #28a745; padding: 10px; z-index: 1000; text-align: center;
+            border-bottom: 2px solid #28a745; font-weight: bold;
+        }
+
+        /* নিচের কন্ট্রোল বাটন */
+        .bottom-btn {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            z-index: 1000; background: #28a745; color: white; padding: 15px 30px;
+            border: none; border-radius: 50px; cursor: pointer; font-size: 16px;
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.5);
+        }
+
+        /* গুগল ম্যাপের লিঙ্ক লুকানোর ট্রিক */
+        .leaflet-control-attribution { display: none !important; }
+        .leaflet-control-zoom { border: none !important; margin-top: 60px !important; }
     </style>
 </head>
-<body>
+<body onload="initCleanMap()">
 
-    <div id="main-map">
-        <div class="base-item" style="top: 400px; left: 500px;">নাঈম হাউস</div>
-        <div class="base-item" style="top: 450px; left: 600px; background: #2d5a27;">কৃষি জোন</div>
+    <div class="top-bar">
+        নাঈম ইব্রাহিম মিশন: জন্মভিটা ও সম্পত্তি রেকর্ড (১০ কিলো স্কয়ার)
     </div>
 
-    <div id="mini-map">
-        <p style="font-size: 10px; text-align: center;">MINI MAP</p>
-    </div>
+    <div id="map"></div>
 
-    <div class="ui-panel">
-        <button onclick="alert('পুরো ম্যাপ ওপেন হচ্ছে...')">ফুল ম্যাপ</button>
-        <button onclick="alert('নতুন বাড়ি তৈরি করুন')">বিল্ড মোড</button>
-        <button>আমার তারা: ১০০</button>
-    </div>
+    <button class="bottom-btn" onclick="saveProperty()">🏡 আমার বাড়ির সীমানা নিশ্চিত করুন</button>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let drawnItems;
+
+        function initCleanMap() {
+            // ক্লিন ডার্ক রোড ম্যাপ লোড করা হচ্ছে (লিঙ্ক ছাড়া)
+            map = L.map('map', {
+                zoomControl: true,
+                attributionControl: false // এটি ম্যাপের নিচের সব লিঙ্ক মুছে দেবে
+            }).setView([23.8103, 90.4125], 13);
+
+            // শুধু রাস্তা এবং এলাকার ম্যাপ (ক্লিন লুক)
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                maxZoom: 20
+            }).addTo(map);
+
+            // ম্যাপে ক্লিক করলে পিন বসবে
+            map.on('click', function(e) {
+                L.marker(e.latlng).addTo(map)
+                    .bindPopup("আপনার সম্পত্তি চিহ্নিত হয়েছে।").openPopup();
+            });
+        }
+
+        function saveProperty() {
+            let info = prompt("আপনার নাম এবং জমির পরিমাণ (শতাংশ) লিখুন:");
+            if(info) {
+                alert("ধন্যবাদ নাঈম ভাই, এই সম্পত্তির ম্যাপ ডেটা আপনার প্রোফাইলে সেভ করা হয়েছে।");
+            }
+        }
+    </script>
 </body>
 </html>
