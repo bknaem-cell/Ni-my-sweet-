@@ -1,38 +1,81 @@
-<style>
-    /* মোবাইল বাঁকা বা সোজা—সব অবস্থায় ফুল স্ক্রিন রাখার জন্য */
-    html, body { 
-        width: 100%; 
-        height: 100%; 
-        margin: 0; 
-        padding: 0; 
-        overflow: hidden; 
-        position: fixed; /* স্ক্রিন যেন নড়াচড়া না করে */
-    }
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ডিজিটাল ভিলা - ডিজিটাল পাড়া</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; background-color: #1a1a1a; color: white; overflow-x: hidden; }
+        
+        #registration-ui { padding: 40px 20px; text-align: center; }
+        .card { background: #333; padding: 30px; border-radius: 20px; max-width: 450px; margin: auto; box-shadow: 0 0 25px #28a745; border: 1px solid #444; }
+        
+        input { width: 90%; padding: 15px; margin: 15px 0; border-radius: 10px; border: none; font-size: 16px; }
+        button { background: #28a745; color: white; padding: 15px 30px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; width: 90%; font-size: 16px; }
+        
+        #map-container { display: none; width: 100vw; height: 100vh; position: relative; }
+        #map { width: 100%; height: 100%; }
+        
+        .map-overlay { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; border: 1px solid #28a745; font-size: 14px; text-align: center; min-width: 250px; }
+    </style>
+</head>
+<body>
 
-    #map { 
-        width: 100vw; 
-        height: 100vh; 
-        display: block;
-    }
+    <div id="registration-ui">
+        <h1 style="margin-bottom: 20px;">The Digital Villa Economy</h1>
+        <div class="card">
+            <h3 id="ui-title">ডিজিটাল পাড়ায় যোগ দিন</h3>
+            <input type="text" id="userName" placeholder="আপনার নাম লিখুন">
+            <button onclick="joinNeighborhood()">সিস্টেমে প্রবেশ করুন</button>
+        </div>
+    </div>
 
-    /* মোবাইল বাঁকা (Landscape) করলে নিচের মেনু যেন ছোট হয়ে মানিয়ে নেয় */
-    @media screen and (orientation: landscape) {
-        .bottom-panel {
-            padding: 10px;
-            max-height: 40%; /* স্ক্রিন খুব বেশি ব্লক করবে না */
-            overflow-y: auto;
+    <div id="map-container">
+        <div class="map-overlay">
+            <span id="welcome-msg"></span><br>
+            <small style="color: #ffc107;">● ৩ দিন পর ঘরবাড়ি নির্মাণের অনুমতি পাবেন</small>
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let center = [23.8103, 90.4125]; // আপনার মেইন সেন্টার
+
+        function joinNeighborhood() {
+            let name = document.getElementById('userName').value;
+            if (name === "") { alert("নাম লিখুন!"); return; }
+
+            // UI পরিবর্তন
+            document.getElementById('registration-ui').style.display = 'none';
+            document.getElementById('map-container').style.display = 'block';
+            document.getElementById('welcome-msg').innerText = `স্বাগতম, ${name}! (সিরিয়াল: ১)`;
+
+            // ম্যাপ লোড করা
+            initMap(name);
         }
-        .service-grid {
-            gap: 5px;
-        }
-    }
-</script>
 
-<script>
-    // মোবাইল রোটেট করলে ম্যাপ যেন অটোমেটিক সাইজ ঠিক করে নেয়
-    window.addEventListener("orientationchange", function() {
-        setTimeout(function() {
-            map.invalidateSize(); // ম্যাপের সাইজ অটো-অ্যাডজাস্ট করবে
-        }, 200);
-    });
-            </script>
+        function initMap(userName) {
+            map = L.map('map', { zoomControl: false }).setView(center, 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+            // অ্যাডমিন লোকেশন (আপনি)
+            L.marker(center).addTo(map)
+                .bindPopup("<b>প্রধান কেন্দ্র (নাঈম ইব্রাহিম)</b>").openPopup();
+
+            // ইউজারের ডামি লোকেশন (ডিজিটাল পাড়ার অংশ হিসেবে)
+            let userLoc = [23.8120, 90.4150];
+            L.marker(userLoc).addTo(map)
+                .bindPopup(`<b>${userName}-এর পরিকল্পিত বাড়ি</b><br>স্থিতি: অপেক্ষমান (৩ দিন)`);
+
+            // ম্যাপে ক্লিক করলে মেসেজ
+            map.on('click', function() {
+                alert("আপনার জমি নির্বাচনের ধাপটি ৩ দিন পর সক্রিয় হবে। এখন শুধু পাড়াটি ঘুরে দেখুন।");
+            });
+        }
+    </script>
+</body>
+</html>
