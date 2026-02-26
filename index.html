@@ -1,99 +1,30 @@
-<!DOCTYPE html>
-<html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ডিজিটাল ভিলা ইকোনমি - লিডার সিস্টেম</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>THE DIGITAL VILLA ECONOMY</title>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: #0b0f19; color: white; font-family: 'SolaimanLipi', Arial, sans-serif; overflow-x: hidden; }
-        
-        /* ম্যাপ সেকশন */
-        #map { width: 100%; height: 280px; border-bottom: 3px solid #00ff41; box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3); }
+        /* পুরো বডি যেন অটোমেটিক না ঘোরে তার জন্য ফিক্সড সেটিংস */
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            position: fixed; /* স্ক্রিন স্ক্রল বা নড়াচড়া বন্ধ করতে */
+        }
 
-        /* হেডার ও স্ট্যাটাস */
-        .header { text-align: center; padding: 20px; background: #16222e; }
-        .header h1 { color: #00ff41; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
-        .system-lead { font-size: 12px; color: #8892b0; margin-top: 5px; }
+        /* ক্যাটাগরি গ্রিড যেন সবসময় ২ কলামে থাকে */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 15px;
+        }
 
-        .user-panel { background: #1a2a3a; padding: 15px; margin: 15px; border-radius: 15px; border-left: 5px solid #00ff41; display: flex; justify-content: space-between; align-items: center; }
-        .level-badge { background: #28a745; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 13px; box-shadow: 0 0 10px rgba(40, 167, 69, 0.5); }
-
-        /* ইকোনমি ক্যাটাগরি */
-        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
-        .card { background: #1c2a39; padding: 20px; border-radius: 18px; text-align: center; border: 1px solid #334455; transition: 0.3s; cursor: pointer; }
-        .card:active { transform: scale(0.92); background: #243547; }
-        .card span { font-size: 32px; display: block; margin-bottom: 10px; }
-        .card p { font-size: 14px; font-weight: 500; }
-
-        /* ডিল বাটন */
-        .action-footer { padding: 15px; }
-        .deal-btn { width: 100%; background: linear-gradient(45deg, #28a745, #1e7e34); color: white; padding: 18px; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3); }
+        /* বড় স্ক্রিন বা বাঁকা করলেও যেন লেআউট ঠিক থাকে */
+        @media screen and (orientation: landscape) {
+            body {
+                transform: none;
+            }
+        }
     </style>
 </head>
-<body>
-
-    <div id="map"></div>
-
-    <div class="header">
-        <h1>THE DIGITAL VILLA ECONOMY</h1>
-        <p class="system-lead">সবার লিডার: কেন্দ্রীয় এআই সফটওয়্যার</p>
-    </div>
-
-    <div class="user-panel">
-        <div>
-            <p style="font-size: 14px;">প্রোফাইল: <b>নাঈম ইব্রাহিম বাদশা</b></p>
-            <p style="font-size: 11px; color: #8892b0;">আইডি: ১৮-বিডি-০১</p>
-        </div>
-        <div class="level-badge">লেভেল: ১</div>
-    </div>
-
-    <div class="category-grid">
-        <div class="card" onclick="alert('সফটওয়্যার লিডারে বাড়ি নির্মাণের ডিল পাঠানো হয়েছে।')">
-            <span>🏗️</span>
-            <p>বাড়ি নির্মাণ</p>
-        </div>
-        <div class="card" onclick="alert('কৃষক ও কোম্পানি কাঁচামাল হাব কানেক্ট হচ্ছে...')">
-            <span>🌾</span>
-            <p>কৃষি ও কাঁচামাল</p>
-        </div>
-        <div class="card" onclick="alert('রিপেয়ারিং ও শ্রমিক দল প্রস্তুত করা হচ্ছে...')">
-            <span>🛠️</span>
-            <p>মেরামত ও শ্রমিক</p>
-        </div>
-        <div class="card" onclick="alert('কোম্পানি ইনভেন্টরি ও লজিস্টিকস লোড হচ্ছে...')">
-            <span>🏭</span>
-            <p>কোম্পানি ডিল</p>
-        </div>
-    </div>
-
-    <div class="action-footer">
-        <button class="deal-btn">সরাসরি সফটওয়্যারের সাথে চুক্তি করুন</button>
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // ম্যাপ ও ১০ কিলো স্কয়ার সেটিংস
-        var map = L.map('map', {zoomControl: false}).setView([23.8103, 90.4125], 13);
-        
-        // ডার্ক ম্যাপ স্টাইল
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
-        
-        // আপনার ১০ কিলোমিটার ইকোনমি জোন (সবুজ বৃত্ত)
-        L.circle([23.8103, 90.4125], {
-            color: '#00ff41', weight: 2, fillColor: '#00ff41', fillOpacity: 0.1, radius: 10000 
-        }).addTo(map);
-
-        // ইউজারের বর্তমান লোকেশন ট্র্যাকিং
-        map.locate({setView: true, maxZoom: 15});
-        map.on('locationfound', function(e) {
-            L.marker(e.latlng).addTo(map).bindPopup("আপনি এই জোনে আছেন").openPopup();
-        });
-        
-        map.on('locationerror', function() {
-            L.marker([23.8103, 90.4125]).addTo(map).bindPopup("সেন্ট্রাল জোন: উত্তরা").openPopup();
-        });
-    </script>
-</body>
-</html>
