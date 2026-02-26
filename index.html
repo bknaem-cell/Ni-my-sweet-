@@ -2,96 +2,21 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Naem Ibrahim: 10KM Global Project</title>
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <title>Naeem 18 - System Key</title>
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        #cesiumContainer { width: 100%; height: 100vh; }
-        
-        /* কন্ট্রোল বাটন সমূহ */
-        .controls { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; gap: 15px; }
-        .btn { padding: 15px 25px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.6); transition: 0.3s; }
-        .home-btn { background: #2ecc71; }
-        .lib-btn { background: #9b59b6; position: absolute; top: 20px; left: 20px; z-index: 100; }
-        
-        /* লাইব্রেরি প্যানেল ডিজাইন */
-        #libraryPanel { 
-            display: none; position: absolute; top: 80px; left: 20px; width: 300px; 
-            background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 15px; 
-            z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-left: 5px solid #9b59b6;
-        }
-        .header-text { position: absolute; top: 20px; right: 20px; color: white; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; z-index: 10; }
+        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4; }
+        .box { background: white; padding: 20px; border-radius: 10px; display: inline-block; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        input { padding: 10px; margin: 10px; width: 200px; }
+        button { padding: 10px 20px; background: #28a745; color: white; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
-
-    <div class="header-text"><b>নাঈম ইব্রাহিম</b><br>মিশন: ১০ কিলো স্কয়ার</div>
-
-    <button class="btn lib-btn" onclick="toggleLibrary()">📚 পার্সোনাল লাইব্রেরি</button>
-
-    <div id="libraryPanel">
-        <h3 style="margin-top:0; color:#8e44ad;">পণ্য ট্র্যাকিং (নাঈম ১৮)</h3>
-        <p style="font-size: 14px; color: #555;">এখানে আপনার প্রজেক্টের সব পণ্যের আপডেট থাকবে।</p>
-        <hr>
-        <div id="dataArea" style="max-height: 200px; overflow-y: auto;">
-            <p><b>📦 সর্বশেষ শিপমেন্ট:</b> ধান</p>
-            <p><b>📍 গন্তব্য:</b> কেন্দ্রীয় গুদাম</p>
-            <p><b>📅 তারিখ:</b> ২৬-০২-২০২৬</p>
-        </div>
-        <button onclick="toggleLibrary()" style="width:100%; padding:10px; margin-top:10px; border-radius: 10px; border: none; background: #eee; cursor: pointer;">বন্ধ করুন</button>
+    <div class="box">
+        <h1>নাঈম ইব্রাহিম প্রজেক্ট</h1>
+        <p>জীবনযাত্রার চাবিকাঠি</p>
+        <input type="text" placeholder="আপনার আইডি কোড">
+        <br>
+        <button>সিস্টেমে প্রবেশ করুন</button>
     </div>
-
-    <div id="cesiumContainer"></div>
-
-    <div class="controls">
-        <button class="btn home-btn" onclick="goToMyZone()">🏠 আমার ঘর (3D View)</button>
-    </div>
-
-    <script>
-        // থ্রিডি গ্লোব ইনিশিয়েলাইজেশন
-        const viewer = new Cesium.Viewer('cesiumContainer', {
-            terrainProvider: Cesium.createWorldTerrain(),
-            baseLayerPicker: false, geocoder: false, homeButton: false, animation: false, timeline: false, navigationHelpButton: false, sceneModePicker: false
-        });
-
-        // লাইব্রেরি খোলা বা বন্ধ করা
-        function toggleLibrary() {
-            var panel = document.getElementById("libraryPanel");
-            panel.style.display = (panel.style.display === "none" || panel.style.display === "") ? "block" : "none";
-        }
-
-        // ইউজারের নির্দিষ্ট জায়গায় জুম করা
-        function goToMyZone() {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                
-                viewer.camera.flyTo({
-                    destination: Cesium.Cartesian3.fromDegrees(lon, lat, 300), // ৩০০ মিটার উপর থেকে ভিউ
-                    orientation: {
-                        heading: Cesium.Math.toRadians(0.0),
-                        pitch: Cesium.Math.toRadians(-45.0), // ডানে-বামে ঘোরানোর সুবিধার্থে ৪৫ ডিগ্রি কোণ
-                        roll: 0.0
-                    }
-                });
-
-                // ম্যাপে ঘর চিহ্নিত করা
-                viewer.entities.add({
-                    position: Cesium.Cartesian3.fromDegrees(lon, lat),
-                    label: { 
-                        text: 'নাঈম ইব্রাহিম-এর এলাকা', 
-                        font: 'bold 18px sans-serif', 
-                        fillColor: Cesium.Color.YELLOW,
-                        outlineColor: Cesium.Color.BLACK,
-                        outlineWidth: 2,
-                        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM 
-                    }
-                });
-            });
-        }
-    </script>
 </body>
 </html>
