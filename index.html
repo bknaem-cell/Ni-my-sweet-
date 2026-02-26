@@ -2,45 +2,67 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Ni-My-Sweet: Virtual World V2</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ni-My-Sweet: 3D Globe & Library</title>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.108/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #000; font-family: Arial, sans-serif; }
-        #map { height: 100vh; width: 100vw; }
-        .controls { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; gap: 10px; }
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
+        #cesiumContainer { width: 100%; height: 100vh; }
+        .controls { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; gap: 10px; }
         .btn { padding: 12px 20px; border-radius: 25px; border: none; font-weight: bold; cursor: pointer; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .lib-btn { background: #673AB7; position: absolute; top: 15px; left: 15px; z-index: 100; }
         .home-btn { background: #4CAF50; }
-        .shop-btn { background: #FF9800; }
-        .exit-btn { position: absolute; top: 20px; right: 20px; z-index: 2000; background: #f44336; }
-        .header { position: absolute; top: 20px; left: 20px; z-index: 2000; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 8px; border-left: 4px solid #2196F3; }
+        /* লাইব্রেরি প্যানেল */
+        #libraryPanel { display: none; position: absolute; top: 70px; left: 15px; width: 280px; background: rgba(255,255,255,0.95); padding: 15px; border-radius: 10px; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
-    <button class="btn exit-btn" onclick="window.close()">বাহির</button>
-    <div class="header"><b>নাঈম ইব্রাহিম</b><br>মিশন: ১০ কিলো স্কয়ার (ভার্সন ২)</div>
-    <div id="map"></div>
-    <div class="controls">
-        <button class="btn home-btn" onclick="addDigitalHome()">🏠 ঘর তৈরি</button>
-        <button class="btn shop-btn" onclick="alert('হালাল বাজার শীঘ্রই আসছে!')">🛒 বাজার</button>
+
+    <button class="btn lib-btn" onclick="toggleLibrary()">📚 লাইব্রেরি</button>
+
+    <div id="libraryPanel">
+        <h3 style="margin-top:0; color:#673AB7;">পণ্য ট্র্যাকিং লাইব্রেরি</h3>
+        <p><b>কোড: নাঈম ১৮</b></p>
+        <hr>
+        <ul id="deliveryList" style="padding-left: 20px; font-size: 14px;">
+            <li>📦 ধান - গন্তব্য: ঢাকা (প্রক্রিয়াধীন)</li>
+            <li>📦 সবজি - গন্তব্য: বাজার (সম্পন্ন)</li>
+        </ul>
+        <button onclick="toggleLibrary()" style="width:100%; padding:5px; margin-top:10px;">বন্ধ করুন</button>
     </div>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <div id="cesiumContainer"></div>
+
+    <div class="controls">
+        <button class="btn home-btn" onclick="zoomToHome()">🏠 ঘর তৈরি</button>
+    </div>
+
     <script>
-        var map = L.map('map', { zoomControl: false }).setView([23.8103, 90.4125], 18);
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
-        var userLocation;
-        map.locate({setView: true, maxZoom: 18, watch: true});
-        map.on('locationfound', function(e) {
-            userLocation = e.latlng;
-            L.circle(e.latlng, { radius: 10000, color: '#2196F3', fillOpacity: 0.1 }).addTo(map);
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+            terrainProvider: Cesium.createWorldTerrain(),
+            baseLayerPicker: false, geocoder: false, homeButton: false, animation: false, timeline: false
         });
-        function addDigitalHome() {
-            if(userLocation) {
-                var homeIcon = L.divIcon({ html: "<div style='font-size: 30px;'>🏠</div>", className: 'custom-div-icon' });
-                L.marker(userLocation, {icon: homeIcon}).addTo(map).bindPopup("<b>নাঈম ইব্রাহিম-এর ডিজিটাল ঘর</b>").openPopup();
+
+        function toggleLibrary() {
+            var panel = document.getElementById("libraryPanel");
+            if (panel.style.display === "none" || panel.style.display === "") {
+                panel.style.display = "block";
+            } else {
+                panel.style.display = "none";
             }
         }
-        window.addEventListener("resize", function() { map.invalidateSize(); });
+
+        function zoomToHome() {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                viewer.camera.flyTo({
+                    destination: Cesium.Cartesian3.fromDegrees(lon, lat, 400),
+                    orientation: { pitch: Cesium.Math.toRadians(-45.0) }
+                });
+            });
+        }
     </script>
 </body>
 </html>
