@@ -3,92 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>নাঈম ১৮ - স্মার্ট ডিজিটাল সিস্টেম</title>
+    <title>নাঈম ইব্রাহিম - ডিজিটাল ইকোসিস্টেম</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        /* পুরো স্ক্রিন দখল করার জন্য স্টাইল */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; background: #f0f4f8; }
-        
-        #map { width: 100vw; height: 100vh; z-index: 1; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #f4f7f6; }
 
-        /* উপরের স্মার্ট হেডার */
-        .header-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 60px;
-            background: rgba(40, 167, 69, 0.9); color: white;
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            font-size: 1.2rem; font-weight: bold; letter-spacing: 1px;
+        /* ফুল স্ক্রিন ম্যাপ */
+        #map { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+
+        /* স্মার্ট টপ কন্ট্রোল */
+        .top-nav {
+            position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 500px; background: rgba(255, 255, 255, 0.95);
+            padding: 12px 20px; border-radius: 50px; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #28a745;
         }
 
-        /* নিচের ডিজিটাল সার্ভিস কার্ড */
-        .footer-card {
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            background: white; border-radius: 25px 25px 0 0;
-            padding: 20px; z-index: 1000;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-            transition: 0.3s ease-in-out;
+        .user-rank { color: #28a745; font-weight: bold; font-size: 14px; }
+        .system-code { color: #555; font-size: 12px; }
+
+        /* নিচের চাবিকাঠি মেনু (ফুল স্ক্রিন স্লাইডিং কার্ড) */
+        .bottom-panel {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #fff; z-index: 1000; border-radius: 30px 30px 0 0;
+            padding: 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+            text-align: center;
         }
 
-        .card-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;
+        .drag-handle { width: 50px; height: 5px; background: #ddd; border-radius: 10px; margin: 0 auto 15px; }
+
+        .service-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 10px;
         }
 
-        .service-item {
-            padding: 10px; background: #f8f9fa; border-radius: 12px;
-            border: 1px solid #ddd; font-size: 14px; cursor: pointer;
+        .service-box {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 10px; border-radius: 15px; background: #f8fcf9; border: 1px solid #e1eee3;
+            cursor: pointer; transition: 0.2s;
         }
 
-        .service-item:hover { background: #e9ecef; }
-        .active-status { color: #28a745; font-weight: bold; }
+        .service-box:hover { background: #e8f5e9; transform: translateY(-3px); }
+        .service-box span { font-size: 24px; margin-bottom: 5px; }
+        .service-box p { font-size: 11px; font-weight: 600; color: #333; }
+
+        /* স্ট্যাটাস ইন্ডিকেটর */
+        .live-status {
+            margin-top: 15px; font-size: 12px; color: #666;
+            display: flex; justify-content: center; align-items: center; gap: 5px;
+        }
+        .dot { height: 8px; width: 8px; background-color: #28a745; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
     </style>
 </head>
-<body onload="initFullScreenSystem()">
+<body onload="loadSystem()">
 
-    <div class="header-overlay">
-        নাঈম ইব্রাহিম ডিজিটাল ফ্যামিলি কন্ট্রোল
+    <div class="top-nav">
+        <div class="user-rank" id="userTitle">আইডি: ১ (নাঈম ইব্রাহিম)</div>
+        <div class="system-code">নাঈম ১৮ | সিস্টেম অনলাইন</div>
     </div>
 
     <div id="map"></div>
 
-    <div class="footer-card">
-        <div style="width: 40px; height: 5px; background: #ccc; margin: 0 auto 15px; border-radius: 10px;"></div>
-        <div class="card-grid">
-            <div class="service-item" onclick="checkStatus('বাজার')">🛒<br>বাজার ও খাবার</div>
-            <div class="service-item" onclick="checkStatus('ঘরবাড়ি')">🏗️<br>নির্মাণ ও ডিজাইন</div>
-            <div class="service-item" onclick="checkStatus('চাকরি')">💼<br>রিমোট কাজ</div>
+    <div class="bottom-panel">
+        <div class="drag-handle"></div>
+        <h3 style="font-size: 16px; margin-bottom: 15px; color: #2d5a27;">জীবনযাত্রার চাবিকাঠি</h3>
+        
+        <div class="service-grid">
+            <div class="service-box" onclick="action('খাবার')"><span>🍱</span><p>খাবার</p></div>
+            <div class="service-box" onclick="action('ডিজাইন')"><span>🏗️</span><p>ডিজাইন</p></div>
+            <div class="service-box" onclick="action('চাকরি')"><span>💼</span><p>চাকরি</p></div>
+            <div class="service-box" onclick="action('বাজার')"><span>🛒</span><p>বাজার</p></div>
         </div>
-        <div id="live-info" style="margin-top: 15px; font-size: 13px; text-align: center;">
-            <span class="active-status">● সিস্টেম অনলাইন</span> | আপনার সিরিয়াল: ১ নং আইডি
+
+        <div class="live-status">
+            <span class="dot"></span> আপনার বাড়ির উন্নয়ন কার্যক্রম চলছে...
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         let map;
+        const centerPoint = [23.8103, 90.4125];
 
-        function initFullScreenSystem() {
-            // পুরো স্ক্রিন ম্যাপ ইনিশিয়ালাইজেশন
-            map = L.map('map', { 
-                zoomControl: false, 
-                attributionControl: false 
-            }).setView([23.8103, 90.4125], 13);
-
+        function loadSystem() {
+            map = L.map('map', { zoomControl: false, attributionControl: false }).setView(centerPoint, 15);
+            
+            // সুন্দর ও উজ্জ্বল ম্যাপ স্টাইল
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-            // মেইন সেন্টার মার্ক
-            L.marker([23.8103, 90.4125]).addTo(map)
-                .bindPopup("<b>প্রধান কেন্দ্র (নাঈম ইব্রাহিম)</b>").openPopup();
+            // মেইন সেন্টার মার্কার
+            L.marker(centerPoint).addTo(map).bindPopup("<b>প্রধান কেন্দ্র: নাঈম ইব্রাহিম</b>").openPopup();
 
-            // ম্যাপে ক্লিক করলে তথ্য দেখানো
+            // ম্যাপে ক্লিক করলে নতুন লোকেশন ও দূরত্ব দেখাবে
             map.on('click', function(e) {
+                let d = (map.distance(e.latlng, centerPoint) / 1000).toFixed(2);
                 L.marker(e.latlng).addTo(map)
-                    .bindPopup("নতুন প্রজেক্ট সাইট চিহ্নিত করা হয়েছে।").openPopup();
+                    .bindPopup(`<b>নতুন ইউজার সাইট</b><br>কেন্দ্র থেকে দূরত্ব: ${d} কিমি`).openPopup();
             });
         }
 
-        function checkStatus(type) {
-            alert(type + " সেবাটি বর্তমানে আপনার লোকেশনে প্রক্রিয়াধীন আছে।");
+        function action(type) {
+            alert(type + " মেনু ওপেন হচ্ছে... এখান থেকে আপনি আপনার বাড়ির জন্য " + type + " নিয়ন্ত্রণ করতে পারবেন।");
         }
     </script>
 </body>
