@@ -3,73 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>নাঈম ১৮ - ক্লিন কন্ট্রোল ম্যাপ</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <title>নাঈম ১৮ - ভার্চুয়াল সিটি বিল্ডার</title>
     <style>
-        body { margin: 0; padding: 0; background: #000; overflow: hidden; font-family: sans-serif; }
-        
-        /* ম্যাপের এরিয়া - কোনো লিঙ্ক ছাড়া */
-        #map { height: 100vh; width: 100vw; background: #0b1a0e; }
-        
-        /* উপরের স্ট্যাটাস বার */
-        .top-bar { 
-            position: fixed; top: 0; width: 100%; background: rgba(0,0,0,0.8); 
-            color: #28a745; padding: 10px; z-index: 1000; text-align: center;
-            border-bottom: 2px solid #28a745; font-weight: bold;
+        body { margin: 0; background: #0b1a0e; color: #fff; font-family: sans-serif; overflow: hidden; }
+        #game-map { 
+            width: 2000px; height: 2000px; 
+            background-color: #1e3d1a;
+            background-image: radial-gradient(#2d5a27 2px, transparent 2px);
+            background-size: 50px 50px;
+            position: relative; cursor: crosshair;
         }
-
-        /* নিচের কন্ট্রোল বাটন */
-        .bottom-btn {
-            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            z-index: 1000; background: #28a745; color: white; padding: 15px 30px;
-            border: none; border-radius: 50px; cursor: pointer; font-size: 16px;
-            box-shadow: 0 0 20px rgba(40, 167, 69, 0.5);
+        .building { 
+            position: absolute; width: 60px; height: 60px; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; cursor: move; transition: transform 0.2s;
         }
-
-        /* গুগল ম্যাপের লিঙ্ক লুকানোর ট্রিক */
-        .leaflet-control-attribution { display: none !important; }
-        .leaflet-control-zoom { border: none !important; margin-top: 60px !important; }
+        .building:hover { transform: scale(1.2); }
+        .ui-dock {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.9); padding: 15px; border-radius: 50px;
+            display: flex; gap: 15px; border: 2px solid #ffd700; z-index: 1000;
+        }
+        .item { font-size: 25px; cursor: pointer; padding: 10px; border-radius: 50%; background: #222; }
+        .item:hover { background: #444; }
     </style>
 </head>
-<body onload="initCleanMap()">
+<body>
 
-    <div class="top-bar">
-        নাঈম ইব্রাহিম মিশন: জন্মভিটা ও সম্পত্তি রেকর্ড (১০ কিলো স্কয়ার)
+    <div id="game-map" onclick="placeBuilding(event)">
+        </div>
+
+    <div class="ui-dock">
+        <div class="item" onclick="selectItem('🏡')">🏡</div>
+        <div class="item" onclick="selectItem('🚜')">🚜</div>
+        <div class="item" onclick="selectItem('🌳')">🌳</div>
+        <div class="item" onclick="selectItem('🏭')">🏭</div>
+        <div style="color: gold; padding-top: 10px;">আইটেম বেছে নিন</div>
     </div>
 
-    <div id="map"></div>
-
-    <button class="bottom-btn" onclick="saveProperty()">🏡 আমার বাড়ির সীমানা নিশ্চিত করুন</button>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        let map;
-        let drawnItems;
+        let selectedItem = '🏡';
 
-        function initCleanMap() {
-            // ক্লিন ডার্ক রোড ম্যাপ লোড করা হচ্ছে (লিঙ্ক ছাড়া)
-            map = L.map('map', {
-                zoomControl: true,
-                attributionControl: false // এটি ম্যাপের নিচের সব লিঙ্ক মুছে দেবে
-            }).setView([23.8103, 90.4125], 13);
-
-            // শুধু রাস্তা এবং এলাকার ম্যাপ (ক্লিন লুক)
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                maxZoom: 20
-            }).addTo(map);
-
-            // ম্যাপে ক্লিক করলে পিন বসবে
-            map.on('click', function(e) {
-                L.marker(e.latlng).addTo(map)
-                    .bindPopup("আপনার সম্পত্তি চিহ্নিত হয়েছে।").openPopup();
-            });
+        function selectItem(item) {
+            selectedItem = item;
+            alert(item + " সিলেক্ট হয়েছে! এখন ম্যাপের ফাঁকা জায়গায় ক্লিক করুন।");
         }
 
-        function saveProperty() {
-            let info = prompt("আপনার নাম এবং জমির পরিমাণ (শতাংশ) লিখুন:");
-            if(info) {
-                alert("ধন্যবাদ নাঈম ভাই, এই সম্পত্তির ম্যাপ ডেটা আপনার প্রোফাইলে সেভ করা হয়েছে।");
-            }
+        function placeBuilding(e) {
+            const map = document.getElementById('game-map');
+            const building = document.createElement('div');
+            building.className = 'building';
+            // মাউস বা টাচ পয়েন্ট অনুযায়ী পজিশন
+            building.style.left = (e.pageX - 30) + 'px';
+            building.style.top = (e.pageY - 30) + 'px';
+            building.innerText = selectedItem;
+            
+            // বাড়িটি ড্র্যাগ করার অপশন (ভবিষ্যতের জন্য)
+            building.onclick = function(event) {
+                event.stopPropagation();
+                if(confirm("এই বাড়িটি কি সরাতে বা ডিলিট করতে চান?")) {
+                    this.remove();
+                }
+            };
+
+            map.appendChild(building);
         }
     </script>
 </body>
