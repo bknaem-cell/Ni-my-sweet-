@@ -3,99 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NI My Sweet - TDP Ultra</title>
+    <title>NI My Sweet - Pro System</title>
     <style>
+        /* আগের সব স্টাইল থাকবে... */
         :root { --blue: #0077ff; --dark: #000000; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; display: flex; flex-direction: column; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--dark); color: #fff; overflow: hidden; display: flex; flex-direction: column; font-family: sans-serif; }
 
-        /* ১. সিস্টেম স্ট্যাটাস বার */
-        .status-bar { height: 30px; padding: 5px 15px; display: flex; justify-content: space-between; font-size: 12px; background: #000; }
-
-        /* ২. লোডিং স্ক্রিনে NI My Sweet ব্র্যান্ডিং ও রংধনু বার */
+        /* লোডিং স্ক্রিন ও রংধনু বার */
         #update-loader {
             position: fixed; inset: 0; background: #000; z-index: 2000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            animation: systemExit 0.8s ease-in 5.5s forwards;
+            transition: opacity 0.8s ease;
         }
+        .ni-title { font-size: 50px; font-weight: 900; color: #fff; text-shadow: 0 0 20px var(--blue); margin-bottom: 20px; }
         
-        /* আপনার প্রজেক্ট ও সফটওয়্যারের নাম */
-        .brand-container { text-align: center; margin-bottom: 25px; }
-        .ni-text { font-size: 50px; font-weight: 900; letter-spacing: 8px; text-shadow: 0 0 20px var(--blue); margin: 0; }
-        .sweet-text { font-size: 16px; font-weight: 300; color: var(--blue); letter-spacing: 3px; text-transform: uppercase; margin-top: -5px; }
-        
-        /* মোটা রংধনু লোডিং বার */
-        .bar-bg { 
-            width: 280px; height: 15px; background: #1a1a1a; 
-            border-radius: 20px; overflow: hidden; border: 1px solid #333; padding: 2px;
-        }
-        
-        .bar-fill { 
+        .bar-container { width: 280px; height: 16px; background: #111; border-radius: 20px; border: 1.5px solid #333; padding: 2px; }
+        .bar-progress { 
             width: 0%; height: 100%; border-radius: 20px;
             background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
             background-size: 400% 400%;
-            animation: systemLoad 5s linear forwards, rainbow 2s linear infinite;
         }
-        
-        @keyframes systemLoad { 0% { width: 0; } 100% { width: 100%; } }
-        @keyframes rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-        @keyframes systemExit { to { opacity: 0; visibility: hidden; } }
 
-        /* ৩. মূল ইন্টারফেস */
-        #main-interface { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; animation: uiEnter 1s 6s forwards; position: relative; }
-        @keyframes uiEnter { to { opacity: 1; } }
-
-        .auth-nav { position: absolute; top: 10px; width: 100%; display: flex; justify-content: space-between; padding: 0 25px; box-sizing: border-box; }
-        .auth-btn { background: transparent; color: #fff; border: 1.5px solid var(--blue); padding: 5px 15px; border-radius: 20px; font-size: 11px; }
-
-        .layout-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .row { display: flex; gap: 12px; }
-        .box { width: 85px; height: 50px; border: 2.5px solid #fff; border-radius: 4px; display: flex; flex-direction: column; justify-content: center; align-items: center; transform: skewX(-18deg); background: rgba(255,255,255,0.05); }
-        .txt-bold { font-size: 15px; font-weight: 800; }
-        .txt-slim { font-size: 9px; font-weight: 300; color: var(--blue); }
-
-        .center-hub { width: 100px; height: 100px; border: 3px solid var(--blue); transform: rotate(45deg); display: flex; justify-content: center; align-items: center; margin: 20px 0; box-shadow: 0 0 20px rgba(0, 119, 255, 0.4); }
-        .center-hub span { transform: rotate(-45deg); font-size: 20px; font-weight: bold; }
-
-        /* ৪. নেভিগেশন বার */
-        .nav-footer { height: 50px; border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; color: #444; }
+        /* মূল ইন্টারফেস যেখানে আপনার বাটনগুলো আছে */
+        #main-ui { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
-<body>
-
-    <div class="status-bar"><div>১০:৪২ PM</div><div>📶 🔋 ৯০%</div></div>
+<body onclick="startSystem()">
 
     <div id="update-loader">
-        <div class="brand-container">
-            <h1 class="ni-text">NI</h1>
-            <div class="sweet-text">My Sweet</div>
-        </div>
-        <div class="bar-bg"><div class="bar-fill"></div></div>
+        <div class="ni-title">NI My Sweet</div>
+        <div class="bar-container"><div class="bar-progress" id="progress"></div></div>
+        <p style="font-size: 10px; color: #444; margin-top: 10px;">সিস্টেম লোড হচ্ছে... স্ক্রিনে একবার ক্লিক করুন</p>
     </div>
 
-    <div id="main-interface">
-        <div class="auth-nav">
-            <button class="auth-btn">লগইন</button>
-            <button class="auth-btn">সাইন আপ</button>
+    <div id="main-ui">
+        <div style="display: flex; gap: 40px; margin-bottom: 50px;">
+            <button style="border:1px solid var(--blue); background:none; color:#fff; padding:10px 25px; border-radius:20px;">লগইন</button>
+            <button style="border:1px solid var(--blue); background:none; color:#fff; padding:10px 25px; border-radius:20px;">সাইন আপ</button>
         </div>
-        <div class="layout-container">
-            <div class="row">
-                <div class="box"><span class="txt-bold">1-A</span><span class="txt-slim">START</span></div>
-                <div class="box"><span class="txt-bold">2-B</span><span class="txt-slim">ACCESS</span></div>
-            </div>
-            <div class="center-hub"><span>TDP</span></div>
-            <div class="row">
-                <div class="box"><span class="txt-bold">3-C</span><span class="txt-slim">DATA</span></div>
-                <div class="box"><span class="txt-bold">4-D</span><span class="txt-slim">OK</span></div>
-                <div class="box"><span class="txt-bold">5-E</span><span class="txt-slim">SYS</span></div>
-            </div>
-            <div class="row">
-                <div class="box"><span class="txt-bold">6-F</span><span class="txt-slim">GLOBAL</span></div>
-                <div class="box"><span class="txt-bold">7-G</span><span class="txt-slim">FARMER</span></div>
-                <div class="box"><span class="txt-bold">8-H</span><span class="txt-slim">CORE</span></div>
-            </div>
-        </div>
+        <p>সিস্টেম অনলাইন</p>
     </div>
 
-    <div class="nav-footer"><div>◀</div><div>●</div><div>■</div></div>
+    <script>
+        let systemInitialized = false;
+
+        function startSystem() {
+            if (systemInitialized) return;
+            systemInitialized = true;
+            
+            let prog = document.getElementById('progress');
+            let width = 0;
+            
+            let interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    completeLoading();
+                } else {
+                    width++;
+                    prog.style.width = width + '%';
+                }
+            }, 50); // ৫ সেকেন্ড লোডিং সময়
+        }
+
+        function completeLoading() {
+            // ১. সাউন্ড প্লে করা
+            playSuccessSound();
+            
+            // ২. ভাইব্রেশন (যদি মোবাইল ডিভাইস হয়)
+            if (navigator.vibrate) {
+                navigator.vibrate(200); // ২০০ মিলি সেকেন্ড ভাইব্রেশন
+            }
+
+            // ৩. স্ক্রিন পরিবর্তন
+            setTimeout(() => {
+                document.getElementById('update-loader').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('update-loader').style.display = 'none';
+                    document.getElementById('main-ui').style.display = 'flex';
+                }, 800);
+            }, 500);
+        }
+
+        function playSuccessSound() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5 note
+            osc.frequency.exponentialRampToValueAtTime(1046.50, audioCtx.currentTime + 0.3); // C6 note
+            
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
+    </script>
 </body>
 </html>
