@@ -3,50 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TDV Advanced System</title>
+    <title>TDV Future System - Naim</title>
     <script src="//unpkg.com/globe.gl"></script>
     <style>
-        body { margin: 0; background: #0b0e14; color: #e0e0e0; font-family: 'Segoe UI', Arial, sans-serif; overflow: hidden; }
-        #globeViz { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+        body { margin: 0; background: #000b00; color: #00ff41; font-family: 'Courier New', Courier, monospace; overflow: hidden; height: 100vh; }
         
-        /* প্রিমিয়াম লেয়ার */
-        .overlay { position: relative; z-index: 2; padding: 20px; pointer-events: none; }
+        /* ২০ বছর পরের ফিউচারিস্টিক সবুজ থিম */
+        #main-ui { position: relative; z-index: 10; height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-sizing: border-box; pointer-events: none; }
         
-        /* আপনার সেই নীল আভার প্যানেল */
-        .panel { background: rgba(11, 14, 20, 0.7); border: 1px solid #30363d; padding: 20px; border-radius: 15px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); pointer-events: auto; }
+        .matrix-panel { background: rgba(0, 20, 0, 0.85); border: 1px solid #00ff41; border-radius: 10px; padding: 15px; box-shadow: 0 0 15px #00ff41; pointer-events: auto; }
         
         .header { display: flex; justify-content: space-between; align-items: center; }
-        h1 { margin: 0; color: #58a6ff; font-size: 24px; }
-        
-        .nav-menu { position: absolute; bottom: 20px; left: 20px; display: flex; gap: 10px; }
-        .btn { padding: 10px 20px; background: #238636; border: none; border-radius: 5px; color: white; cursor: pointer; }
+        .token { color: #ccff00; font-size: 1.2em; text-shadow: 0 0 10px #ccff00; }
+
+        /* আপনার স্কেচের সেই পিন বক্স (৪৩১৪ ও ৪৩১২ অনুযায়ী) */
+        .center-ui { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .pin-lock { width: 180px; height: 180px; border: 2px dashed #00ff41; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0, 50, 0, 0.3); animation: rotate 10s linear infinite; }
+        .pin-text { font-size: 24px; font-weight: bold; color: #00ff41; text-shadow: 0 0 20px #00ff41; }
+
+        .bottom-nav { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .neon-btn { background: transparent; border: 1px solid #00ff41; color: #00ff41; padding: 10px 20px; border-radius: 5px; cursor: pointer; text-transform: uppercase; font-weight: bold; transition: 0.3s; pointer-events: auto; }
+        .neon-btn:hover { background: #00ff41; color: #000; box-shadow: 0 0 20px #00ff41; }
+
+        #globeViz { position: absolute; inset: 0; z-index: 1; opacity: 0.7; filter: hue-rotate(90deg); }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div id="globeViz"></div>
 
-<div class="overlay">
-    <div class="panel header">
-        <h1>নাঈম ইব্রাহিম | TDV System</h1>
-        <div>🪙 NJ Gold: 10,0000</div>
+<div id="main-ui">
+    <div class="matrix-panel header">
+        <div>
+            <h2 style="margin:0;">নাঈম ইব্রাহিম | TDV ADVANCED</h2>
+            <small>SECURITY STATUS: ENCRYPTED</small>
+        </div>
+        <div class="token">🪙 NJ Gold: 10,0000</div>
+    </div>
+
+    <div class="center-ui">
+        <h1 style="font-size: 45px; margin-bottom: 20px; text-shadow: 0 0 30px #00ff41;">TDV</h1>
+        <div class="pin-lock">
+            <span style="font-size: 10px;">ID UNLOCK</span>
+            <div class="pin-text">PIN 30</div>
+            <button class="neon-btn" style="padding: 5px 10px; margin-top: 5px; font-size: 10px;">ENTER</button>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button class="neon-btn">🏗️ বিল্ডার</button>
+        <button class="neon-btn">🛒 Lovee Market</button>
+        <button class="neon-btn">🚀 কুরিয়ার</button>
     </div>
 </div>
 
-<div class="nav-menu">
-    <button class="btn">🏗️ বিল্ডার</button>
-    <button class="btn">🛒 Lovee Market</button>
-</div>
-
 <script>
-    const world = Globe()
-      (document.getElementById('globeViz'))
+    const world = Globe()(document.getElementById('globeViz'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
       .backgroundColor('rgba(0,0,0,0)')
       .showAtmosphere(true)
-      .atmosphereColor('#58a6ff');
+      .atmosphereColor('#00ff41')
+      .atmosphereAltitude(0.2);
 
     world.controls().autoRotate = true;
+    world.controls().autoRotateSpeed = 0.6;
+    world.pointOfView({ lat: 23.5, lng: 90.3, alt: 2.5 });
 </script>
 
 </body>
