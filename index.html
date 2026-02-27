@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NI MY SWEET - Python System</title>
+    <title>NI MY SWEET - Python Edition</title>
     <style>
         body, html {
             margin: 0; padding: 0;
@@ -11,78 +11,58 @@
             background-color: #000;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Segoe UI', sans-serif;
+            /* স্যামসাং স্টাইল ক্লিন ফন্ট */
+            font-family: 'SamsungOne', 'Segoe UI', Roboto, sans-serif;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        /* অতি সূক্ষ্ম বর্ডার */
         .edge-border {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none; z-index: 9999;
             box-sizing: border-box;
-            border: 1px solid rgba(0, 255, 255, 0.2);
-            transition: all 0.8s ease;
+            border: 0.8px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
         }
 
         .task-complete-glow {
-            border: 2px solid rgba(0, 255, 255, 0.8) !important;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            border: 1.5px solid rgba(0, 255, 255, 0.7) !important;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
         }
 
-        .main-content { text-align: center; width: 90%; max-width: 500px; }
+        .main-content { text-align: center; width: 85%; }
 
-        /* লেখার ফাঁকা ভাব কমানো হয়েছে এবং বোল্ড করা হয়েছে */
+        /* টেক্সট স্পেসিং স্যামসাং স্টাইলে ফিক্স করা */
         .brand {
             color: #ffffff; 
-            font-size: 32px; 
-            font-weight: 900; 
+            font-size: 30px; 
+            font-weight: 800; 
             margin-bottom: 20px;
-            letter-spacing: 2px; /* স্পেসিং কমিয়ে ২ পিক্সেল করা হয়েছে */
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-            white-space: nowrap;
-        }
-
-        .loading-msg {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 11px;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
+            letter-spacing: 3px; /* অতিরিক্ত ফাঁকা কমানো হয়েছে */
             text-transform: uppercase;
         }
 
         .bar-container { 
-            position: relative;
-            height: 22px; 
-            width: 80%; 
-            margin: 0 auto; 
-            background: rgba(255, 255, 255, 0.05); 
-            border-radius: 12px; 
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative; height: 18px; width: 80%; 
+            margin: 0 auto; background: rgba(255, 255, 255, 0.05); 
+            border-radius: 10px; overflow: hidden;
         }
 
-        .bar-fill { height: 100%; width: 0%; background: #ffffff; transition: width 0.1s linear; }
+        .bar-fill { height: 100%; width: 0%; background: #ffffff; }
 
         .percent-text {
-            position: absolute;
-            top: 50%; left: 50%;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            color: #ffffff;
-            mix-blend-mode: difference;
-            font-size: 11px;
-            font-weight: 900;
+            color: #ffffff; mix-blend-mode: difference;
+            font-size: 10px; font-weight: bold;
         }
     </style>
 </head>
-<body onclick="launchSystem()">
+<body onclick="activateLandscape()">
 
     <div id="glow-border" class="edge-border"></div>
 
     <div class="main-content">
         <div class="brand">NI MY SWEET</div>
-        <div id="msg" class="loading-msg">Initializing Python...</div>
         <div class="bar-container">
             <div class="percent-text" id="p-val">0%</div>
             <div class="bar-fill" id="p-bar"></div>
@@ -90,26 +70,21 @@
     </div>
 
     <script>
-        async function launchSystem() {
-            // ১. ফুল স্ক্রিন রিকোয়েস্ট
+        async function activateLandscape() {
             let el = document.documentElement;
+            // ফুলস্ক্রিন ও ল্যান্ডস্কেপ ফিক্স
             if (el.requestFullscreen) {
                 await el.requestFullscreen();
-            } else if (el.webkitRequestFullscreen) {
-                await el.webkitRequestFullscreen();
             }
-
-            // ২. ল্যান্ডস্কেপ লক করার চেষ্টা (Force Orientation)
             if (screen.orientation && screen.orientation.lock) {
                 try {
                     await screen.orientation.lock('landscape');
-                } catch (error) {
-                    alert("দয়া করে ফোনটি ঘুরিয়ে (Rotate) ল্যান্ডস্কেপ করুন।");
+                } catch (e) {
+                    console.log("Orientation lock failed");
                 }
             }
         }
 
-        // প্রগ্রেস বার ও গ্লো লজিক
         let progress = 0;
         const pBar = document.getElementById('p-bar');
         const pVal = document.getElementById('p-val');
@@ -119,12 +94,9 @@
             progress += 1;
             pBar.style.width = progress + "%";
             pVal.innerText = progress + "%";
-
             if (progress >= 100) {
                 clearInterval(loading);
-                document.getElementById('msg').innerText = "System Ready";
                 border.classList.add('task-complete-glow');
-                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
             }
         }, 40);
     </script>
