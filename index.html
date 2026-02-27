@@ -2,48 +2,116 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <title>TDP System - Naeem Ibrahim</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDP Ultra System - Naeem Ibrahim</title>
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        :root { --blue: #0077ff; --cyan: #00fbff; --dark: #000000; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--dark); color: #fff; font-family: 'Segoe UI', Roboto, sans-serif; overflow: hidden; }
 
-        /* ১. স্ট্যাটাস ও নেভিগেশন বার */
-        .bar { background: rgba(0,0,0,0.9); padding: 5px 15px; font-size: 11px; display: flex; justify-content: space-between; }
-        .nav-bar { height: 45px; border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; }
+        /* ১. মোবাইল স্ট্যাটাস বার */
+        .status-bar { height: 25px; padding: 5px 15px; display: flex; justify-content: space-between; font-size: 12px; background: #000; z-index: 1000; position: relative; }
 
-        /* ২. ৫ সেকেন্ডের লোডিং এনিমেশন */
-        #loading-screen { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; animation: fadeOut 0.5s 5s forwards; }
-        .progress-bar { width: 200px; height: 2px; background: #333; margin-top: 20px; overflow: hidden; }
-        .progress-fill { height: 100%; background: #0077ff; animation: fill 5s linear forwards; }
-        @keyframes fill { from { width: 0; } to { width: 100%; } }
-        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+        /* ২. প্রফেশনাল সিস্টেম আপডেট লোডিং (৫ সেকেন্ড) */
+        #update-loader {
+            position: fixed; inset: 0; background: #000; z-index: 2000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            animation: systemExit 0.8s ease-in 5.5s forwards;
+        }
+        .update-text { font-family: monospace; color: var(--blue); margin-bottom: 10px; font-size: 14px; }
+        .bar-bg { width: 250px; height: 3px; background: #222; border-radius: 10px; overflow: hidden; }
+        .bar-fill { width: 0%; height: 100%; background: var(--blue); box-shadow: 0 0 10px var(--blue); animation: systemLoad 5s linear forwards; }
+        
+        @keyframes systemLoad { 0% { width: 0; } 100% { width: 100%; } }
+        @keyframes systemExit { to { opacity: 0; visibility: hidden; } }
 
-        /* ৩. স্কেচ লেআউট */
-        #content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; animation: fadeIn 1s 5s forwards; }
-        .row { display: flex; gap: 10px; margin-bottom: 15px; }
-        .box { width: 80px; height: 50px; border: 2px solid #fff; border-radius: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; transform: skewX(-20deg); font-weight: bold; font-size: 12px; }
-        .bold-text { font-size: 14px; font-weight: 800; }
-        .slim-text { font-size: 10px; font-weight: 300; }
-        .center-hub { width: 100px; height: 100px; border: 3px solid #0077ff; transform: rotate(45deg); display: flex; justify-content: center; align-items: center; margin: 20px 0; }
-        .center-hub span { transform: rotate(-45deg); font-weight: bold; }
-        @keyframes fadeIn { to { opacity: 1; } }
+        /* ৩. মেইন ইন্টারফেস ও আপনার নকশা */
+        #main-ui {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; animation: uiEnter 1s ease-out 6s forwards; position: relative;
+        }
+        @keyframes uiEnter { to { opacity: 1; } }
+
+        /* উপরে দুই কোণায় বাটন */
+        .header-nav { position: absolute; top: 10px; width: 100%; display: flex; justify-content: space-between; padding: 0 25px; box-sizing: border-box; }
+        .btn-top { background: transparent; color: #fff; border: 1.5px solid var(--blue); padding: 6px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; transition: 0.3s; }
+
+        /* জ্যামিতিক প্যাটার্ন */
+        .layout-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .row { display: flex; gap: 15px; justify-content: center; }
+        
+        .box {
+            width: 85px; height: 55px; border: 2px solid #ffffff; border-radius: 6px;
+            background: rgba(255,255,255,0.03); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; transform: skewX(-18deg);
+            transition: 0.4s; cursor: pointer;
+        }
+        .box:hover { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan); }
+        
+        /* মোটা ও চিকন লেখা */
+        .txt-bold { font-size: 16px; font-weight: 800; color: #fff; text-transform: uppercase; }
+        .txt-slim { font-size: 9px; font-weight: 300; color: var(--blue); letter-spacing: 1px; }
+
+        .center-diamond {
+            width: 110px; height: 110px; border: 3px solid var(--blue);
+            transform: rotate(45deg); display: flex; justify-content: center;
+            align-items: center; margin: 25px 0; box-shadow: 0 0 30px rgba(0, 119, 255, 0.4);
+        }
+        .center-diamond span { transform: rotate(-45deg); font-size: 22px; font-weight: 900; color: #fff; }
+
+        /* ৪. নিচের নেভিগেশন বার */
+        .nav-footer { height: 50px; border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; font-size: 20px; color: #555; }
     </style>
 </head>
 <body>
-    <div class="bar"><span>১০:৪২ PM</span><span>📶 🔋 ৯০%</span></div>
 
-    <div id="loading-screen">
-        <div style="color: #0077ff;">SYSTEM INITIALIZING...</div>
-        <div class="progress-bar"><div class="progress-fill"></div></div>
+    <div class="status-bar">
+        <div id="clock">১০:৪২ PM</div>
+        <div>📶 🔋 ৯০%</div>
     </div>
 
-    <div id="content">
-        <div style="position:absolute; top:40px; font-size:10px; color:#0077ff;">CATEGORY: 1-A</div>
-        <div class="row"><div class="box"><span class="bold-text">1-A</span><span class="slim-text">START</span></div><div class="box"><span class="bold-text">2-B</span><span class="slim-text">LOGIN</span></div></div>
-        <div class="center-hub"><span>TDP</span></div>
-        <div class="row"><div class="box"><span class="bold-text">3-C</span><span class="slim-text">DATA</span></div><div class="box"><span class="bold-text">4-D</span><span class="slim-text">OK</span></div><div class="box"><span class="bold-text">5-E</span><span class="slim-text">NO</span></div></div>
+    <div id="update-loader">
+        <div class="update-text" id="loader-msg">সিস্টেম অপ্টিমাইজ হচ্ছে...</div>
+        <div class="bar-bg"><div class="bar-fill"></div></div>
     </div>
 
-    <div class="nav-bar"><div>◄</div><div>●</div><div>■</div></div>
+    <div id="main-ui">
+        <div class="header-nav">
+            <button class="btn-top">লগইন</button>
+            <button class="btn-top">সাইন আপ</button>
+        </div>
+
+        <div class="layout-container">
+            <div class="row">
+                <div class="box"><span class="txt-bold">1-A</span><span class="txt-slim">STARTUP</span></div>
+                <div class="box"><span class="txt-bold">2-B</span><span class="txt-slim">ACCESS</span></div>
+            </div>
+
+            <div class="center-diamond"><span>TDP</span></div>
+
+            <div class="row">
+                <div class="box"><span class="txt-bold">3-C</span><span class="txt-slim">DATABASE</span></div>
+                <div class="box"><span class="txt-bold">4-D</span><span class="txt-slim">VERIFIED</span></div>
+                <div class="box"><span class="txt-bold">5-E</span><span class="txt-slim">SYSTEM</span></div>
+            </div>
+            <div class="row">
+                <div class="box"><span class="txt-bold">6-F</span><span class="txt-slim">GLOBAL</span></div>
+                <div class="box"><span class="txt-bold">7-G</span><span class="txt-slim">FARMER</span></div>
+                <div class="box"><span class="txt-bold">8-H</span><span class="txt-slim">CORE</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <div>◀</div><div>●</div><div>■</div>
+    </div>
+
+    <script>
+        // লোডিং টেক্সট পরিবর্তনের লজিক
+        const msgs = ["Initializing Naeem 18...", "Syncing 10KM Square...", "Optimizing Interface...", "Finalizing Update..."];
+        let i = 0;
+        setInterval(() => {
+            if(i < msgs.length) document.getElementById('loader-msg').innerText = msgs[i++];
+        }, 1200);
+    </script>
 </body>
-</html></body>
 </html>
