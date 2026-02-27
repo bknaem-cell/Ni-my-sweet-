@@ -2,89 +2,100 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ni-my-sweet- Advanced Software</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
+    <title>TDV Advanced System - Naim Ibrahim</title>
     <script src="//unpkg.com/globe.gl"></script>
     <style>
-        body { margin: 0; background: #0b0e14; color: #e0e0e0; font-family: 'Segoe UI', Arial, sans-serif; overflow-x: hidden; }
+        body { margin: 0; background: #05070a; color: #fff; font-family: 'Orbitron', sans-serif; overflow: hidden; height: 100vh; }
         
-        /* প্রিমিয়াম হেডার */
-        #header { padding: 30px 20px; text-align: center; background: linear-gradient(180deg, #161b22 0%, #0b0e14 100%); border-bottom: 1px solid #30363d; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        #header h1 { font-size: 28px; margin: 0; color: #58a6ff; letter-spacing: 1px; }
-        #header p { margin: 5px 0 0; color: #8b949e; font-size: 14px; }
+        /* ল্যান্ডস্কেপ মোড নিশ্চিত করা */
+        @media screen and (orientation: portrait) {
+            #landscape-notice { display: flex; }
+            #main-content { display: none; }
+        }
+        #landscape-notice { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; justify-content: center; align-items: center; text-align: center; padding: 20px; }
 
-        /* কামালের স্মার্ট বক্স */
-        .kamal-container { padding: 20px; }
-        .kamal-box { background: rgba(22, 27, 34, 0.8); border: 1px solid #30363d; padding: 20px; border-radius: 15px; text-align: center; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-        .kamal-box h2 { color: #3fb950; margin: 0 0 10px; font-size: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .kamal-box p { font-size: 15px; line-height: 1.6; color: #c9d1d9; }
+        /* ড্যাশবোর্ড লেআউট */
+        .glass-panel { background: rgba(22, 27, 34, 0.7); border: 1px solid #c9a050; backdrop-filter: blur(10px); border-radius: 10px; box-shadow: 0 0 15px rgba(201, 160, 80, 0.3); }
+        
+        #top-bar { position: absolute; top: 10px; width: 96%; left: 2%; display: flex; justify-content: space-between; z-index: 10; }
+        .token-stat { padding: 5px 15px; border-left: 3px solid #c9a050; }
+        .token-stat h4 { margin: 0; font-size: 12px; color: #c9a050; }
+        .token-stat p { margin: 0; font-size: 18px; font-weight: bold; }
 
-        /* থ্রিডি গ্লোব সেকশন */
-        #globeViz { width: 100%; height: 450px; margin-top: -30px; }
+        #center-ui { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 5; }
+        .pin-box { border: 2px solid #c9a050; padding: 20px 40px; border-radius: 20px; background: radial-gradient(circle, rgba(201,160,80,0.2) 0%, rgba(0,0,0,0.8) 100%); position: relative; }
+        .pin-box h2 { margin: 0 0 10px; color: #c9a050; text-shadow: 0 0 10px #c9a050; letter-spacing: 5px; }
+        .ok-btn { background: #c9a050; color: #000; border: none; padding: 5px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; }
 
-        /* ভয়েস ও কন্ট্রোল প্যানেল */
-        .controls { display: flex; justify-content: center; gap: 20px; margin-top: -50px; position: relative; z-index: 10; padding: 20px; }
-        .voice-btn { background: #238636; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 0 20px rgba(35, 134, 54, 0.4); }
-        .voice-btn:hover { background: #2ea043; transform: scale(1.05); }
+        #globeViz { position: absolute; inset: 0; z-index: 1; opacity: 0.6; }
 
-        /* বটম নেভিগেশন */
-        .nav-menu { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #161b22; padding: 15px 0; border-top: 1px solid #30363d; z-index: 100; }
-        .nav-item { color: #8b949e; text-decoration: none; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 5px; transition: 0.3s; }
-        .nav-item.active { color: #58a6ff; font-weight: bold; }
-        .nav-item:hover { color: white; }
+        #side-panels { position: absolute; bottom: 20px; width: 96%; left: 2%; display: flex; justify-content: space-between; z-index: 10; }
+        .panel-group { display: flex; gap: 10px; }
+        .action-btn { background: rgba(0,0,0,0.6); border: 1px solid #30363d; padding: 10px 20px; border-radius: 5px; font-size: 12px; cursor: pointer; transition: 0.3s; color: #8b949e; }
+        .action-btn:hover { border-color: #c9a050; color: #fff; box-shadow: 0 0 10px rgba(201, 160, 80, 0.5); }
+        
+        .admin-info { text-align: right; }
+        .admin-info h3 { margin: 0; font-size: 16px; color: #58a6ff; }
+        .admin-info p { margin: 0; font-size: 10px; color: #8b949e; }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div id="header">
-    <h1>নাঈম ইব্রাহিম</h1>
-    <p>অ্যাডমিন | আইডি: BD-0001</p>
+<div id="landscape-notice">
+    <h2>অনুগ্রহ করে আপনার মোবাইলটি বাঁকা (Landscape) করুন</h2>
+    <p>সেরা ড্যাশবোর্ড অভিজ্ঞতার জন্য ল্যান্ডস্কেপ মোড প্রয়োজন।</p>
 </div>
 
-<div class="kamal-container">
-    <div class="kamal-box">
-        <h2><span>🤖</span> কামাল (গাইড)</h2>
-        <p id="kamal-msg">আসসালামুয়ালাইকুম নাঈম! আপনার ১০ কিলো স্কয়ার প্রজেক্টের ম্যাপ প্রস্তুত। আপনি ভয়েস কমান্ড দিয়ে ঘর বা দোকান সেট করতে পারেন।</p>
+<div id="main-content">
+    <div id="top-bar">
+        <div class="token-stat glass-panel">
+            <h4>NJ Gold ব্যালেন্স</h4>
+            <p>10,0000 🪙</p>
+        </div>
+        <div class="admin-info">
+            <h3>নাঈম ইব্রাহিম</h3>
+            <p>অ্যাডমিন | আইডি: BD-0001</p>
+        </div>
+    </div>
+
+    <div id="center-ui">
+        <h1 style="color:#ff4500; margin-bottom: 30px; font-size: 40px; text-shadow: 0 0 20px #ff4500;">TDV</h1>
+        <div class="pin-box glass-panel">
+            <p style="font-size: 10px; color: #8b949e;">সেফটি লগিন</p>
+            <h2>PIN 30</h2>
+            <button class="ok-btn">OK</button>
+        </div>
+        <p style="margin-top: 15px; font-size: 12px; color: #3fb950;">সিস্টেম অনলাইন - ১০ কিলো স্কয়ার সক্রিয়</p>
+    </div>
+
+    <div id="globeViz"></div>
+
+    <div id="side-panels">
+        <div class="panel-group">
+            <button class="action-btn">🏗️ বিল্ডার</button>
+            <button class="action-btn">🛒 Lovee Market</button>
+        </div>
+        <div class="panel-group">
+            <button class="action-btn">🚚 কুরিয়ার</button>
+            <button class="action-btn">🛡️ সিকিউরিটি</button>
+        </div>
     </div>
 </div>
 
-<div id="globeViz"></div>
-
-<div class="controls">
-    <button class="voice-btn" onclick="startVoice()">🎙️ ভয়েস কমান্ড দিন</button>
-</div>
-
-<div class="nav-menu">
-    <a href="#" class="nav-item"><span>🏗️</span> বিল্ডার</a>
-    <a href="#" class="nav-item"><span>🛒</span> দোকান</a>
-    <a href="#" class="nav-item"><span>🚚</span> কুরিয়ার</a>
-    <a href="#" class="nav-item active"><span>👤</span> প্রোফাইল</a>
-</div>
-
 <script>
-    // থ্রিডি গ্লোব সেটআপ
     const world = Globe()
       (document.getElementById('globeViz'))
       .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
       .backgroundColor('rgba(0,0,0,0)')
       .showAtmosphere(true)
-      .atmosphereColor('#58a6ff')
-      .atmosphereAltitude(0.12);
+      .atmosphereColor('#c9a050')
+      .atmosphereAltitude(0.1);
 
     world.controls().autoRotate = true;
-    world.controls().autoRotateSpeed = 0.5;
-
-    // ভয়েস কমান্ড সিস্টেম (প্রাথমিক)
-    function startVoice() {
-        const msgBox = document.getElementById('kamal-msg');
-        msgBox.innerText = "আমি শুনছি... বলুন আপনি কী করতে চান?";
-        
-        // এখানে পরবর্তীতে Web Speech API যুক্ত করা হবে
-        setTimeout(() => {
-            msgBox.innerText = "আপনি বললেন 'দোকান দিতে চাই'। আমি দোকানের ডিজাইনগুলো লোড করছি...";
-        }, 3000);
-    }
+    world.controls().autoRotateSpeed = 0.4;
+    world.pointOfView({ lat: 23.5, lng: 90.3, alt: 2.5 });
 </script>
 
 </body>
