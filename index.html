@@ -3,86 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NI My Sweet - Master Project</title>
+    <title>NI My Sweet - Pro System</title>
     <style>
-        :root { --blue: #0077ff; --dark: #000000; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--dark); color: #fff; font-family: sans-serif; overflow: hidden; display: flex; flex-direction: column; }
+        :root { --blue: #0077ff; --dark: #000; --rainbow: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff); }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--dark); color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
 
-        /* লোডিং স্ক্রিন */
-        #loading-page { position: fixed; inset: 0; background: #000; z-index: 5000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .brand { font-size: 40px; font-weight: 900; text-shadow: 0 0 15px var(--blue); margin-bottom: 20px; }
-        .bar-box { width: 280px; height: 16px; background: #111; border-radius: 20px; border: 1.5px solid #333; overflow: hidden; padding: 2px; }
-        #progress-bar { 
-            width: 0%; height: 100%; border-radius: 20px;
-            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
-            background-size: 400% 400%; animation: rainbow 2s linear infinite;
+        /* ১. মোবাইল স্ট্যাটাস বার */
+        .status-bar { height: 25px; padding: 5px 15px; display: flex; justify-content: space-between; font-size: 12px; background: #000; }
+
+        /* ২. প্রিমিয়াম লোডিং স্ক্রিন */
+        #loader {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-        @keyframes rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+        .brand-name { font-size: 45px; font-weight: 900; letter-spacing: 5px; text-shadow: 0 0 20px var(--blue); margin-bottom: 30px; }
+        .bar-outer { width: 280px; height: 16px; background: #111; border-radius: 20px; border: 1.5px solid #333; padding: 2px; overflow: hidden; }
+        .bar-inner { 
+            width: 0%; height: 100%; border-radius: 20px; background: var(--rainbow); background-size: 400% 400%;
+            animation: move-rainbow 2s linear infinite; transition: width 0.1s;
+        }
+        @keyframes move-rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
 
-        /* মূল ইন্টারফেস */
-        #app-content { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; position: relative; }
-        .sketch-box { width: 90px; height: 50px; border: 2px solid #fff; transform: skewX(-15deg); display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.05); margin: 10px; cursor: pointer; transition: 0.2s; }
-        .sketch-box:active { transform: skewX(-15deg) scale(0.9); border-color: var(--blue); }
-        .center-tdp { width: 100px; height: 100px; border: 3px solid var(--blue); transform: rotate(45deg); display: flex; justify-content: center; align-items: center; box-shadow: 0 0 20px var(--blue); margin: 30px 0; }
-        .center-tdp span { transform: rotate(-45deg); font-weight: 900; }
+        /* ৩. মূল সফটওয়্যার ইন্টারফেস (স্কেচ অনুযায়ী) */
+        #app-main { display: none; height: 100%; flex-direction: column; opacity: 0; transition: opacity 1s; }
+        .header { display: flex; justify-content: space-between; padding: 20px; }
+        .btn-ui { background: none; border: 1.5px solid var(--blue); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: 0.3s; }
+        .btn-ui:active { transform: scale(0.9); box-shadow: 0 0 15px var(--blue); }
+
+        .content-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        
+        /* আপনার স্কেচের সেই বিশেষ জ্যামিতিক বক্সগুলো */
+        .sketch-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .box-item { 
+            width: 90px; height: 55px; border: 2px solid #fff; transform: skewX(-15deg);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05); transition: 0.2s;
+        }
+        .box-item:active { border-color: var(--blue); background: rgba(0, 119, 255, 0.2); }
+        .b-id { font-size: 16px; font-weight: 900; }
+        .b-tag { font-size: 8px; color: var(--blue); font-weight: bold; }
+
+        /* মাঝখানের TDP সেন্টার হাব */
+        .center-hub { 
+            width: 100px; height: 100px; border: 3px solid var(--blue); transform: rotate(45deg);
+            display: flex; align-items: center; justify-content: center; margin: 30px 0;
+            box-shadow: 0 0 30px rgba(0, 119, 255, 0.5); 
+        }
+        .center-hub span { transform: rotate(-45deg); font-weight: 900; font-size: 20px; }
+
+        /* ৪. ন্যাভিগেশন বার (নিচে) */
+        .footer-nav { height: 60px; border-top: 1px solid #222; display: flex; justify-content: space-around; align-items: center; font-size: 20px; color: #555; }
     </style>
 </head>
-<body onclick="initApp()">
+<body onclick="initSystem()">
 
-    <div id="loading-page">
-        <div class="brand">NI My Sweet</div>
-        <div class="bar-box"><div id="progress-bar"></div></div>
-        <p style="font-size: 10px; color: #555; margin-top: 15px;">শুরু করতে স্ক্রিনে একবার ক্লিক করুন</p>
+    <div class="status-bar"><div>১০:৪২ PM</div><div>📶 🔋 ৯০%</div></div>
+
+    <div id="loader">
+        <h1 class="brand-name">NI My Sweet</h1>
+        <div class="bar-outer"><div class="bar-inner" id="progress"></div></div>
+        <p style="font-size: 11px; color: #444; margin-top: 15px;">শুরু করতে একবার ক্লিক করুন</p>
     </div>
 
-    <div id="app-content">
-        <div style="display: flex; gap: 20px;">
-            <div class="sketch-box" onclick="vibratePhone()"><b>1-A</b><span style="font-size: 8px;">START</span></div>
-            <div class="sketch-box" onclick="vibratePhone()"><b>2-B</b><span style="font-size: 8px;">ACCESS</span></div>
+    <div id="app-main">
+        <div class="header">
+            <button class="btn-ui" onclick="action('Login')">লগইন</button>
+            <button class="btn-ui" onclick="action('Signup')">সাইন আপ</button>
         </div>
-        <div class="center-tdp"><span>TDP</span></div>
-        <div style="display: flex; gap: 20px;">
-            <div class="sketch-box" onclick="vibratePhone()"><b>3-C</b><span style="font-size: 8px;">DATA</span></div>
-            <div class="sketch-box" onclick="vibratePhone()"><b>4-D</b><span style="font-size: 8px;">OK</span></div>
+
+        <div class="content-area">
+            <div class="sketch-grid">
+                <div class="box-item" onclick="action('1-A')"><span class="b-id">1-A</span><span class="b-tag">START</span></div>
+                <div class="box-item" onclick="action('2-B')"><span class="b-id">2-B</span><span class="b-tag">ACCESS</span></div>
+            </div>
+
+            <div class="center-hub" onclick="action('TDP Core')"><span>TDP</span></div>
+
+            <div class="sketch-grid">
+                <div class="box-item" onclick="action('3-C')"><span class="b-id">3-C</span><span class="b-tag">DATA</span></div>
+                <div class="box-item" onclick="action('4-D')"><span class="b-id">4-D</span><span class="b-tag">OK</span></div>
+            </div>
         </div>
+
+        <div class="footer-nav"><div>◀</div><div>●</div><div>■</div></div>
     </div>
 
     <script>
-        let started = false;
-        function initApp() {
-            if (started) return;
-            started = true;
-            let bar = document.getElementById('progress-bar');
-            let w = 0;
-            let interval = setInterval(() => {
-                if (w >= 100) {
+        let isStarted = false;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function initSystem() {
+            if (isStarted) return;
+            isStarted = true;
+            
+            let width = 0;
+            const bar = document.getElementById('progress');
+            const interval = setInterval(() => {
+                if (width >= 100) {
                     clearInterval(interval);
-                    finishLoading();
+                    launchApp();
                 } else {
-                    w++; bar.style.width = w + '%';
+                    width++; bar.style.width = width + '%';
                 }
             }, 40);
         }
 
-        function finishLoading() {
+        function launchApp() {
+            // সাউন্ড এবং ভাইব্রেশন
+            playSound(600, 0.3);
             if (navigator.vibrate) navigator.vibrate(200);
-            playTone();
+
             setTimeout(() => {
-                document.getElementById('loading-page').style.display = 'none';
-                document.getElementById('app-content').style.display = 'flex';
+                document.getElementById('loader').style.display = 'none';
+                const main = document.getElementById('app-main');
+                main.style.display = 'flex';
+                setTimeout(() => main.style.opacity = '1', 50);
             }, 500);
         }
 
-        function vibratePhone() { if (navigator.vibrate) navigator.vibrate(50); playTone(); }
+        function action(name) {
+            playSound(800, 0.1);
+            if (navigator.vibrate) navigator.vibrate(50);
+            console.log(name + " Activated");
+        }
 
-        function playTone() {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const g = ctx.createGain();
-            osc.connect(g); g.connect(ctx.destination);
-            osc.frequency.setValueAtTime(600, ctx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-            osc.start(); osc.stop(ctx.currentTime + 0.2);
+        function playSound(freq, duration) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.value = freq;
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
         }
     </script>
 </body>
