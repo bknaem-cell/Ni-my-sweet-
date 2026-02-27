@@ -4,86 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TDV Advanced System</title>
+    <script src="//unpkg.com/globe.gl"></script>
     <style>
-        /* আপনার স্কেচ অনুযায়ী ডার্ক গোল্ডেন থিম */
-        body { 
-            margin: 0; 
-            padding: 0; 
-            background: radial-gradient(circle, #1a1a1a 0%, #000 100%); 
-            color: #fff; 
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        /* আপনার স্কেচের সেই PIN বক্স */
-        .main-container {
-            border: 2px solid #c9a050;
-            padding: 40px;
-            border-radius: 30px;
-            background: rgba(0,0,0,0.8);
-            box-shadow: 0 0 30px rgba(201, 160, 80, 0.5);
-            text-align: center;
-            min-width: 300px;
-        }
-
-        .tdv-logo {
-            font-size: 50px;
-            color: #ff4500;
-            font-weight: bold;
-            text-shadow: 0 0 15px #ff4500;
-            margin-bottom: 20px;
-        }
-
-        .pin-display {
-            font-size: 35px;
-            color: #c9a050;
-            border: 1px solid #c9a050;
-            padding: 10px 20px;
-            margin: 20px 0;
-            letter-spacing: 5px;
-        }
-
-        .ok-btn {
-            background: #c9a050;
-            color: #000;
-            border: none;
-            padding: 10px 40px;
-            font-size: 20px;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        /* উপরের স্ট্যাটাস বার */
-        .status-bar {
-            position: absolute;
-            top: 20px;
-            width: 90%;
-            display: flex;
-            justify-content: space-between;
-        }
+        body { margin: 0; background: #0b0e14; color: #e0e0e0; font-family: 'Segoe UI', Arial, sans-serif; overflow: hidden; }
+        #globeViz { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+        
+        /* প্রিমিয়াম লেয়ার */
+        .overlay { position: relative; z-index: 2; padding: 20px; pointer-events: none; }
+        
+        /* আপনার সেই নীল আভার প্যানেল */
+        .panel { background: rgba(11, 14, 20, 0.7); border: 1px solid #30363d; padding: 20px; border-radius: 15px; backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0,0,0,0.5); pointer-events: auto; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; color: #58a6ff; font-size: 24px; }
+        
+        .nav-menu { position: absolute; bottom: 20px; left: 20px; display: flex; gap: 10px; }
+        .btn { padding: 10px 20px; background: #238636; border: none; border-radius: 5px; color: white; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="status-bar">
-        <div style="color: #c9a050;">🪙 NJ Gold: 10,0000</div>
-        <div style="color: #58a6ff;">👤 নাঈম ইব্রাহিম (Admin)</div>
-    </div>
+<div id="globeViz"></div>
 
-    <div class="main-container">
-        <div class="tdv-logo">TDV</div>
-        <p style="color: #8b949e; font-size: 12px;">নিরাপত্তা প্যানেল</p>
-        <div class="pin-display">PIN 30</div>
-        <button class="ok-btn">OK</button>
+<div class="overlay">
+    <div class="panel header">
+        <h1>নাঈম ইব্রাহিম | TDV System</h1>
+        <div>🪙 NJ Gold: 10,0000</div>
     </div>
+</div>
 
-    <p style="position: absolute; bottom: 30px; color: #3fb950;">সিস্টেম অনলাইন - ১০ কিলো স্কয়ার সক্রিয়</p>
+<div class="nav-menu">
+    <button class="btn">🏗️ বিল্ডার</button>
+    <button class="btn">🛒 Lovee Market</button>
+</div>
+
+<script>
+    const world = Globe()
+      (document.getElementById('globeViz'))
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+      .backgroundColor('rgba(0,0,0,0)')
+      .showAtmosphere(true)
+      .atmosphereColor('#58a6ff');
+
+    world.controls().autoRotate = true;
+</script>
 
 </body>
 </html>
