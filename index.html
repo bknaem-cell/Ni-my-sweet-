@@ -7,122 +7,85 @@
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            font-family: 'Arial', sans-serif; overflow: hidden;
-            background-color: #1a1a1a; color: white;
+            background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072') no-repeat center center fixed;
+            background-size: cover; font-family: 'Segoe UI', sans-serif; overflow: hidden; color: white;
         }
 
-        /* ধাপ ১: লোগো স্ক্রিন */
-        #splash-screen {
-            display: flex; flex-direction: column; justify-content: center;
-            align-items: center; height: 100vh; background: #000;
+        /* গ্লাস মরফিজম ও ভাসমান ইফেক্ট */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3); /* নিওন আলোর দাগ */
+            border-radius: 15px;
+            position: absolute;
         }
-        .logo-diamond {
-            width: 150px; height: 150px; background: #3498db;
-            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+
+        /* মেইন কন্টেইনার */
+        .dashboard {
+            width: 100vw; height: 100vh; position: relative;
+        }
+
+        /* আপনার স্কেচের বাটন পজিশন অনুযায়ী (সিরিয়াল ১১, ১২, ১৩, ১৪) */
+        .btn-left-top { top: 5%; left: 2%; width: 120px; height: 60px; } /* বাটন ১১ */
+        .btn-left-mid { top: 20%; left: 2%; width: 120px; height: 60px; } /* বাটন ১৩ */
+        .btn-left-bottom { bottom: 5%; left: 2%; width: 120px; height: 60px; } /* বাটন ১২/১৪ */
+        
+        /* ম্যাপ এরিয়া (ক্যামেরার পাশে গোল ম্যাপ) */
+        .mini-map {
+            top: 2%; left: 40%; width: 90px; height: 90px;
+            border-radius: 50%; border: 2px solid #00f7ff;
             display: flex; justify-content: center; align-items: center;
-            animation: glow 2s infinite alternate;
-        }
-        @keyframes glow { from { transform: scale(1); } to { transform: scale(1.1); } }
-
-        /* ধাপ ২: সাইন আপ স্ক্রিন */
-        #signup-screen {
-            display: none; flex-direction: column; justify-content: center;
-            align-items: center; height: 100vh; background: #2c3e50;
-        }
-        .input-group { margin: 10px; }
-        input { padding: 10px; border-radius: 5px; border: none; }
-
-        /* ধাপ ৩: মেইন ড্যাশবোর্ড (ল্যান্ডস্কেপ) */
-        #main-dashboard {
-            display: none; height: 100vh;
-            grid-template-columns: 150px 1fr 200px;
-            grid-template-rows: 60px 1fr 80px;
-            gap: 10px; padding: 10px; box-sizing: border-box;
+            box-shadow: 0 0 20px #00f7ff;
         }
 
-        .side-panel { grid-row: 1 / 4; display: flex; flex-direction: column; gap: 10px; }
-        .main-view { 
-            grid-column: 2; background: #333; border-radius: 15px; 
-            display: flex; justify-content: center; align-items: center;
-            border: 2px solid #555; position: relative;
-        }
-        .world-map-small {
-            position: absolute; top: 10px; left: 10px;
-            width: 80px; height: 80px; background: #222;
-            border-radius: 50%; border: 1px solid cyan;
-        }
-        .right-panel { display: flex; flex-direction: column; gap: 10px; }
-        .bottom-bar { 
-            grid-column: 2 / 4; background: rgba(0,0,0,0.5); 
-            border-radius: 10px; display: flex; align-items: center; padding: 0 20px;
+        /* প্রোফাইল ও ব্যালেন্স (ডান পাশে) */
+        .profile-area { top: 5%; right: 2%; width: 180px; height: 120px; padding: 10px; }
+        .balance-area { top: 30%; right: 2%; width: 150px; height: 60px; display: flex; align-items: center; justify-content: center; }
+
+        /* ভয়েস কমান্ড এরিয়া (নিচে আপনার লাল দাগ দেওয়া অংশ) */
+        .voice-section {
+            bottom: 5%; left: 30%; width: 40%; height: 70px;
+            display: flex; align-items: center; padding: 0 20px;
+            border: 2px solid #ff0055; /* আপনার লাল দাগের সম্মানার্থে */
         }
 
-        .btn {
-            background: #444; border: 1px solid #777; padding: 10px;
-            text-align: center; border-radius: 8px; cursor: pointer;
-        }
-        .btn:hover { background: #666; }
+        .mic-icon { font-size: 30px; margin-right: 15px; cursor: pointer; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .btn-text { font-size: 14px; font-weight: bold; text-align: center; line-height: 60px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen">
-        <div class="logo-diamond"><h1>TdV</h1></div>
-        <p>The Digital Villa-তে স্বাগতম...</p>
-    </div>
-
-    <div id="signup-screen">
-        <h2>ইউজার রেজিস্ট্রেশন (SUP)</h2>
-        <div class="input-group"><input type="text" id="username" placeholder="আপনার নাম (Naim)"></div>
-        <div class="input-group"><input type="password" id="userpin" placeholder="৪ সংখ্যার পিন সেট করুন"></div>
-        <button class="btn" onclick="goToDashboard()">OK (প্রবেশ করুন)</button>
-    </div>
-
-    <div id="main-dashboard">
-        <div class="side-panel">
-            <div class="btn">মিশন ১</div>
-            <div class="btn">বাজার সদাই</div>
-            <div class="btn">কুরিয়ার</div>
-            <div class="btn">আইডিয়া ভল্ট</div>
-            <div class="btn">হিসাব</div>
+    <div class="dashboard">
+        <div id="logo-layer" style="position:fixed; width:100%; height:100%; background:black; z-index:99; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+             <div style="width:150px; height:150px; background:cyan; clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); display:flex; justify-content:center; align-items:center;">
+                <h2 style="color:black;">TdV</h2>
+             </div>
+             <p>The Digital Villa - নাঈম ইব্রাহিম</p>
+             <button onclick="document.getElementById('logo-layer').style.display='none'" style="margin-top:20px; padding:10px 30px; cursor:pointer;">প্রবেশ করুন (OK)</button>
         </div>
 
-        <div class="main-view">
-            <div class="world-map-small"><center>🌍</center></div>
-            <div style="text-align: center;">
-                <h3>১০ কিলো স্কয়ার ভিউ</h3>
-                <p>১৯:০২:২০২৬</p>
-            </div>
-        </div>
+        <div class="glass-panel btn-left-top btn-text">১১: আমার এলাকা</div>
+        <div class="glass-panel btn-left-mid btn-text">১৩: কুরিয়ার</div>
+        <div class="glass-panel btn-left-bottom btn-text">১২: বাজার</div>
 
-        <div class="right-panel">
-            <div class="btn" style="background: #27ae60;">নাঈম ইব্রাহিম</div>
-            <div class="btn">ব্যালেন্স: ০০ টোকেন</div>
-            <div class="btn">সেটিংস</div>
-        </div>
+        <div class="glass-panel mini-map">🌍</div>
 
-        <div class="bottom-bar">
-            <span style="font-size: 24px; margin-right: 15px;">🎙️</span>
-            <div id="voice-text">ভয়েস কমান্ড: শুনছি নাঈম বাদশা...</div>
+        <div class="glass-panel profile-area">
+            <strong>নাঈম বাদশা</strong><br>
+            <small>ID: TdV-18</small><br>
+            <small>১৯-০২-২০২৬</small>
+        </div>
+        <div class="glass-panel balance-area">০০ টাকা</div>
+
+        <div class="glass-panel voice-section">
+            <span class="mic-icon">🎙️</span>
+            <div id="status">শুনছি নাঈম ইব্রাহিম... (ভয়েস কমান্ড দিন)</div>
         </div>
     </div>
 
-    <script>
-        // অটোমেশন স্ক্রিপ্ট
-        setTimeout(() => {
-            document.getElementById('splash-screen').style.display = 'none';
-            document.getElementById('signup-screen').style.display = 'flex';
-        }, 3000); // ৩ সেকেন্ড পর লোগো চলে যাবে
-
-        function goToDashboard() {
-            const name = document.getElementById('username').value;
-            if(name) {
-                document.getElementById('signup-screen').style.display = 'none';
-                document.getElementById('main-dashboard').style.display = 'grid';
-            } else {
-                alert("অনুগ্রহ করে নাম লিখুন");
-            }
-        }
-    </script>
 </body>
 </html>
