@@ -3,44 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NI MY SWEET - Ultra Slim Edge</title>
+    <title>NI MY SWEET - Global Edition</title>
     <style>
+        /* স্যামসাং স্টাইল পিওর ব্ল্যাক ব্যাকগ্রাউন্ড */
         body, html {
             margin: 0; padding: 0;
             width: 100vw; height: 100vh;
             background-color: #000;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             cursor: pointer;
         }
 
-        /* চুলের মতো অতি সূক্ষ্ম গ্লো বর্ডার */
+        /* অতি সূক্ষ্ম বর্ডার - একদম ডিসপ্লের প্রান্তে */
         .edge-glow {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none; z-index: 9999;
             box-sizing: border-box;
-            /* বর্ডারটি ০.৫ পিক্সেল করা হয়েছে যা একদম চিকন দেখাবে */
-            border: 0.5px solid rgba(0, 255, 255, 0.4); 
-            box-shadow: 0 0 5px rgba(0, 255, 255, 0.2), inset 0 0 5px rgba(0, 255, 255, 0.2);
+            border: 0.1px solid rgba(255, 255, 255, 0.15); /* চুলের মতো চিকন সাদাটে আভা */
+            box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.05);
         }
 
-        /* আপনার সেই সাদা প্রিমিয়াম ব্র্যান্ডিং */
         .main-content { text-align: center; width: 340px; }
+
+        /* স্যামসাং আপডেট স্টাইল - শার্প সাদা টেক্সট */
         .brand {
-            color: #ffffff; font-size: 32px; font-weight: 800; margin-bottom: 25px;
-            letter-spacing: 4px; text-transform: uppercase;
+            color: #ffffff; 
+            font-size: 22px; /* আধুনিক ও মাঝারি সাইজ */
+            font-weight: 300; /* হালকা ও মার্জিত */
+            margin-bottom: 35px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            opacity: 0.95;
         }
 
-        .bar-bg { height: 12px; width: 100%; background: #111; border-radius: 20px; overflow: hidden; border: 0.5px solid #222; }
+        /* প্রগ্রেস বার - আরও চিকন ও আধুনিক */
+        .bar-bg { 
+            height: 3px; /* একদম চিকন আধুনিক বার */
+            width: 100%; 
+            background: #222; 
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+
         .bar-fill {
             height: 100%; width: 0%;
-            background: linear-gradient(90deg, #ff0000, #ffbb00, #44ff00, #00ffff, #0044ff);
-            background-size: 300% 100%; animation: load 3s forwards linear;
+            background: #ffffff; /* পিওর হোয়াইট প্রগ্রেস */
+            animation: load 3s forwards cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes load { to { width: 100%; } }
-        .next-btn { color: #fff; margin-top: 15px; font-size: 11px; letter-spacing: 8px; opacity: 0.5; }
+
+        .next-btn { 
+            color: #888; 
+            margin-top: 20px; 
+            font-size: 10px; 
+            letter-spacing: 10px; 
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body onclick="launchGameMode()">
@@ -49,8 +70,10 @@
 
     <div class="main-content">
         <div class="brand">NI MY SWEET</div>
-        <div class="bar-bg"><div class="bar-fill"></div></div>
-        <div class="next-btn">NEXT</div>
+        <div class="bar-bg">
+            <div class="bar-fill"></div>
+        </div>
+        <div class="next-btn">System Processing</div>
     </div>
 
     <script>
@@ -62,10 +85,6 @@
                 try { await screen.orientation.lock('landscape'); } catch (e) {}
             }
         }
-
-        setTimeout(() => {
-            if(navigator.vibrate) navigator.vibrate([80, 40, 80]);
-        }, 3000);
     </script>
 </body>
 </html>
