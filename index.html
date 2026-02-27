@@ -2,109 +2,48 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TDP System - Naeem Ibrahim</title>
     <style>
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000000; font-family: 'Segoe UI', sans-serif;
-            overflow: hidden; color: #ffffff;
-        }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
 
-        /* ১. স্প্ল্যাশ স্ক্রিন (TDP লোগো এনিমেশন) */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            z-index: 999; animation: fadeOutMain 1s ease-in 3.5s forwards;
-        }
-        .logo-container {
-            position: relative; display: flex; justify-content: center; align-items: center;
-            animation: logoIntro 4s ease-in-out forwards;
-        }
-        .ring {
-            width: 150px; height: 150px; border: 4px solid #0077ff;
-            border-radius: 50%; box-shadow: 0 0 20px #0077ff; position: absolute;
-        }
-        .tdp-text { font-size: 48px; font-weight: bold; letter-spacing: 5px; }
+        /* ১. স্ট্যাটাস ও নেভিগেশন বার */
+        .bar { background: rgba(0,0,0,0.9); padding: 5px 15px; font-size: 11px; display: flex; justify-content: space-between; }
+        .nav-bar { height: 45px; border-top: 1px solid #333; display: flex; justify-content: space-around; align-items: center; }
 
-        @keyframes logoIntro {
-            0% { opacity: 0; transform: scale(0.5); }
-            30% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(10); }
-        }
-        @keyframes fadeOutMain { to { visibility: hidden; opacity: 0; } }
+        /* ২. ৫ সেকেন্ডের লোডিং এনিমেশন */
+        #loading-screen { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; animation: fadeOut 0.5s 5s forwards; }
+        .progress-bar { width: 200px; height: 2px; background: #333; margin-top: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #0077ff; animation: fill 5s linear forwards; }
+        @keyframes fill { from { width: 0; } to { width: 100%; } }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-        /* ২. উপরে দুই কোণায় বাটন */
-        #top-nav {
-            position: absolute; top: 20px; left: 0; right: 0;
-            display: flex; justify-content: space-between; padding: 0 30px;
-            opacity: 0; z-index: 100; animation: fadeIn 1s ease-out 4.5s forwards;
-        }
-        .auth-btn {
-            background: transparent; color: white; border: 2px solid #0077ff;
-            padding: 8px 25px; border-radius: 30px; font-size: 14px;
-            cursor: pointer; animation: breathing 3s infinite ease-in-out;
-        }
-
-        /* ৩. ছবির স্কেচ অনুযায়ী জ্যামিতিক ডিজাইন (ডিসপ্লে মাঝ বরাবর) */
-        #sketch-design {
-            position: absolute; top: 55%; left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex; flex-direction: column; align-items: center;
-            opacity: 0; animation: fadeIn 1s ease-out 5s forwards;
-        }
-
-        /* সাদা রাউন্ড বর্ডার ঘরগুলো */
-        .box-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
-        
-        .box {
-            width: 60px; height: 60px;
-            border: 2px solid #ffffff; /* আপনার বর্ণনা অনুযায়ী সাদা রাউন্ড বর্ডার */
-            border-radius: 10px; /* হালকা রাউন্ডেড */
-            display: flex; justify-content: center; align-items: center;
-            background: rgba(255, 255, 255, 0.05);
-            transform: skewX(-15deg); /* ছবির মতো চ্যাপ্টা/বাঁকানো লুক দিতে */
-            transition: 0.3s;
-        }
-
-        .box:hover { border-color: #00fbff; box-shadow: 0 0 15px #00fbff; }
-
-        .tdp-center {
-            width: 100px; height: 100px; border: 3px solid #0077ff;
-            transform: rotate(45deg); display: flex; justify-content: center;
-            align-items: center; margin: 20px 0; box-shadow: 0 0 20px #0077ff;
-        }
-
-        .tdp-center span { transform: rotate(-45deg); font-weight: bold; font-size: 20px; }
-
+        /* ৩. স্কেচ লেআউট */
+        #content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; animation: fadeIn 1s 5s forwards; }
+        .row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .box { width: 80px; height: 50px; border: 2px solid #fff; border-radius: 5px; display: flex; flex-direction: column; justify-content: center; align-items: center; transform: skewX(-20deg); font-weight: bold; font-size: 12px; }
+        .bold-text { font-size: 14px; font-weight: 800; }
+        .slim-text { font-size: 10px; font-weight: 300; }
+        .center-hub { width: 100px; height: 100px; border: 3px solid #0077ff; transform: rotate(45deg); display: flex; justify-content: center; align-items: center; margin: 20px 0; }
+        .center-hub span { transform: rotate(-45deg); font-weight: bold; }
         @keyframes fadeIn { to { opacity: 1; } }
-        @keyframes breathing {
-            0%, 100% { border-color: #0077ff; box-shadow: 0 0 5px #0077ff; }
-            50% { border-color: #00fbff; box-shadow: 0 0 15px #00fbff; }
-        }
     </style>
 </head>
 <body>
+    <div class="bar"><span>১০:৪২ PM</span><span>📶 🔋 ৯০%</span></div>
 
-    <div id="splash-screen">
-        <div class="logo-container"><div class="ring"></div><div class="tdp-text">TDP</div></div>
+    <div id="loading-screen">
+        <div style="color: #0077ff;">SYSTEM INITIALIZING...</div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
     </div>
 
-    <div id="top-nav">
-        <button class="auth-btn">লগইন</button>
-        <button class="auth-btn">সাইন আপ</button>
+    <div id="content">
+        <div style="position:absolute; top:40px; font-size:10px; color:#0077ff;">CATEGORY: 1-A</div>
+        <div class="row"><div class="box"><span class="bold-text">1-A</span><span class="slim-text">START</span></div><div class="box"><span class="bold-text">2-B</span><span class="slim-text">LOGIN</span></div></div>
+        <div class="center-hub"><span>TDP</span></div>
+        <div class="row"><div class="box"><span class="bold-text">3-C</span><span class="slim-text">DATA</span></div><div class="box"><span class="bold-text">4-D</span><span class="slim-text">OK</span></div><div class="box"><span class="bold-text">5-E</span><span class="slim-text">NO</span></div></div>
     </div>
 
-    <div id="sketch-design">
-        <div class="box-row">
-            <div class="box">A</div><div class="box">B</div>
-        </div>
-        <div class="tdp-center"><span>TDP</span></div>
-        <div class="box-row">
-            <div class="box">C</div><div class="box">D</div><div class="box">E</div>
-        </div>
-        <div style="margin-top: 20px; color: #00fbff; font-size: 12px; letter-spacing: 2px;">নাঈম ১৮ ব্লুপ্রিন্ট</div>
-    </div>
-
+    <div class="nav-bar"><div>◄</div><div>●</div><div>■</div></div>
 </body>
+</html></body>
 </html>
