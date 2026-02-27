@@ -1,1 +1,65 @@
-<div id="globeViz" style="width: 300px; height: 300px; border-radius: 50%; overflow: hidden; margin: 20px auto;"></div>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ni-my-sweet- Software</title>
+    <script src="//unpkg.com/globe.gl"></script>
+    <style>
+        body { margin: 0; background-color: #000; color: white; font-family: Arial, sans-serif; overflow-x: hidden; }
+        #header { padding: 20px; text-align: center; background: #1a1a1a; border-bottom: 2px solid #333; }
+        #globeViz { width: 100%; height: 400px; margin: 20px 0; }
+        .kamal-box { background: #222; border: 1px solid #444; padding: 15px; margin: 20px; border-radius: 10px; text-align: center; }
+        .kamal-box h2 { color: #4CAF50; margin-top: 0; }
+        .nav-menu { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #111; padding: 15px 0; border-top: 1px solid #333; }
+        .nav-item { color: #888; text-decoration: none; font-size: 14px; }
+        .nav-item.active { color: white; }
+    </style>
+</head>
+<body>
+
+<div id="header">
+    <h1 style="margin:0;">নাঈম ইব্রাহিম</h1>
+    <p style="color: #888; font-size: 12px;">র‍্যাঙ্ক: অ্যাডমিন | আইডি: BD-0001</p>
+</div>
+
+<div class="kamal-box">
+    <h2>কামাল (গাইড)</h2>
+    <p id="kamal-msg">আসসালামুয়ালাইকুম নাঈম! আমি কামাল। আজ আমরা আমাদের ভার্চুয়াল জগতের ঘরবাড়ি ডিজাইন করা শিখব। নিচে ম্যাপটি দেখুন!</p>
+</div>
+
+<div id="globeViz"></div>
+
+<div style="padding: 20px; text-align: center; margin-bottom: 80px;">
+    <h3>ভার্চুয়াল ডিজাইন টুলস</h3>
+    <p>এখানে ইউজাররা তাদের টোকেন দিয়ে বাড়ির ডিজাইন কিনতে পারবে এবং খরচের হিসাব দেখতে পাবে।</p>
+    <button style="padding: 10px 20px; background: #4CAF50; border: none; border-radius: 5px; color: white;">নতুন ডিজাইন শুরু করুন</button>
+</div>
+
+<div class="nav-menu">
+    <a href="#" class="nav-item">বিল্ডার</a>
+    <a href="#" class="nav-item">দোকান</a>
+    <a href="#" class="nav-item">কুরিয়ার</a>
+    <a href="#" class="nav-item active">প্রোফাইল</a>
+</div>
+
+<script>
+    const world = Globe()
+      (document.getElementById('globeViz'))
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+      .backgroundColor('rgba(0,0,0,0)')
+      .showAtmosphere(true)
+      .atmosphereColor('lightskyblue')
+      .atmosphereAltitude(0.15);
+
+    world.controls().autoRotate = true;
+    world.controls().autoRotateSpeed = 0.6;
+
+    // কামালের মেসেজ পরিবর্তন করা (ডেমো)
+    setTimeout(() => {
+        document.getElementById('kamal-msg').innerText = "আপনার ম্যাপটি লোড হয়েছে। এখন আপনি আপনার ১০ কিলো স্কয়ার প্রজেক্টের কাজ শুরু করতে পারেন!";
+    }, 5000);
+</script>
+
+</body>
+</html>
