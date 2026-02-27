@@ -11,56 +11,62 @@
             background-color: #000;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
-            /* স্যামসাং স্টাইল ক্লিন ফন্ট */
-            font-family: 'SamsungOne', 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             cursor: pointer;
         }
 
+        /* প্রিমিয়াম সায়ান বর্ডার */
         .edge-border {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none; z-index: 9999;
             box-sizing: border-box;
-            border: 0.8px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.5s ease;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            transition: all 1s ease-in-out;
         }
 
-        .task-complete-glow {
-            border: 1.5px solid rgba(0, 255, 255, 0.7) !important;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+        .main-content { 
+            text-align: center; 
+            width: 100%; 
+            max-width: 500px; /* ল্যান্ডস্কেপে লেখা ছড়িয়ে পড়া রোধ করবে */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .main-content { text-align: center; width: 85%; }
-
-        /* টেক্সট স্পেসিং স্যামসাং স্টাইলে ফিক্স করা */
+        /* স্যামসাং স্টাইল বোল্ড টেক্সট - অতিরিক্ত ফাঁকা কমানো হয়েছে */
         .brand {
             color: #ffffff; 
-            font-size: 30px; 
-            font-weight: 800; 
+            font-size: clamp(24px, 5vw, 40px); /* স্ক্রিন অনুযায়ী অটো সাইজ হবে */
+            font-weight: 900; 
             margin-bottom: 20px;
-            letter-spacing: 3px; /* অতিরিক্ত ফাঁকা কমানো হয়েছে */
+            letter-spacing: 2px;
             text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
 
+        /* মোটা লোডিং বক্স - আপনার ছবি অনুযায়ী মাঝখানে ফিক্স করা */
         .bar-container { 
-            position: relative; height: 18px; width: 80%; 
-            margin: 0 auto; background: rgba(255, 255, 255, 0.05); 
-            border-radius: 10px; overflow: hidden;
+            position: relative;
+            height: 24px; 
+            width: 80%; 
+            background: rgba(255, 255, 255, 0.05); 
+            border-radius: 12px; 
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .bar-fill { height: 100%; width: 0%; background: #ffffff; }
+        .bar-fill { height: 100%; width: 0%; background: #ffffff; box-shadow: 0 0 10px #fff; }
 
         .percent-text {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             color: #ffffff; mix-blend-mode: difference;
-            font-size: 10px; font-weight: bold;
+            font-size: 12px; font-weight: 900;
         }
     </style>
 </head>
-<body onclick="activateLandscape()">
-
+<body onclick="launchSystem()">
     <div id="glow-border" class="edge-border"></div>
-
     <div class="main-content">
         <div class="brand">NI MY SWEET</div>
         <div class="bar-container">
@@ -70,25 +76,17 @@
     </div>
 
     <script>
-        async function activateLandscape() {
+        async function launchSystem() {
             let el = document.documentElement;
-            // ফুলস্ক্রিন ও ল্যান্ডস্কেপ ফিক্স
-            if (el.requestFullscreen) {
-                await el.requestFullscreen();
-            }
+            if (el.requestFullscreen) await el.requestFullscreen();
             if (screen.orientation && screen.orientation.lock) {
-                try {
-                    await screen.orientation.lock('landscape');
-                } catch (e) {
-                    console.log("Orientation lock failed");
-                }
+                await screen.orientation.lock('landscape').catch(e => {});
             }
         }
 
         let progress = 0;
         const pBar = document.getElementById('p-bar');
         const pVal = document.getElementById('p-val');
-        const border = document.getElementById('glow-border');
 
         const loading = setInterval(() => {
             progress += 1;
@@ -96,9 +94,10 @@
             pVal.innerText = progress + "%";
             if (progress >= 100) {
                 clearInterval(loading);
-                border.classList.add('task-complete-glow');
+                document.getElementById('glow-border').style.borderColor = "rgba(0, 255, 255, 0.8)";
+                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
             }
-        }, 40);
+        }, 30);
     </script>
 </body>
 </html>
