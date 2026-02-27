@@ -3,96 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TDV Space System - Naim</title>
-    <script src="//unpkg.com/globe.gl"></script>
+    <title>TDV Advanced System - Naim</title>
+    <script src="https://unpkg.com/globe.gl"></script>
     <style>
-        body { margin: 0; background: #000; overflow: hidden; font-family: 'Courier New', monospace; }
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #00ff41; }
         
-        /* মহাকাশে ভাসমান ইন্টারফেসের স্টাইল */
-        #ui-overlay {
-            position: absolute; inset: 0; z-index: 10;
-            display: flex; flex-direction: column; justify-content: space-between;
-            padding: 20px; pointer-events: none;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0,20,0,0.4) 100%);
-        }
-
-        .neo-panel {
-            background: rgba(0, 30, 0, 0.6); border: 1px solid #00ff41;
-            border-radius: 12px; padding: 15px; backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3); pointer-events: auto;
-        }
-
-        /* আপনার স্কেচ ৪৩১৪ ও ৪৩১২ অনুযায়ী PIN কন্ট্রোল */
-        .center-hub {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center; pointer-events: auto;
-        }
-        .space-scanner {
-            width: 180px; height: 180px; border: 2px solid #00ff41; border-radius: 50%;
+        /* লোডিং লোগো এনিমেশন */
+        #loader {
+            position: fixed; inset: 0; background: #000; z-index: 100;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: rgba(0, 255, 65, 0.1); box-shadow: 0 0 30px #00ff41;
-            animation: pulse 3s infinite;
         }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 0.8; } }
-
-        .btn-group { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
-        .space-btn {
-            background: rgba(0, 255, 65, 0.1); border: 1px solid #00ff41; color: #00ff41;
-            padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;
-            text-transform: uppercase; pointer-events: auto; transition: 0.3s;
+        .logo-box { font-size: 50px; font-weight: bold; border: 3px solid #00ff41; padding: 20px; box-shadow: 0 0 30px #00ff41; animation: pulse 2s infinite; }
+        
+        /* আপনার স্কেচ অনুযায়ী সোজা ও উন্নত ইন্টারফেস */
+        #main-ui { position: absolute; inset: 0; z-index: 10; display: none; flex-direction: column; padding: 20px; pointer-events: none; }
+        
+        .top-panel { 
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(0, 40, 0, 0.8); border: 1px solid #00ff41;
+            padding: 15px; border-radius: 10px; box-shadow: 0 0 15px #00ff41; pointer-events: auto;
         }
-        .space-btn:hover { background: #00ff41; color: #000; box-shadow: 0 0 15px #00ff41; }
 
-        #globeViz { position: absolute; inset: 0; z-index: 1; }
-    </style>
-</head>
-<body>
-
-<div id="globeViz"></div>
-
-<div id="ui-overlay">
-    <div class="neo-panel" style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-            <h2 style="margin:0; color: #00ff41;">নাঈম ইব্রাহিম | TDV</h2>
-            <small style="color: #00ff41; opacity: 0.7;">STATUS: SPACE MODE ENABLED</small>
-        </div>
-        <div style="text-align: right;">
-            <div style="color: #ccff00; font-size: 1.2em; font-weight: bold;">🪙 10,0000 NJ Gold</div>
-        </div>
-    </div>
-
-    <div class="center-hub">
-        <h1 style="color: #00ff41; margin-bottom: 15px; text-shadow: 0 0 15px #00ff41;">TDV SYSTEM</h1>
-        <div class="space-scanner">
-            <span style="font-size: 10px; color: #00ff41;">SECURE ACCESS</span>
-            <div style="font-size: 28px; font-weight: bold; color: #00ff41; margin: 5px 0;">PIN 30</div>
-            <button class="space-btn" style="padding: 5px 12px; font-size: 10px;">UNLOCK</button>
-        </div>
-    </div>
-
-    <div class="btn-group">
-        <button class="space-btn">🏗️ বিল্ডার</button>
-        <button class="space-btn">🛒 Lovee Market</button>
-        <button class="space-btn">🚀 কুরিয়ার</button>
-    </div>
-</div>
-
-<script>
-    // পৃথিবী এবং মহাকাশের দৃশ্য তৈরি
-    const world = Globe()
-      (document.getElementById('globeViz'))
-      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg') // রাতের পৃথিবীর দৃশ্য
-      .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-stars.png') // মহাকাশের তারা
-      .backgroundColor('rgba(0,0,0,0)')
-      .showAtmosphere(true)
-      .atmosphereColor('#00ff41')
-      .atmosphereAltitude(0.2);
-
-    world.controls().autoRotate = true;
-    world.controls().autoRotateSpeed = 0.4;
-    world.pointOfView({ lat: 23.5, lng: 90.3, alt: 2.5 }); // বাংলাদেশের উপরে ফোকাস
-</script>
-
-</body>
-</html>
+        /* স্কেচ ৪৩১৪ ও ৪৩১২ এর সোজা রূপ */
+        .center-dashboard {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 400px; text-align: center; pointer-events: auto;
+        }
+        .monitor-frame {
+            border: 2px
