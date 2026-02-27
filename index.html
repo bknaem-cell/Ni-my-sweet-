@@ -2,101 +2,88 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
-    <title>TDV Advanced System - Naim Ibrahim</title>
-    <script src="//unpkg.com/globe.gl"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TDV Advanced System</title>
     <style>
-        body { margin: 0; background: #05070a; color: #fff; font-family: 'Orbitron', sans-serif; overflow: hidden; height: 100vh; }
-        
-        /* ল্যান্ডস্কেপ মোড নিশ্চিত করা */
-        @media screen and (orientation: portrait) {
-            #landscape-notice { display: flex; }
-            #main-content { display: none; }
+        /* আপনার স্কেচ অনুযায়ী ডার্ক গোল্ডেন থিম */
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%); 
+            color: #fff; 
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
-        #landscape-notice { display: none; position: fixed; inset: 0; background: #000; z-index: 1000; justify-content: center; align-items: center; text-align: center; padding: 20px; }
 
-        /* ড্যাশবোর্ড লেআউট */
-        .glass-panel { background: rgba(22, 27, 34, 0.7); border: 1px solid #c9a050; backdrop-filter: blur(10px); border-radius: 10px; box-shadow: 0 0 15px rgba(201, 160, 80, 0.3); }
-        
-        #top-bar { position: absolute; top: 10px; width: 96%; left: 2%; display: flex; justify-content: space-between; z-index: 10; }
-        .token-stat { padding: 5px 15px; border-left: 3px solid #c9a050; }
-        .token-stat h4 { margin: 0; font-size: 12px; color: #c9a050; }
-        .token-stat p { margin: 0; font-size: 18px; font-weight: bold; }
+        /* আপনার স্কেচের সেই PIN বক্স */
+        .main-container {
+            border: 2px solid #c9a050;
+            padding: 40px;
+            border-radius: 30px;
+            background: rgba(0,0,0,0.8);
+            box-shadow: 0 0 30px rgba(201, 160, 80, 0.5);
+            text-align: center;
+            min-width: 300px;
+        }
 
-        #center-ui { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 5; }
-        .pin-box { border: 2px solid #c9a050; padding: 20px 40px; border-radius: 20px; background: radial-gradient(circle, rgba(201,160,80,0.2) 0%, rgba(0,0,0,0.8) 100%); position: relative; }
-        .pin-box h2 { margin: 0 0 10px; color: #c9a050; text-shadow: 0 0 10px #c9a050; letter-spacing: 5px; }
-        .ok-btn { background: #c9a050; color: #000; border: none; padding: 5px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .tdv-logo {
+            font-size: 50px;
+            color: #ff4500;
+            font-weight: bold;
+            text-shadow: 0 0 15px #ff4500;
+            margin-bottom: 20px;
+        }
 
-        #globeViz { position: absolute; inset: 0; z-index: 1; opacity: 0.6; }
+        .pin-display {
+            font-size: 35px;
+            color: #c9a050;
+            border: 1px solid #c9a050;
+            padding: 10px 20px;
+            margin: 20px 0;
+            letter-spacing: 5px;
+        }
 
-        #side-panels { position: absolute; bottom: 20px; width: 96%; left: 2%; display: flex; justify-content: space-between; z-index: 10; }
-        .panel-group { display: flex; gap: 10px; }
-        .action-btn { background: rgba(0,0,0,0.6); border: 1px solid #30363d; padding: 10px 20px; border-radius: 5px; font-size: 12px; cursor: pointer; transition: 0.3s; color: #8b949e; }
-        .action-btn:hover { border-color: #c9a050; color: #fff; box-shadow: 0 0 10px rgba(201, 160, 80, 0.5); }
-        
-        .admin-info { text-align: right; }
-        .admin-info h3 { margin: 0; font-size: 16px; color: #58a6ff; }
-        .admin-info p { margin: 0; font-size: 10px; color: #8b949e; }
+        .ok-btn {
+            background: #c9a050;
+            color: #000;
+            border: none;
+            padding: 10px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* উপরের স্ট্যাটাস বার */
+        .status-bar {
+            position: absolute;
+            top: 20px;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div id="landscape-notice">
-    <h2>অনুগ্রহ করে আপনার মোবাইলটি বাঁকা (Landscape) করুন</h2>
-    <p>সেরা ড্যাশবোর্ড অভিজ্ঞতার জন্য ল্যান্ডস্কেপ মোড প্রয়োজন।</p>
-</div>
-
-<div id="main-content">
-    <div id="top-bar">
-        <div class="token-stat glass-panel">
-            <h4>NJ Gold ব্যালেন্স</h4>
-            <p>10,0000 🪙</p>
-        </div>
-        <div class="admin-info">
-            <h3>নাঈম ইব্রাহিম</h3>
-            <p>অ্যাডমিন | আইডি: BD-0001</p>
-        </div>
+    <div class="status-bar">
+        <div style="color: #c9a050;">🪙 NJ Gold: 10,0000</div>
+        <div style="color: #58a6ff;">👤 নাঈম ইব্রাহিম (Admin)</div>
     </div>
 
-    <div id="center-ui">
-        <h1 style="color:#ff4500; margin-bottom: 30px; font-size: 40px; text-shadow: 0 0 20px #ff4500;">TDV</h1>
-        <div class="pin-box glass-panel">
-            <p style="font-size: 10px; color: #8b949e;">সেফটি লগিন</p>
-            <h2>PIN 30</h2>
-            <button class="ok-btn">OK</button>
-        </div>
-        <p style="margin-top: 15px; font-size: 12px; color: #3fb950;">সিস্টেম অনলাইন - ১০ কিলো স্কয়ার সক্রিয়</p>
+    <div class="main-container">
+        <div class="tdv-logo">TDV</div>
+        <p style="color: #8b949e; font-size: 12px;">নিরাপত্তা প্যানেল</p>
+        <div class="pin-display">PIN 30</div>
+        <button class="ok-btn">OK</button>
     </div>
 
-    <div id="globeViz"></div>
-
-    <div id="side-panels">
-        <div class="panel-group">
-            <button class="action-btn">🏗️ বিল্ডার</button>
-            <button class="action-btn">🛒 Lovee Market</button>
-        </div>
-        <div class="panel-group">
-            <button class="action-btn">🚚 কুরিয়ার</button>
-            <button class="action-btn">🛡️ সিকিউরিটি</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    const world = Globe()
-      (document.getElementById('globeViz'))
-      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-      .backgroundColor('rgba(0,0,0,0)')
-      .showAtmosphere(true)
-      .atmosphereColor('#c9a050')
-      .atmosphereAltitude(0.1);
-
-    world.controls().autoRotate = true;
-    world.controls().autoRotateSpeed = 0.4;
-    world.pointOfView({ lat: 23.5, lng: 90.3, alt: 2.5 });
-</script>
+    <p style="position: absolute; bottom: 30px; color: #3fb950;">সিস্টেম অনলাইন - ১০ কিলো স্কয়ার সক্রিয়</p>
 
 </body>
 </html>
