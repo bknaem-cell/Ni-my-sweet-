@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>প্রিমিয়াম লোডিং - নাঈম ইব্রাহিম</title>
+    <title>প্রিমিয়াম সিস্টেম আপডেট - নাঈম ইব্রাহিম</title>
     <style>
-        /* পুরো স্ক্রিন ডার্ক এবং মাঝখানে লোডার */
         body {
             margin: 0;
             padding: 0;
@@ -13,62 +12,98 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #0d1117; /* GitHub ডার্ক থিম */
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-        }
-
-        /* প্রিমিয়াম রিঙ অ্যানিমেশন */
-        .loader {
-            position: relative;
-            width: 100px;
-            height: 100px;
-        }
-
-        .loader div {
-            box-sizing: border-box;
-            display: block;
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            margin: 8px;
-            border: 8px solid #58a6ff;
-            border-radius: 50%;
-            animation: loader-spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-            border-color: #58a6ff transparent transparent transparent;
-        }
-
-        .loader div:nth-child(1) { animation-delay: -0.45s; }
-        .loader div:nth-child(2) { animation-delay: -0.3s; }
-        .loader div:nth-child(3) { animation-delay: -0.15s; }
-
-        @keyframes loader-spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* লোডিং টেক্সট */
-        .loading-text {
-            position: absolute;
-            bottom: -40px;
-            width: 100%;
-            text-align: center;
+            background-color: #0d1117;
             color: #c9d1d9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* আপডেটের নাম */
+        .update-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #58a6ff;
+        }
+
+        /* লোডিং বক্স/বার */
+        .progress-box {
+            width: 100%;
+            background-color: #21262d;
+            border-radius: 10px;
+            height: 12px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #30363d;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #1f6feb, #58a6ff);
+            box-shadow: 0 0 10px #58a6ff;
+            animation: fillProgress 5s linear forwards;
+        }
+
+        /* পার্সেন্টেজ টেক্সট */
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
             font-size: 14px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        }
+
+        /* বক্সের নিচের ছোট লেখা */
+        .small-footer-text {
+            margin-top: 25px;
+            font-size: 11px;
+            color: #8b949e;
+            font-style: italic;
+        }
+
+        @keyframes fillProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <div class="loader">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div class="loading-text">Loading...</div>
+    <div class="container">
+        <div class="update-title">সিস্টেম প্রিমিয়াম কনফিগারেশন আপডেট</div>
+
+        <div class="progress-box">
+            <div class="progress-fill" id="fill"></div>
+        </div>
+
+        <div class="status-row">
+            <span id="loading-status">লোডিং হচ্ছে...</span>
+            <span id="percentage">০%</span>
+        </div>
+
+        <div class="small-footer-text">
+            প্যাকেজ ভেরিফাই করা হচ্ছে। দয়া করে অপেক্ষা করুন, এটি আপনার সিস্টেমকে আরও উন্নত করবে।
+        </div>
     </div>
+
+    <script>
+        // পার্সেন্টেজ সংখ্যা বাড়ানোর জন্য ছোট স্ক্রিপ্ট
+        let percentElem = document.getElementById('percentage');
+        let count = 0;
+        let interval = setInterval(() => {
+            count++;
+            percentElem.innerText = count + '%';
+            if (count >= 100) {
+                clearInterval(interval);
+                document.getElementById('loading-status').innerText = 'আপডেট সম্পূর্ণ!';
+            }
+        }, 50); // ৫ সেকেন্ডে ১০০% হবে
+    </script>
 
 </body>
 </html>
