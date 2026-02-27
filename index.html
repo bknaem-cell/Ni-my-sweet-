@@ -3,88 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NI MY SWEET - Global Edition</title>
+    <title>NI MY SWEET - Python System</title>
     <style>
-        /* স্যামসাং স্টাইল পিওর ব্ল্যাক ব্যাকগ্রাউন্ড */
         body, html {
             margin: 0; padding: 0;
             width: 100vw; height: 100vh;
             background-color: #000;
             overflow: hidden;
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             cursor: pointer;
         }
 
-        /* অতি সূক্ষ্ম বর্ডার - একদম ডিসপ্লের প্রান্তে */
-        .edge-glow {
+        /* চুলের মতো সূক্ষ্ম বর্ডার */
+        .edge-border {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             pointer-events: none; z-index: 9999;
             box-sizing: border-box;
-            border: 0.1px solid rgba(255, 255, 255, 0.15); /* চুলের মতো চিকন সাদাটে আভা */
-            box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.05);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            transition: all 1s ease-in-out;
         }
 
-        .main-content { text-align: center; width: 340px; }
+        /* কাজ শেষ হলে জাদুকরী সায়ান গ্লো */
+        .task-complete-glow {
+            border: 1.5px solid rgba(0, 255, 255, 0.8) !important;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.5), inset 0 0 15px rgba(0, 255, 255, 0.2);
+        }
 
-        /* স্যামসাং আপডেট স্টাইল - শার্প সাদা টেক্সট */
+        .main-content { text-align: center; width: 450px; z-index: 10; }
+
+        /* নাঈম ইব্রাহিমের নির্দেশমতো Extra Bold টেক্সট */
         .brand {
             color: #ffffff; 
-            font-size: 22px; /* আধুনিক ও মাঝারি সাইজ */
-            font-weight: 300; /* হালকা ও মার্জিত */
-            margin-bottom: 35px;
-            letter-spacing: 5px;
+            font-size: 40px; 
+            font-weight: 900; 
+            margin-bottom: 20px;
+            letter-spacing: 8px;
             text-transform: uppercase;
-            opacity: 0.95;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
-        /* প্রগ্রেস বার - আরও চিকন ও আধুনিক */
-        .bar-bg { 
-            height: 3px; /* একদম চিকন আধুনিক বার */
-            width: 100%; 
-            background: #222; 
-            border-radius: 10px; 
-            overflow: hidden; 
+        /* লোডিং টেক্সট ও ডট ডট এনিমেশন */
+        .loading-msg {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            height: 15px;
+            text-transform: uppercase;
+        }
+
+        /* মোটা লোডিং বক্স */
+        .bar-container { 
+            position: relative;
+            height: 26px; 
+            width: 80%; 
+            margin: 0 auto; 
+            background: rgba(255, 255, 255, 0.05); 
+            border-radius: 15px; 
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .bar-fill {
-            height: 100%; width: 0%;
-            background: #ffffff; /* পিওর হোয়াইট প্রগ্রেস */
-            animation: load 3s forwards cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%; width: 0%; 
+            background: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
 
-        @keyframes load { to { width: 100%; } }
-
-        .next-btn { 
-            color: #888; 
-            margin-top: 20px; 
-            font-size: 10px; 
-            letter-spacing: 10px; 
-            text-transform: uppercase;
+        /* লাইভ পারসেন্টেজ টেক্সট */
+        .percent-text {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ffffff;
+            mix-blend-mode: difference; /* এটি বার পার হওয়ার সময় টেক্সটের রঙ বদলে দেবে */
+            font-size: 12px;
+            font-weight: 900;
+            z-index: 2;
         }
     </style>
 </head>
-<body onclick="launchGameMode()">
+<body onclick="launchSystem()">
 
-    <div class="edge-glow"></div>
+    <div id="glow-border" class="edge-border"></div>
 
     <div class="main-content">
         <div class="brand">NI MY SWEET</div>
-        <div class="bar-bg">
-            <div class="bar-fill"></div>
+        
+        <div id="msg" class="loading-msg">Initializing Python...</div>
+
+        <div class="bar-container">
+            <div class="percent-text" id="p-val">0%</div>
+            <div class="bar-fill" id="p-bar"></div>
         </div>
-        <div class="next-btn">System Processing</div>
     </div>
 
     <script>
-        async function launchGameMode() {
+        async function launchSystem() {
             let el = document.documentElement;
             if (el.requestFullscreen) { await el.requestFullscreen(); }
-            
-            if (screen.orientation && screen.orientation.lock) {
-                try { await screen.orientation.lock('landscape'); } catch (e) {}
-            }
         }
+
+        let progress = 0;
+        const messages = [
+            "System Booting...",
+            "Loading Python Core...",
+            "Accessing Mission Data...",
+            "Finalizing Interface..."
+        ];
+        
+        const pBar = document.getElementById('p-bar');
+        const pVal = document.getElementById('p-val');
+        const msg = document.getElementById('msg');
+        const border = document.getElementById('glow-border');
+
+        const loading = setInterval(() => {
+            progress += 1;
+            pBar.style.width = progress + "%";
+            pVal.innerText = progress + "%";
+            
+            // ডাইনামিক মেসেজ আপডেট
+            if(progress == 20) msg.innerText = messages[0];
+            if(progress == 50) msg.innerText = messages[1];
+            if(progress == 80) msg.innerText = messages[2];
+
+            if (progress >= 100) {
+                clearInterval(loading);
+                msg.innerText = "System Loaded Successfully";
+                msg.style.color = "#00ffff";
+                border.classList.add('task-complete-glow');
+                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            }
+        }, 40);
     </script>
 </body>
 </html>
