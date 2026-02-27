@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NI MY SWEET - Professional System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>NI MY SWEET - Intelligent Edge</title>
     <style>
         body, html {
             margin: 0; padding: 0;
@@ -15,86 +15,87 @@
             cursor: pointer;
         }
 
-        /* ল্যান্ডস্কেপ না হলে সতর্কবার্তা */
-        @media screen and (orientation: portrait) {
-            #portrait-warning { display: flex; }
-            .main-content { display: none; }
-        }
-
-        #portrait-warning {
-            display: none; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; background: #000;
-            color: #fff; text-align: center; justify-content: center; align-items: center;
-            z-index: 10000; flex-direction: column;
-        }
-
-        /* চিকন এজ লাইটিং */
-        .edge-light {
+        /* স্থায়ী চিকন বর্ডার */
+        .edge-border {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            border: 0.5px solid rgba(0, 255, 255, 0.4);
-            box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.1);
             pointer-events: none; z-index: 9999;
+            box-sizing: border-box;
+            border: 1.5px solid rgba(0, 255, 255, 0.3); /* শান্ত নীল আলো */
+            transition: all 0.5s ease;
+        }
+
+        /* কাজ শেষ হলে জ্বলে ওঠার এনিমেশন */
+        .border-glow-active {
+            border: 3px solid #00ffff !important;
+            box-shadow: 0 0 20px #00ffff, inset 0 0 20px #00ffff;
+            filter: brightness(1.5);
+        }
+
+        .status-bar {
+            position: fixed; top: 10px; width: 92%;
+            display: flex; justify-content: space-between;
+            color: #fff; font-size: 12px; z-index: 10000;
         }
 
         .main-content { text-align: center; width: 320px; }
-
-        /* ইংরেজি ও সাদা টেক্সট "NI MY SWEET" */
         .brand {
-            color: #ffffff; /* পিওর হোয়াইট */
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-            position: relative;
-            background: linear-gradient(90deg, #fff, #888, #fff);
-            background-size: 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 2.5s linear infinite;
+            color: #ffffff; font-size: 28px; font-weight: 800; margin-bottom: 25px;
+            letter-spacing: 3px; background: linear-gradient(90deg, #fff, #999, #fff);
+            background-size: 200%; -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; animation: shine 2.5s linear infinite;
         }
 
         @keyframes shine { to { background-position: 200%; } }
 
-        .bar-bg { height: 14px; width: 100%; background: #111; border-radius: 10px; overflow: hidden; border: 0.5px solid #333; }
+        .bar-bg { height: 12px; width: 100%; background: #111; border-radius: 10px; overflow: hidden; }
         .bar-fill {
             height: 100%; width: 0%;
             background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff);
-            background-size: 400% 100%; animation: load 3s forwards linear, rainbow 3s linear infinite;
+            background-size: 400% 100%; animation: load 3s forwards linear;
         }
 
         @keyframes load { to { width: 100%; } }
-        @keyframes rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-
-        .fade-exit { animation: fadeOut 1s forwards 3.2s; }
-        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
     </style>
 </head>
-<body onclick="requestFullScreen()" class="fade-exit">
+<body onclick="launchApp()">
 
-    <div id="portrait-warning">
-        <p>Please rotate your phone (Landscape Mode)</p>
+    <div id="main-border" class="edge-border"></div>
+
+    <div class="status-bar">
+        <span id="clock">00:00</span>
+        <span>📶 5G &nbsp; 🔋 <span id="bat">--</span>%</span>
     </div>
-
-    <div class="edge-light"></div>
 
     <div class="main-content">
         <div class="brand">NI MY SWEET</div>
-        <div class="bar-bg">
-            <div class="bar-fill"></div>
-        </div>
-        <div style="color: #fff; margin-top: 10px; font-size: 11px; letter-spacing: 4px;">NEXT</div>
+        <div class="bar-bg"><div class="bar-fill"></div></div>
+        <div style="color: #fff; margin-top: 15px; font-size: 12px; letter-spacing: 6px; opacity: 0.8;">NEXT</div>
     </div>
 
     <script>
-        function requestFullScreen() {
-            var el = document.documentElement;
-            var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
-            if (requestMethod) { requestMethod.call(el); }
+        function launchApp() {
+            let el = document.documentElement;
+            if (el.requestFullscreen) el.requestFullscreen();
         }
 
+        // ৩ সেকেন্ড পর টাস্ক শেষ হলে বর্ডার জ্বলে উঠবে
         setTimeout(() => {
-            if(navigator.vibrate) navigator.vibrate(50);
+            const border = document.getElementById('main-border');
+            border.classList.add('border-glow-active');
+            if(navigator.vibrate) navigator.vibrate([100, 50, 100]); // বিশেষ ভাইব্রেশন
         }, 3000);
+
+        function updateClock() {
+            let d = new Date();
+            document.getElementById('clock').innerText = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        if(navigator.getBattery) {
+            navigator.getBattery().then(bat => {
+                document.getElementById('bat').innerText = Math.round(bat.level * 100);
+            });
+        }
     </script>
 </body>
 </html>
