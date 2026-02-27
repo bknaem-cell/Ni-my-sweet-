@@ -2,67 +2,73 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NI My Sweet - Fix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রিমিয়াম লোডিং - নাঈম ইব্রাহিম</title>
     <style>
-        :root { --blue: #0077ff; --dark: #000; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: var(--dark); color: #fff; font-family: sans-serif; overflow: hidden; display: flex; flex-direction: column; }
-        
-        /* লোডিং স্ক্রিন */
-        #loader { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .brand { font-size: 35px; font-weight: 900; text-shadow: 0 0 15px var(--blue); margin-bottom: 25px; }
-        .bar-bg { width: 260px; height: 14px; background: #111; border-radius: 20px; border: 1px solid #333; overflow: hidden; padding: 2px; }
-        #progress { 
-            width: 0%; height: 100%; border-radius: 20px;
-            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
-            background-size: 400% 400%; animation: rainbow 3s linear infinite;
+        /* পুরো স্ক্রিন ডার্ক এবং মাঝখানে লোডার */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #0d1117; /* GitHub ডার্ক থিম */
+            overflow: hidden;
+            font-family: Arial, sans-serif;
         }
-        @keyframes rainbow { 0%{background-position:0% 50%} 100%{background-position:100% 50%} }
 
-        /* মূল ইন্টারফেস */
-        #main-ui { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; }
-        .sketch-box { width: 90px; height: 50px; border: 2px solid #fff; transform: skewX(-15deg); display: flex; flex-direction: column; justify-content: center; align-items: center; margin: 10px; background: rgba(255,255,255,0.05); }
+        /* প্রিমিয়াম রিঙ অ্যানিমেশন */
+        .loader {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .loader div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            margin: 8px;
+            border: 8px solid #58a6ff;
+            border-radius: 50%;
+            animation: loader-spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            border-color: #58a6ff transparent transparent transparent;
+        }
+
+        .loader div:nth-child(1) { animation-delay: -0.45s; }
+        .loader div:nth-child(2) { animation-delay: -0.3s; }
+        .loader div:nth-child(3) { animation-delay: -0.15s; }
+
+        @keyframes loader-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* লোডিং টেক্সট */
+        .loading-text {
+            position: absolute;
+            bottom: -40px;
+            width: 100%;
+            text-align: center;
+            color: #c9d1d9;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
-<body onclick="startApp()">
-    <div id="loader">
-        <div class="brand">NI My Sweet</div>
-        <div class="bar-bg"><div id="progress"></div></div>
-        <p style="font-size: 10px; color: #555; margin-top: 15px;">শুরু করতে ক্লিক করুন</p>
+<body>
+
+    <div class="loader">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div class="loading-text">Loading...</div>
     </div>
 
-    <div id="main-ui">
-        <div style="display: flex;">
-            <div class="sketch-box"><b>1-A</b></div>
-            <div class="sketch-box"><b>2-B</b></div>
-        </div>
-        <div style="width: 80px; height: 80px; border: 2px solid var(--blue); transform: rotate(45deg); display: flex; justify-content: center; align-items: center; margin: 20px;">
-            <span style="transform: rotate(-45deg);">TDP</span>
-        </div>
-        <p>সিস্টেম অনলাইন</p>
-    </div>
-
-    <script>
-        let init = false;
-        function startApp() {
-            if(init) return; init = true;
-            let p = document.getElementById('progress');
-            let w = 0;
-            let int = setInterval(() => {
-                if(w >= 100) {
-                    clearInterval(int);
-                    finish();
-                } else { w++; p.style.width = w + '%'; }
-            }, 40);
-        }
-
-        function finish() {
-            if(navigator.vibrate) navigator.vibrate(200);
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('main-ui').style.display = 'flex';
-            }, 500);
-        }
-    </script>
 </body>
 </html>
