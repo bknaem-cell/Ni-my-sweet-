@@ -2,161 +2,97 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
-    <title>NI MY SWEET - Loading Screen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NI MY SWEET - Professional System</title>
     <style>
-        /* পিওর ব্ল্যাক ও ল্যান্ডস্কেপ সেটিংস */
+        /* পুরো স্ক্রিন কালো এবং ব্রাউজার এলিমেন্ট লুকানো */
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
+            margin: 0; padding: 0;
+            width: 100vw; height: 100vh;
             background-color: #000;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             font-family: 'Arial', sans-serif;
+            cursor: pointer;
         }
 
-        /* চুলের মতো চিকন এজ বর্ডার - একদম ডিসপ্লের প্রান্তে */
+        /* ল্যান্ডস্কেপ না হলে ইউজারকে সতর্ক করা */
+        @media screen and (orientation: portrait) {
+            #portrait-warning { display: flex; }
+            .main-content { display: none; }
+        }
+
+        #portrait-warning {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: #000;
+            color: #fff; text-align: center; justify-content: center; align-items: center;
+            z-index: 10000; flex-direction: column;
+        }
+
+        /* এজ লাইটিং - ডিসপ্লের একদম প্রান্তে */
         .edge-light {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             border: 0.5px solid rgba(0, 255, 255, 0.4);
-            box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.1), 0 0 15px rgba(0, 255, 255, 0.1);
-            pointer-events: none;
-            z-index: 9999;
+            box-shadow: inset 0 0 15px rgba(0, 255, 255, 0.1);
+            pointer-events: none; z-index: 9999;
         }
 
-        /* রিয়েল স্ট্যাটাস বার */
-        .status-bar {
-            position: fixed;
-            top: 8px;
-            width: 94%;
-            display: flex;
-            justify-content: space-between;
-            color: #fff;
-            font-size: 13px;
-            font-weight: 300;
-            letter-spacing: 1px;
-            z-index: 1000;
-        }
-
-        .main-box {
-            text-align: center;
-            width: 320px;
-        }
-
-        /* জীবন্ত "এনাই মাই সুইট" টেক্সট (সাদা ও হালকা মোটা) */
+        /* আপনার সেই ৩ সেকেন্ডের রংধনু লোডার ও ব্র্যান্ডিং */
+        .main-content { text-align: center; width: 320px; }
         .brand {
-            color: #fff;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 20px;
+            color: #fff; font-size: 24px; font-weight: 600; margin-bottom: 20px;
             background: linear-gradient(90deg, #fff, #555, #fff);
-            background-size: 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 2.5s linear infinite;
+            background-size: 200%; -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; animation: shine 2.5s linear infinite;
         }
 
-        @keyframes shine {
-            to { background-position: 200%; }
-        }
+        @keyframes shine { to { background-position: 200%; } }
 
-        /* লোডিং বার ও পার্সেন্টেজ */
-        .loader-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .bar-bg {
-            height: 14px; /* মাঝারি মোটা */
-            flex-grow: 1;
-            background: #111;
-            border-radius: 10px;
-            overflow: hidden;
-            border: 0.5px solid #333;
-        }
-
+        .bar-bg { height: 14px; width: 100%; background: #111; border-radius: 10px; overflow: hidden; border: 0.5px solid #333; }
         .bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8b00ff);
-            background-size: 400% 100%;
-            animation: load 3s forwards linear, rainbow 3s linear infinite;
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff);
+            background-size: 400% 100%; animation: load 3s forwards linear, rainbow 3s linear infinite;
         }
 
         @keyframes load { to { width: 100%; } }
         @keyframes rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
 
-        .percent-text { color: #fff; font-size: 14px; width: 40px; text-align: right; }
-
-        /* নিচে Next লেখা */
-        .next-btn {
-            color: #fff;
-            font-size: 11px;
-            margin-top: 12px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            opacity: 0.6;
-        }
-
-        /* ৩ সেকেন্ড পর ফেড আউট */
-        .fade-exit {
-            animation: fadeOut 1s forwards 3.2s;
-        }
+        .fade-exit { animation: fadeOut 1s forwards 3.2s; }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
     </style>
 </head>
-<body class="fade-exit">
+<body onclick="requestFullScreen()" class="fade-exit">
+
+    <div id="portrait-warning">
+        <p>সিস্টেমটি ব্যবহারের জন্য আপনার ফোনটি ঘোরান (Landscape করুন)</p>
+    </div>
 
     <div class="edge-light"></div>
 
-    <div class="status-bar">
-        <span id="clock">00:00</span>
-        <span>📶 5G &nbsp; 🔋 <span id="bat">100</span>%</span>
-    </div>
-
-    <div class="main-box">
+    <div class="main-content">
         <div class="brand">এনাই মাই সুইট</div>
-        
-        <div class="loader-row">
-            <div class="bar-bg">
-                <div class="bar-fill"></div>
-            </div>
-            <div class="percent-text" id="pct">0%</div>
+        <div class="bar-bg">
+            <div class="bar-fill"></div>
         </div>
-
-        <div class="next-btn">Next</div>
+        <div style="color: #fff; margin-top: 10px; font-size: 11px; letter-spacing: 3px;">Next</div>
     </div>
 
     <script>
-        // ৩ সেকেন্ডের পার্সেন্টেজ কাউন্টার
-        let pct = document.getElementById('pct');
-        let val = 0;
-        let speed = 30; // ৩ সেকেন্ড (৩০০০ মিলি সেকেন্ড) পূর্ণ করতে ৩০ মিলি সেকেন্ড অন্তর ১% বাড়বে
-        let timer = setInterval(() => {
-            val++;
-            pct.innerText = val + "%";
-            if(val >= 100) {
-                clearInterval(timer);
-                if(navigator.vibrate) navigator.vibrate(40); // হালকা ভাইব্রেশন
-            }
-        }, 30);
+        // অটো ফুল স্ক্রিন ফাংশন
+        function requestFullScreen() {
+            var el = document.documentElement;
+            var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
 
-        // রিয়েল টাইম ক্লক
-        function setClock() {
-            let d = new Date();
-            document.getElementById('clock').innerText = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+            if (requestMethod) { 
+                requestMethod.call(el);
+            }
         }
-        setInterval(setClock, 1000);
-        setClock();
+
+        // ভাইব্রেশন ও ৩ সেকেন্ড কাউন্টার
+        setTimeout(() => {
+            if(navigator.vibrate) navigator.vibrate(50);
+        }, 3000);
     </script>
 </body>
 </html>
