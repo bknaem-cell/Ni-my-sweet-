@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NI MY SWEET - Professional System</title>
     <style>
-        /* পুরো স্ক্রিন কালো এবং ব্রাউজার এলিমেন্ট লুকানো */
         body, html {
             margin: 0; padding: 0;
             width: 100vw; height: 100vh;
@@ -16,7 +15,7 @@
             cursor: pointer;
         }
 
-        /* ল্যান্ডস্কেপ না হলে ইউজারকে সতর্ক করা */
+        /* ল্যান্ডস্কেপ না হলে সতর্কবার্তা */
         @media screen and (orientation: portrait) {
             #portrait-warning { display: flex; }
             .main-content { display: none; }
@@ -29,7 +28,7 @@
             z-index: 10000; flex-direction: column;
         }
 
-        /* এজ লাইটিং - ডিসপ্লের একদম প্রান্তে */
+        /* চিকন এজ লাইটিং */
         .edge-light {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             border: 0.5px solid rgba(0, 255, 255, 0.4);
@@ -37,13 +36,21 @@
             pointer-events: none; z-index: 9999;
         }
 
-        /* আপনার সেই ৩ সেকেন্ডের রংধনু লোডার ও ব্র্যান্ডিং */
         .main-content { text-align: center; width: 320px; }
+
+        /* ইংরেজি ও সাদা টেক্সট "NI MY SWEET" */
         .brand {
-            color: #fff; font-size: 24px; font-weight: 600; margin-bottom: 20px;
-            background: linear-gradient(90deg, #fff, #555, #fff);
-            background-size: 200%; -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent; animation: shine 2.5s linear infinite;
+            color: #ffffff; /* পিওর হোয়াইট */
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            position: relative;
+            background: linear-gradient(90deg, #fff, #888, #fff);
+            background-size: 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 2.5s linear infinite;
         }
 
         @keyframes shine { to { background-position: 200%; } }
@@ -65,31 +72,26 @@
 <body onclick="requestFullScreen()" class="fade-exit">
 
     <div id="portrait-warning">
-        <p>সিস্টেমটি ব্যবহারের জন্য আপনার ফোনটি ঘোরান (Landscape করুন)</p>
+        <p>Please rotate your phone (Landscape Mode)</p>
     </div>
 
     <div class="edge-light"></div>
 
     <div class="main-content">
-        <div class="brand">এনাই মাই সুইট</div>
+        <div class="brand">NI MY SWEET</div>
         <div class="bar-bg">
             <div class="bar-fill"></div>
         </div>
-        <div style="color: #fff; margin-top: 10px; font-size: 11px; letter-spacing: 3px;">Next</div>
+        <div style="color: #fff; margin-top: 10px; font-size: 11px; letter-spacing: 4px;">NEXT</div>
     </div>
 
     <script>
-        // অটো ফুল স্ক্রিন ফাংশন
         function requestFullScreen() {
             var el = document.documentElement;
             var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
-
-            if (requestMethod) { 
-                requestMethod.call(el);
-            }
+            if (requestMethod) { requestMethod.call(el); }
         }
 
-        // ভাইব্রেশন ও ৩ সেকেন্ড কাউন্টার
         setTimeout(() => {
             if(navigator.vibrate) navigator.vibrate(50);
         }, 3000);
