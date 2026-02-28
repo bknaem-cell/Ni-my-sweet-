@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ni My Sweet</title>
     <style>
-        /* ১. বডি সেটিংস - ল্যান্ডস্কেপ ও ব্যাক বাটন সচল রাখতে */
+        /* ১. ফুল স্ক্রিন ও ল্যান্ডস্কেপ মোড সেটিংস */
         body, html {
             margin: 0;
             padding: 0;
@@ -13,130 +13,86 @@
             height: 100%;
             background-color: black;
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* স্ক্রিন যেন বেশি নড়াচড়া না করে */
+            overflow: hidden; /* ফুল ডিসপ্লে লুকের জন্য */
+            cursor: pointer;
         }
 
-        /* ২. চুলের মতো চিকন ও জীবন্ত বর্ডার */
+        /* ২. চিকন জীবন্ত বর্ডার */
         #living-border {
             position: fixed;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border: 0.5px solid rgba(255, 255, 255, 0.15); /* চুলের মতো চিকন */
-            border-radius: 30px;
-            pointer-events: none; /* যাতে ক্লিকে বাধা না দেয় */
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            pointer-events: none;
             z-index: 9999;
-            animation: breathe 5s infinite ease-in-out;
         }
 
-        @keyframes breathe {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.6; box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05); }
-        }
-
-        /* ৩. ক্লিক করলে চিকন সাদা ফোটা (ভিডিওর মতো) */
+        /* ৩. ছোট সাদা ফোটা (Ripple) */
         .white-dot {
             position: fixed;
-            width: 4px; /* একদম ছোট ফোটা */
-            height: 4px;
+            width: 5px;
+            height: 5px;
             background: white;
             border-radius: 50%;
             pointer-events: none;
             z-index: 10000;
-            transform: scale(0);
-            animation: dotFade 0.5s ease-out;
+            animation: ripple 0.4s ease-out;
         }
 
-        @keyframes dotFade {
-            to { transform: scale(6); opacity: 0; }
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
         }
 
-        /* ৪. মেইন কন্টেন্ট স্টাইল */
-        .content {
-            text-align: center;
-            z-index: 10;
-        }
-
-        h1 {
-            font-size: 2rem;
-            letter-spacing: 8px;
-            margin-bottom: 20px;
-            font-weight: 300;
-        }
-
-        /* ৫. লোডিং প্রগ্রেস বার ও টেক্সট */
-        .progress-box {
-            width: 200px;
-            margin: 0 auto;
-        }
-
-        .bar-bg {
-            width: 100%;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-            margin-bottom: 10px;
-        }
-
-        .bar-fill {
-            width: 0%;
-            height: 100%;
-            background: white;
-            transition: width 0.4s ease;
-        }
-
-        .status-msg {
-            font-size: 11px;
-            letter-spacing: 2px;
-            opacity: 0.6;
-            text-transform: capitalize; /* প্রথম অক্ষর বড় হাতের */
-        }
+        h1 { letter-spacing: 5px; font-size: 2rem; }
     </style>
 </head>
-<body>
+<body onclick="toggleFullScreen()">
+
+    <div style="text-align: center;">
+        <h1>NI MY SWEET</h1>
+        <p id="status">System Active</p>
+    </div>
 
     <div id="living-border"></div>
 
-    <div class="content">
-        <h1>NI MY SWEET</h1>
-        <div class="progress-box">
-            <div class="bar-bg">
-                <div id="fill" class="bar-fill"></div>
-            </div>
-            <div id="status-text" class="status-msg">System Active</div>
-        </div>
-    </div>
-
     <script>
-        const fill = document.getElementById('fill');
-        const statusText = document.getElementById('status-text');
-        const messages = ["System Active", "Connecting...", "Syncing...", "Finishing...", "Success"];
-        let step = 0;
-
-        document.addEventListener('click', function(e) {
-            // ১. ছোট সাদা ফোটা তৈরি করা
-            let d = document.createElement('div');
-            d.className = 'white-dot';
-            d.style.left = e.clientX + 'px';
-            d.style.top = e.clientY + 'px';
-            document.body.appendChild(d);
-
-            // ২. স্ট্যাটাস ও বার আপডেট করা
-            step = (step + 1) % messages.length;
-            statusText.innerText = messages[step];
-            fill.style.width = ((step + 1) * 20) + "%";
-
-            // ৩. ফোটা রিমুভ করা
-            setTimeout(() => { d.remove(); }, 500);
-
-            // কাজ শেষ হলে রিসেট
-            if(step === 4) {
-                setTimeout(() => { fill.style.width = "0%"; }, 1000);
+        // ১. এক ক্লিকে ফুল স্ক্রিন ও ল্যান্ডস্কেপ করার ফাংশন
+        async function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                try {
+                    await document.documentElement.requestFullscreen();
+                    // ল্যান্ডস্কেপ মোড লক করা (যদি ব্রাউজার সাপোর্ট করে)
+                    if (screen.orientation && screen.orientation.lock) {
+                        await screen.orientation.lock('landscape');
+                    }
+                } catch (err) {
+                    console.log("ফুল স্ক্রিন মুডে সমস্যা হয়েছে");
+                }
             }
+        }
+
+        // ২. ক্লিক ফিডব্যাক (সাদা ফোটা)
+        document.addEventListener('click', function(e) {
+            let dot = document.createElement('div');
+            dot.className = 'white-dot';
+            dot.style.left = (e.clientX - 2.5) + 'px';
+            dot.style.top = (e.clientY - 2.5) + 'px';
+            document.body.appendChild(dot);
+
+            // টেক্সট পরিবর্তন
+            const status = document.getElementById('status');
+            const msgs = ["System Active", "Connecting...", "Syncing...", "Finishing..."];
+            let idx = msgs.indexOf(status.innerText);
+            status.innerText = msgs[(idx + 1) % msgs.length];
+
+            setTimeout(() => dot.remove(), 400);
         });
     </script>
 </body>
