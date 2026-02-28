@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ni My Sweet - Elite Legacy</title>
+    <title>Ni My Sweet - 100K Year Legacy</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -12,7 +12,7 @@
             user-select: none;
         }
 
-        /* ১. ফোন সোজা থাকলে এই স্ক্রিনটি দেখাবে (Orientation Lock) */
+        /* ১. ওরিয়েন্টেশন লক (পোর্ট্রেট মোডে থাকলে এটি দেখাবে) */
         #orientation-blocker {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999;
@@ -20,109 +20,113 @@
             text-align: center;
         }
 
-        .phone-icon {
-            font-size: 60px; margin-bottom: 20px;
-            animation: rotatePhone 2s infinite ease-in-out;
+        .phone-animation {
+            font-size: 50px; margin-bottom: 20px;
+            animation: rotateDevice 2s infinite ease-in-out;
         }
 
-        @keyframes rotatePhone {
+        @keyframes rotateDevice {
             0% { transform: rotate(0deg); }
             50% { transform: rotate(-90deg); }
             100% { transform: rotate(0deg); }
         }
 
-        /* ২. মূল গেম ইন্টারফেস (শুরুতে লুকানো থাকবে) */
-        #game-interface {
+        /* ২. মূল ইন্টারফেস (ল্যান্ডস্কেপ মোডের জন্য) */
+        #main-ui {
             display: none; width: 100%; height: 100%;
-            justify-content: center; align-items: center;
-            flex-direction: column;
+            flex-direction: column; justify-content: center; align-items: center;
         }
 
-        /* উপরের ফিক্সড লোগো */
+        /* আপনার প্রিয় টপ ফিক্সড লোগো */
         #top-logo {
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
-            width: 50px; height: 50px; background: rgba(255,255,255,0.05);
-            border-radius: 50%; border: 1.5px solid rgba(0,255,255,0.3);
-            display: flex; justify-content: center; align-items: center; font-size: 24px;
+            position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
+            width: 50px; height: 50px; background: rgba(255,255,255,0.03);
+            border-radius: 50%; border: 1.5px solid rgba(0,255,255,0.2);
+            display: flex; justify-content: center; align-items: center; font-size: 22px;
+            box-shadow: 0 0 15px rgba(0,255,255,0.1);
         }
 
-        .brand-name {
-            font-size: clamp(35px, 12vw, 65px);
-            font-weight: 800; text-shadow: 0 0 30px #fff;
-            letter-spacing: 3px; margin-bottom: 20px;
+        /* সিস্টেম নাম - স্ক্রিনশট অনুযায়ী মাঝখানে */
+        .brand-title {
+            font-size: clamp(35px, 11vw, 60px);
+            font-weight: 800; letter-spacing: 3px;
+            text-shadow: 0 0 30px rgba(255,255,255,0.5);
+            margin-bottom: 15px;
         }
 
-        .loading-bar-container {
-            width: 300px; height: 2px; background: #111; position: relative;
+        /* ফিউচারিস্টিক নিয়ন লোডিং বার */
+        .loading-container {
+            width: 80%; max-width: 400px; height: 1.5px;
+            background: rgba(255,255,255,0.05); position: relative;
         }
 
-        .loading-bar-fill {
-            height: 100%; width: 0%; background: #fff;
-            box-shadow: 0 0 20px #fff; transition: width 0.1s linear;
+        .loading-fill {
+            height: 100%; width: 0%; 
+            background: linear-gradient(90deg, #fff, #00ffff);
+            box-shadow: 0 0 20px #00ffff;
+            transition: width 0.1s linear;
         }
 
-        .status-msg {
-            margin-top: 25px; color: #00ffff; font-size: 10px;
-            letter-spacing: 4px; font-weight: bold;
+        .ai-status {
+            margin-top: 30px; font-size: 10px; color: #00ffff;
+            letter-spacing: 5px; font-weight: 900;
+            text-transform: uppercase;
         }
     </style>
 </head>
-<body onclick="requestFullscreen()">
+<body onclick="requestFS()">
 
     <div id="orientation-blocker">
-        <div class="phone-icon">📱</div>
-        <p style="letter-spacing: 2px;">PLEASE ROTATE YOUR DEVICE</p>
-        <p style="font-size: 10px; color: #555;">FOR THE BEST PROFESSIONAL EXPERIENCE</p>
+        <div class="phone-animation">📱</div>
+        <p style="letter-spacing: 3px;">ROTATE FOR LEGACY EXPERIENCE</p>
     </div>
 
-    <div id="game-interface">
+    <div id="main-ui">
         <div id="top-logo">🔄</div>
-        <div class="brand-name">Ni My Sweet</div>
-        <div class="loading-bar-container">
-            <div class="loading-bar-fill" id="progress"></div>
+        <div class="brand-title">Ni My Sweet</div>
+        <div class="loading-container">
+            <div class="loading-fill" id="bar"></div>
         </div>
-        <div id="status" class="status-msg">SYSTEM STANDBY</div>
+        <div id="status" class="ai-status">SYSTEM STANDBY</div>
     </div>
 
     <script>
-        function checkOrientation() {
+        function checkMode() {
             const blocker = document.getElementById('orientation-blocker');
-            const game = document.getElementById('game-interface');
-
-            // ফোন যদি আড়াআড়ি (Landscape) থাকে
+            const ui = document.getElementById('main-ui');
             if (window.innerWidth > window.innerHeight) {
                 blocker.style.display = 'none';
-                game.style.display = 'flex';
-                startLoading();
+                ui.style.display = 'flex';
+                runSystem();
             } else {
                 blocker.style.display = 'flex';
-                game.style.display = 'none';
+                ui.style.display = 'none';
             }
         }
 
-        window.addEventListener('resize', checkOrientation);
-        window.addEventListener('load', checkOrientation);
+        window.addEventListener('resize', checkMode);
+        window.addEventListener('load', checkMode);
 
-        function requestFullscreen() {
-            let doc = document.documentElement;
-            if (doc.requestFullscreen) doc.requestFullscreen();
-            else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
+        function requestFS() {
+            let d = document.documentElement;
+            if (d.requestFullscreen) d.requestFullscreen();
+            else if (d.webkitRequestFullscreen) d.webkitRequestFullscreen();
         }
 
-        let isLoaded = false;
-        function startLoading() {
-            if(isLoaded) return;
-            isLoaded = true;
+        let isRunning = false;
+        function runSystem() {
+            if(isRunning) return;
+            isRunning = true;
             
             let p = 0;
-            const bar = document.getElementById('progress');
+            const bar = document.getElementById('bar');
             const status = document.getElementById('status');
             
             const timer = setInterval(() => {
                 p++;
                 bar.style.width = p + '%';
-                if(p == 30) status.innerText = "ALIGING HARDWARE...";
-                if(p == 70) status.innerText = "ESTABLISHING LEGACY...";
+                if(p == 20) status.innerText = "LINKING NEURAL NET...";
+                if(p == 60) status.innerText = "SYNCING GLOBAL SERVERS...";
                 if(p >= 100) {
                     clearInterval(timer);
                     status.innerText = "SYSTEM ACTIVE";
