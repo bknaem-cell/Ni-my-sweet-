@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
-    <title>Naeem Sweet System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ni-my-sweet- System</title>
     <style>
         body {
             margin: 0;
@@ -18,6 +18,11 @@
             background-size: 30px 30px;
         }
 
+        /* ল্যান্ডস্কেপ মুড অটোমেশন */
+        @media screen and (orientation: portrait) {
+            body { transform: rotate(0deg); }
+        }
+
         .container {
             text-align: center;
         }
@@ -27,20 +32,19 @@
             font-size: 35px;
             font-family: Arial, sans-serif;
             margin-bottom: 30px;
-            letter-spacing: 10px;
+            letter-spacing: 8px;
             font-weight: bold;
+            text-transform: none; /* আপনার অরিজিনাল ছোট হাতের অক্ষর ঠিক রাখার জন্য */
         }
 
-        /* আপনার পছন্দের সেই লোডিং বক্সের ডিজাইন */
         .loading-box {
-            width: 400px;
-            height: 30px; /* উচ্চতা কিছুটা বাড়ানো হয়েছে যেন পার্সেন্ট দেখা যায় */
+            width: 350px;
+            height: 30px;
             border: 2px solid white;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
 
         .loading-bar {
@@ -53,13 +57,12 @@
             animation: load 5s linear forwards;
         }
 
-        /* বক্সের ভেতরের পার্সেন্টেজ টেক্সট */
         .percent-text {
             color: white;
             font-size: 14px;
             font-family: Arial, sans-serif;
             z-index: 2;
-            mix-blend-mode: difference; /* এটি বার বাড়ার সাথে সাথে টেক্সটের রঙ অটো পরিবর্তন করবে */
+            mix-blend-mode: difference;
             font-weight: bold;
         }
 
@@ -67,7 +70,6 @@
             to { width: 100%; }
         }
 
-        /* ক্লিক গ্লো ইফেক্ট */
         .click-glow {
             position: absolute;
             width: 20px;
@@ -90,7 +92,7 @@
 <body>
 
     <div class="container">
-        <div class="text">NAEEM SWEET SYSTEM</div>
+        <div class="text">Ni-my-sweet-</div> 
         <div class="loading-box">
             <div class="loading-bar"></div>
             <div class="percent-text" id="percent">0%</div>
@@ -98,18 +100,14 @@
     </div>
 
     <script>
-        // পার্সেন্টেজ আপডেট করার ফাংশন
         let percentElement = document.getElementById('percent');
         let count = 0;
         let interval = setInterval(() => {
             count++;
             percentElement.innerText = count + '%';
-            if (count >= 100) {
-                clearInterval(interval);
-            }
-        }, 50); // লোডিং বারের গতির সাথে মিলিয়ে বাড়ানো কমানো যাবে
+            if (count >= 100) clearInterval(interval);
+        }, 50);
 
-        // ক্লিক ইফেক্ট
         document.addEventListener('click', function(e) {
             let glow = document.createElement('div');
             glow.className = 'click-glow';
