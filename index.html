@@ -5,156 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ni My Sweet</title>
     <style>
-        /* ১. ব্যাকগ্রাউন্ড এবং বডি সেটিংস */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
+        /* আপনার আগের ইন্টারফেস ফিরিয়ে আনা */
+        body {
             background-color: black;
             color: white;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            user-select: none;
+            height: 100vh;
+            font-family: sans-serif;
+            /* ব্যাক বাটন ও স্ক্রল সচল রাখা */
+            overflow: auto; 
         }
 
-        /* ২. জীবন্ত চিকন বর্ডার */
-        .living-border {
+        /* ১. চুলের মতো চিকন জীবন্ত বর্ডার */
+        #living-border {
             position: fixed;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 30px; /* ফোনের রাউন্ড শেপ অনুযায়ী */
-            pointer-events: none; /* যাতে ক্লিকে বাধা না দেয় */
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            pointer-events: none; /* যাতে ক্লিক আটকে না যায় */
             z-index: 9999;
-            transition: all 0.3s ease;
-            animation: breathe 4s infinite ease-in-out;
+            animation: breathe 5s infinite;
         }
 
         @keyframes breathe {
-            0%, 100% { opacity: 0.3; box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1); }
-            50% { opacity: 0.7; box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.2); }
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.5; }
         }
 
-        /* ৩. কাজ শেষে বর্ডারের ধাপ (Flash) */
-        .border-pulse {
-            border-color: #ffd700 !important;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6) !important;
-            opacity: 1 !important;
-        }
-
-        /* ৪. মাঝখানের টেক্সট স্টাইল */
-        .main-content {
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            letter-spacing: 5px;
-            margin-bottom: 20px;
-        }
-
-        /* ৫. লোডিং বার এবং সিস্টেম টেক্সট (ভিডিওর মতো) */
-        .status-container {
-            width: 250px;
-            text-align: center;
-        }
-
-        .loading-bar-bg {
-            width: 100%;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .loading-bar-fill {
-            width: 0%;
-            height: 100%;
-            background: white;
-            transition: width 0.5s ease;
-        }
-
-        .status-text {
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.7);
-            text-transform: capitalize; /* প্রথম অক্ষর বড় হাতের */
-        }
-
-        /* ৬. ক্লিক করলে সোনালী ফোটা */
+        /* ২. ক্লিকে সাদা ছোট ফোটা (সোনালী নয়) */
         .click-dot {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: rgba(255, 215, 0, 0.8);
+            position: fixed;
+            width: 6px; /* ছোট ফোটা */
+            height: 6px;
+            background: white; /* সাদা রঙ */
             border-radius: 50%;
-            transform: scale(0);
-            animation: ripple 0.6s ease-out;
             pointer-events: none;
             z-index: 10000;
+            transform: scale(0);
+            animation: ripple 0.4s ease-out;
         }
 
         @keyframes ripple {
-            to { transform: scale(5); opacity: 0; }
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* ৩. কাজ করলে বর্ডারের ধাপ (কালার চেঞ্জ) */
+        .border-flash {
+            border-color: white !important;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
 <body>
 
-    <div class="main-content">
-        <h1>NI MY SWEET</h1>
-        <div class="status-container">
-            <div class="loading-bar-bg">
-                <div id="progress-bar" class="loading-bar-fill"></div>
-            </div>
-            <div id="status-label" class="status-text">System Active</div>
-        </div>
+    <div style="text-align: center;">
+        <h1 style="letter-spacing: 5px;">NI MY SWEET</h1>
+        <p id="status" style="font-size: 14px; opacity: 0.7;">System Active</p>
     </div>
 
-    <div id="main-border" class="living-border"></div>
+    <div id="living-border"></div>
 
     <script>
-        const progressBar = document.getElementById('progress-bar');
-        const statusLabel = document.getElementById('status-label');
-        const mainBorder = document.getElementById('main-border');
-
-        const states = ["System Active", "Connecting...", "Syncing...", "Finishing...", "Task Complete"];
-        let currentState = 0;
-
         document.addEventListener('click', function(e) {
-            // ১. সোনালী ফোটা তৈরি
+            // সাদা ছোট ফোটা তৈরি
             let dot = document.createElement('div');
-            dot.classList.add('click-dot');
-            dot.style.left = (e.clientX - 6) + 'px';
-            dot.style.top = (e.clientY - 6) + 'px';
+            dot.className = 'click-dot';
+            dot.style.left = (e.clientX - 3) + 'px';
+            dot.style.top = (e.clientY - 3) + 'px';
             document.body.appendChild(dot);
 
-            // ২. বর্ডারে ধাপ মারা
-            mainBorder.classList.add('border-pulse');
+            // বর্ডারে সাদা ধাপ মারা
+            const border = document.getElementById('living-border');
+            border.classList.add('border-flash');
 
-            // ৩. লোডিং এবং টেক্সট পরিবর্তন
-            currentState = (currentState + 1) % states.length;
-            statusLabel.innerText = states[currentState];
-            
-            let progress = (currentState + 1) * 20;
-            progressBar.style.width = progress + "%";
+            // টেক্সট পরিবর্তন (প্রথম অক্ষর বড় হাতের)
+            const status = document.getElementById('status');
+            const messages = ["System Active", "Connecting...", "Syncing...", "Finishing..."];
+            let current = messages.indexOf(status.innerText);
+            status.innerText = messages[(current + 1) % messages.length];
 
-            // ৪. ইফেক্ট রিমুভ করা
             setTimeout(() => {
                 dot.remove();
-                mainBorder.classList.remove('border-pulse');
-                if(progress >= 100) {
-                    setTimeout(() => { progressBar.style.width = "0%"; }, 500);
-                }
-            }, 600);
+                border.classList.remove('border-flash');
+            }, 400);
         });
     </script>
 </body>
