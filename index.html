@@ -5,171 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>NI-TEN: ১০ কিলো স্কয়ার</title>
     <style>
-        /* ১. গ্লোবাল সেটিংস */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-color: #000;
             color: #00f3ff;
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: sans-serif;
+            height: 100vh;
+            width: 100vw;
             overflow: hidden;
-            height: 100vh;
-            -webkit-user-select: none;
-        }
-
-        /* ২. আধুনিক লোডিং স্ক্রিন */
-        #loader {
-            position: fixed;
-            inset: 0;
-            background: #000;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.5s ease;
-        }
-        .neon-box {
-            width: 60px; height: 60px;
-            border: 1px solid #00f3ff;
-            box-shadow: 0 0 15px #00f3ff;
-            animation: pulse 1.5s infinite alternate;
-        }
-        @keyframes pulse {
-            from { transform: scale(1); opacity: 0.5; }
-            to { transform: scale(1.1); opacity: 1; }
         }
 
-        /* ৩. মেইন কন্টেইনার (ফুল ডিসপ্লে) */
-        main {
-            display: none;
-            height: 100vh;
-            padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
-            position: relative;
-        }
-
-        /* ৪. ইউজার আইডি কার্ড (আপনার জন্য কাস্টমাইজড) */
+        /* ইউজার আইডি কার্ড */
         .id-card {
-            position: absolute;
-            top: env(safe-area-inset-top, 20px);
-            right: 20px;
-            padding: 12px;
+            position: fixed;
+            top: env(safe-area-inset-top, 10px);
+            right: 10px;
+            padding: 8px;
             border: 1px solid #39ff14;
-            background: rgba(57, 255, 20, 0.05);
-            border-radius: 8px;
-            font-size: 11px;
-            backdrop-filter: blur(5px);
-            z-index: 10;
+            background: rgba(0,0,0,0.8);
+            font-size: 10px;
+            z-index: 100;
         }
 
-        /* ৫. ইঞ্জিনিয়ারিং ওয়ার্ল্ড (কঙ্কাল ভিউ) */
-        .world-render {
-            height: 100%;
+        /* প্রধান জগত - যেখানে ঘর ও মাটি থাকবে */
+        .game-world {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-        }
-
-        /* বাড়ির কঙ্কাল ও রড বাইন্ডিং */
-        .building-skeleton {
-            width: 160px;
-            height: 120px;
-            border: 1px solid rgba(0, 243, 255, 0.6);
-            position: relative;
-            background: 
-                linear-gradient(rgba(0,243,255,0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,243,255,0.1) 1px, transparent 1px);
-            background-size: 15px 15px; /* রড গ্রিড সাইজ */
-        }
-
-        /* মাটির লাইন */
-        .ground-level {
-            width: 100%;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.3);
-            margin: 30px 0;
-            box-shadow: 0 0 5px rgba(255,255,255,0.2);
-        }
-
-        /* মাটির নিচের শিকড় (পার্ট টু পার্ট) */
-        .root-system {
-            width: 2px;
-            height: 100px;
-            background: linear-gradient(to bottom, #39ff14, transparent);
+            align-items: center;
             position: relative;
         }
-        .root-system::before, .root-system::after {
-            content: '';
-            position: absolute;
-            width: 40px; height: 1px; background: #39ff14;
-            opacity: 0.5;
-        }
-        .root-system::before { top: 30px; left: -40px; transform: rotate(30deg); }
-        .root-system::after { top: 60px; right: -40px; transform: rotate(-30deg); }
 
-        /* ৬. কন্ট্রোল মেনু */
-        .control-panel {
-            position: absolute;
-            bottom: 40px;
-            width: calc(100% - 40px);
-            display: flex;
-            justify-content: space-between;
-        }
-        .action-btn {
+        .house {
+            width: 120px;
+            height: 90px;
             border: 1px solid #00f3ff;
-            padding: 10px 15px;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            background: transparent;
-            color: #00f3ff;
+            background: repeating-linear-gradient(0deg, rgba(0,243,255,0.05) 0px, rgba(0,243,255,0.05) 1px, transparent 1px, transparent 10px);
         }
 
+        .ground {
+            width: 100%;
+            height: 2px;
+            background: rgba(255,255,255,0.3);
+            margin: 10px 0;
+        }
+
+        .roots {
+            width: 2px;
+            height: 60px;
+            background: linear-gradient(to bottom, #39ff14, transparent);
+        }
+
+        /* কন্ট্রোল বাটন নিচে ফিক্সড */
+        .controls {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0,0,0,0.5);
+            width: 100%;
+        }
+
+        .btn {
+            border: 1px solid #00f3ff;
+            padding: 8px;
+            font-size: 10px;
+            color: #00f3ff;
+            background: none;
+        }
     </style>
 </head>
 <body>
-
-    <div id="loader">
-        <div class="neon-box"></div>
-        <p style="margin-top: 25px; letter-spacing: 3px; font-size: 12px;">SKELETON ANALYZING...</p>
+    <div class="id-card">
+        <p style="color:#39ff14">NAME: নাঈম ইব্রাহিম</p>
+        <p>ID: নাঈম 18</p>
+        <p>STATUS: প্রজেক্ট লিডার</p>
     </div>
 
-    <main id="app">
-        <div class="id-card">
-            <p style="color: #39ff14; font-weight: bold;">NAME: নাঈম ইব্রাহিম</p>
-            <p>ID: নাঈম 18</p>
-            <p>STATUS: প্রজেক্ট লিডার</p>
-        </div>
+    <div class="game-world">
+        <div class="house"></div>
+        <div class="ground"></div>
+        <div class="roots"></div>
+        <p style="font-size: 9px; color:#39ff14">ROOTS ACTIVE</p>
+    </div>
 
-        <div class="world-render">
-            <div class="building-skeleton">
-                <span style="font-size: 8px; color: rgba(0,243,255,0.5); position: absolute; bottom: -15px;">STR: ১০ কিলো স্কয়ার</span>
-            </div>
-            
-            <div class="ground-level"></div>
-            
-            <div class="root-system"></div>
-            <p style="font-size: 9px; color: #39ff14; margin-top: 5px;">মাটির গভীরতা: ১০০% নিরাপদ</p>
-        </div>
-
-        <div class="control-panel">
-            <button class="action-btn">ইঞ্জিনিয়ারিং</button>
-            <button class="action-btn">কৃষি মিশন</button>
-            <button class="action-btn">লিগ্যাসি</button>
-        </div>
-    </main>
-
-    <script>
-        // ৩ সেকেন্ড পর গেম ইন্টারফেস চালু হবে
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('app').style.display = 'block';
-                }, 500);
-            }, 3000);
-        });
-    </script>
+    <div class="controls">
+        <button class="btn">ইঞ্জিনিয়ারিং</button>
+        <button class="btn">কৃষি মিশন</button>
+        <button class="btn">লিগ্যাসি</button>
+    </div>
 </body>
 </html>
