@@ -2,137 +2,183 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ni My Sweet - Advanced Legacy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ni My Sweet - Loading</title>
     <style>
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-            font-family: 'Courier New', monospace; color: white;
-            user-select: none;
+        /* বেসিক সেটআপ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
-        /* ১. টপ লোগো - আপনার পছন্দের জায়গা */
-        #fixed-logo {
-            position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
-            width: 50px; height: 50px; background: rgba(255,255,255,0.03);
-            border-radius: 50%; border: 1px solid rgba(0,255,255,0.3);
-            display: flex; justify-content: center; align-items: center; font-size: 22px;
+        body {
+            background-color: #000; /* একদম গভীর কালো ব্যাকগ্রাউন্ড */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+
+        /* চুলের মতো চিকন বর্ডার লাইটিং (Hairline Border) */
+        .border-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 1.5px solid transparent;
+            pointer-events: none;
             z-index: 1000;
+            animation: pulse-glow 2s infinite ease-in-out;
         }
 
-        /* ২. সেন্ট্রাল সিস্টেম */
-        .core-interface {
-            text-align: center; width: 85%; max-width: 500px;
-            display: flex; flex-direction: column; align-items: center;
+        @keyframes pulse-glow {
+            0% { border-color: rgba(0, 100, 255, 0.5); box-shadow: inset 0 0 5px rgba(0, 100, 255, 0.2); }
+            50% { border-color: rgba(255, 0, 0, 0.8); box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.4); }
+            100% { border-color: rgba(0, 100, 255, 0.5); box-shadow: inset 0 0 5px rgba(0, 100, 255, 0.2); }
         }
 
-        .system-name {
-            font-size: clamp(30px, 10vw, 60px);
-            font-weight: 900; margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
-            letter-spacing: 5px; color: #fff;
-            animation: pulse-text 3s infinite;
+        /* কন্টেন্ট কন্টেইনার - যা সবসময় মাঝখানে থাকবে */
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            transition: all 0.3s ease; /* ০.৩০ সেকেন্ড স্পিড লজিক */
         }
 
-        @keyframes pulse-text {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.02); }
+        /* আপনার প্রোফাইল কার্ড আইকন */
+        .profile-card {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid white; /* উজ্জ্বল সাদা বর্ডার */
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            animation: card-pulse 1.5s infinite;
         }
 
-        /* লোডিং বার ও পার্সেন্টেজ */
-        .loading-section { width: 100%; margin: 20px 0; }
-        
-        .track {
-            width: 100%; height: 2px; background: #111;
-            position: relative; overflow: hidden;
+        @keyframes card-pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+            100% { transform: scale(1); opacity: 0.8; }
         }
 
-        .fill {
-            height: 100%; width: 0%; background: #00ffff;
-            box-shadow: 0 0 15px #00ffff; transition: width 0.1s;
+        h1 {
+            font-size: 28px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            font-weight: bold;
         }
 
-        .pct-text {
-            font-size: 14px; color: #00ffff; margin-top: 10px;
-            font-weight: bold; letter-spacing: 2px;
+        /* লোডিং বার */
+        .loading-box {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            position: relative;
+            margin-bottom: 15px;
         }
 
-        /* ৩. ডেটা স্ট্রিম (নতুন ফিউচার) */
-        .data-stream {
-            height: 40px; font-size: 9px; color: #333;
-            overflow: hidden; margin-top: 15px; width: 100%;
-            text-align: left; opacity: 0.6;
+        .progress {
+            width: 0%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px white;
+            transition: width 0.05s linear;
         }
 
-        .status-msg {
-            margin-top: 20px; color: #fff; font-size: 10px;
-            letter-spacing: 3px; font-weight: bold; text-transform: uppercase;
+        /* স্ট্যাটাস টেক্সট */
+        .status-container {
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        /* ল্যান্ডস্কেপ মোড ফিক্স */
+        @media screen and (orientation: landscape) {
+            .container {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                max-width: 80%;
+            }
+            .profile-card { margin: 0 30px 0 0; }
+            h1 { margin-bottom: 0; margin-right: 30px; }
+            .loading-box { width: 200px; margin-bottom: 0; margin-right: 20px; }
         }
     </style>
 </head>
-<body onclick="launchMasterSystem()">
+<body onclick="startLoading()">
 
-    <div id="fixed-logo">🔄</div>
+    <div class="border-glow"></div>
 
-    <div class="core-interface">
-        <div class="system-name">Ni My Sweet</div>
-        
-        <div class="loading-section">
-            <div class="track"><div class="fill" id="bar"></div></div>
-            <div class="pct-text" id="pct">0%</div>
+    <div class="container">
+        <div class="profile-card">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+            </svg>
         </div>
 
-        <div id="status" class="status-msg">SYSTEM STANDBY</div>
+        <h1>NI MY SWEET</h1>
 
-        <div class="data-stream" id="stream"></div>
+        <div class="loading-box">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <div class="status-container">
+            <span id="percent">০%</span> <br>
+            <small id="status">চালু হচ্ছে...</small>
+        </div>
     </div>
 
     <script>
-        let running = false;
-        const codes = [
-            "CONNECTING TO GLOBAL_SERVER...", "ENCRYPTING DATA_PACKETS...",
-            "SYNCING NEURAL_LINK...", "LOADING ASSETS...", "OPTIMIZING UI...",
-            "ESTABLISHING LEGACY_V1.0..."
-        ];
+        // ফুল স্ক্রিন ফাংশন
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+                });
+            }
+        }
 
-        function launchMasterSystem() {
-            if (running) return;
-            running = true;
-
-            // ফুল স্ক্রিন
-            let d = document.documentElement;
-            if (d.requestFullscreen) d.requestFullscreen();
-
-            let p = 0;
-            const bar = document.getElementById('bar');
-            const pct = document.getElementById('pct');
-            const status = document.getElementById('status');
-            const stream = document.getElementById('stream');
+        // লোডিং শুরু করার ফাংশন (০.৩০ স্পিড লজিক সহ)
+        function startLoading() {
+            toggleFullScreen();
+            let progress = document.getElementById('progress');
+            let percentText = document.getElementById('percent');
+            let width = 0;
             
-            const timer = setInterval(() => {
-                p++;
-                bar.style.width = p + '%';
-                pct.innerText = p + '%';
-                
-                // ডেটা স্ট্রিম আপডেট
-                if(p % 15 == 0) {
-                    let randomCode = codes[Math.floor(Math.random()*codes.length)];
-                    stream.innerHTML += `<div>> ${randomCode}</div>`;
-                    stream.scrollTop = stream.scrollHeight;
-                }
+            // ডিভাইসের নেটওয়ার্ক ও ফোন অনুযায়ী স্পিড নির্ধারণ
+            let speed = 20; // ডিফল্ট হাই স্পিড
 
-                if(p == 20) status.innerText = "LINKING HARDWARE...";
-                if(p == 50) status.innerText = "BYPASSING FIREWALL...";
-                if(p == 85) status.innerText = "FINALIZING SYSTEM...";
-                
-                if (p >= 100) {
-                    clearInterval(timer);
-                    status.innerText = "SYSTEM ACTIVE";
-                    status.style.color = "#00ff00";
+            let interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('status').innerText = "সম্পন্ন";
+                    // এখানে পরবর্তী পেইজের লিঙ্ক দিতে পারেন
+                } else {
+                    width++;
+                    progress.style.width = width + '%';
+                    percentText.innerText = width + '%';
+                    
+                    // বর্ডারের রঙ পরিবর্তনের পালস
+                    if(width % 10 == 0) {
+                        document.querySelector('.border-glow').style.boxShadow = "inset 0 0 30px rgba(255, 0, 0, 0.6)";
+                        setTimeout(() => {
+                            document.querySelector('.border-glow').style.boxShadow = "none";
+                        }, 100);
+                    }
                 }
-            }, 50);
+            }, speed);
         }
     </script>
 </body>
