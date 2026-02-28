@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ni My Sweet - Elite System</title>
+    <title>Ni My Sweet - Elite</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -13,7 +13,7 @@
             user-select: none;
         }
 
-        /* ১. লোগো - আপনার কথা মতো সবসময় একদম উপরে মাঝখানে থাকবে */
+        /* আপনার পছন্দমতো আইকনটি একদম উপরে মাঝ বরাবর */
         #top-fixed-logo {
             position: fixed; 
             top: 25px; left: 50%;
@@ -32,20 +32,14 @@
             100% { box-shadow: 0 0 5px rgba(255,255,255,0.2); opacity: 0.6; }
         }
 
-        /* ২. গাইডেন্স স্ক্রিন (প্রথম ধাপ) */
-        #guide-screen { text-align: center; z-index: 100; }
-        .guide-btn {
-            margin-top: 20px; padding: 12px 40px;
-            background: #fff; color: #000; font-weight: bold;
-            border-radius: 30px; cursor: pointer;
-            text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.3s;
-        }
-
-        /* ৩. মূল সিস্টেম (দ্বিতীয় ধাপ) - আগের সব ডিজাইন এখানে আছে */
-        #main-system {
-            display: none; text-align: center; width: 90%;
-            flex-direction: column; align-items: center;
+        /* মেইন কন্টেইনার */
+        .master-box {
+            text-align: center;
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
         }
 
         .brand-name {
@@ -56,7 +50,7 @@
         }
 
         .loader-box {
-            width: 100%; max-width: 300px; height: 2px;
+            width: 100%; max-width: 300px; height: 3px;
             background: #111; position: relative; border-radius: 10px;
         }
 
@@ -65,37 +59,39 @@
             background: #fff; box-shadow: 0 0 15px #fff;
             transition: width 0.05s linear;
         }
+
+        .status-text {
+            margin-top: 20px; color: #00ffff; font-size: 11px;
+            letter-spacing: 3px; font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
-<body>
+<body onclick="launchSystem()">
 
     <div id="top-fixed-logo">🔄</div>
 
-    <div id="guide-screen">
-        <p style="font-size: 12px; color: #555; letter-spacing: 3px;">PORTRAIT / LANDSCAPE</p>
-        <div class="guide-btn" onclick="startSystem()">ACTIVATE SYSTEM</div>
-    </div>
-
-    <div id="main-system">
+    <div class="master-box">
         <div class="brand-name">Ni My Sweet</div>
         <div class="loader-box">
             <div class="loader-fill" id="bar"></div>
         </div>
-        <div id="status" style="margin-top:20px; color:#00ffff; font-size:11px; letter-spacing: 3px; font-weight: bold;">SYSTEM ACTIVE</div>
+        <div id="status" class="status-text">TAP TO START SYSTEM</div>
     </div>
 
     <script>
-        function startSystem() {
-            // ১. স্ক্রিন বদলানো (আগের ডিজাইন ফিরিয়ে আনা)
-            document.getElementById('guide-screen').style.display = 'none';
-            document.getElementById('main-system').style.display = 'flex';
+        let isStarted = false;
 
-            // ২. ফুল স্ক্রিন করা
+        function launchSystem() {
+            if (isStarted) return;
+            isStarted = true;
+
+            // ফুল স্ক্রিন রিকোয়েস্ট
             let doc = document.documentElement;
             if (doc.requestFullscreen) doc.requestFullscreen();
             else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
 
-            // ৩. লোডিং এনিমেশন
+            // লোডিং শুরু
             let w = 0;
             const bar = document.getElementById('bar');
             const status = document.getElementById('status');
@@ -103,14 +99,22 @@
             const timer = setInterval(() => {
                 w++;
                 bar.style.width = w + '%';
-                if(w == 30) status.innerText = "HARDWARE SYNCING...";
-                if(w == 70) status.innerText = "ALIGING DISPLAY...";
+                
+                if(w == 30) status.innerText = "ALIGING HARDWARE...";
+                if(w == 70) status.innerText = "OPTIMIZING DISPLAY...";
+                
                 if (w >= 100) {
                     clearInterval(timer);
-                    status.innerText = "SYSTEM READY";
+                    status.innerText = "SYSTEM ACTIVE";
                 }
             }, 30);
         }
+
+        // ফোন ঘোরালে আইকনটি উজ্জ্বল হবে
+        window.addEventListener("orientationchange", function() {
+            const status = document.getElementById('status');
+            if(!isStarted) status.innerText = "ORIENTATION CHANGED - TAP TO START";
+        });
     </script>
 </body>
 </html>
