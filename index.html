@@ -1,105 +1,108 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ni my sweet Elite</title>
+    <title>Ni My Sweet - Elite System</title>
     <style>
-        /* পুরো ডিসপ্লে দখল করার জন্য স্টাইল */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000000; overflow: hidden;
+            background-color: #000; overflow: hidden;
             display: flex; justify-content: center; align-items: center;
             font-family: 'Segoe UI', sans-serif; color: white;
+            user-select: none;
         }
 
-        .container { text-align: center; width: 100%; z-index: 10; }
+        /* রোটেশন আইকন - একদম নিচে মাঝ বরাবর */
+        #rotate-icon {
+            position: fixed; 
+            bottom: 40px; /* নিচ থেকে সঠিক দূরত্ব */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px; height: 50px; 
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%; display: none; justify-content: center;
+            align-items: center; border: 1.5px solid rgba(255,255,255,0.6);
+            animation: pulse 2s infinite; z-index: 999;
+            font-size: 24px;
+        }
 
-        .brand {
-            font-size: clamp(24px, 8vw, 48px); /* ফোন অনুযায়ী অটো সাইজ */
-            font-weight: 900; text-transform: uppercase;
-            letter-spacing: 5px; color: #ffffff;
-            margin-bottom: 30px;
-            text-shadow: 0 0 15px rgba(255,255,255,0.4);
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.5; }
+            50% { transform: translateX(-50%) scale(1.15); opacity: 1; }
+            100% { transform: translateX(-50%) scale(1); opacity: 0.5; }
+        }
+
+        .master-container {
+            text-align: center; width: 90%;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* আপনার দেওয়া সঠিক নাম ফরম্যাট */
+        .brand-name {
+            font-size: clamp(30px, 10vw, 50px);
+            font-weight: 700; margin-bottom: 30px;
+            color: #ffffff; letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255,255,255,0.4);
         }
 
         .loader-box {
-            width: 250px; height: 3px; background: #1a1a1a;
-            margin: 0 auto; position: relative; border-radius: 10px;
+            width: 100%; max-width: 320px; height: 3px;
+            background: #111; position: relative; border-radius: 10px;
         }
-        .loader-bar {
+
+        .loader-fill {
             position: absolute; height: 100%; width: 0%;
-            background: #ffffff; box-shadow: 0 0 10px #ffffff;
+            background: #fff; box-shadow: 0 0 15px #fff;
             transition: width 0.05s linear;
         }
 
-        .status-text {
-            margin-top: 15px; font-size: 10px; color: #555;
-            letter-spacing: 2px; text-transform: uppercase;
-        }
-
-        /* ক্লিক স্পার্ক */
-        .spark {
-            position: absolute; width: 4px; height: 4px;
-            background: #ffffff; border-radius: 50%;
-            box-shadow: 0 0 10px #00ffff; pointer-events: none;
-            animation: burst 0.4s ease-out forwards;
-        }
-        @keyframes burst {
-            to { transform: translate(-50%, -50%) scale(8); opacity: 0; }
+        .status-info {
+            margin-top: 20px; font-size: 12px; color: #00ffff;
+            letter-spacing: 3px; text-transform: uppercase; font-weight: bold;
         }
     </style>
 </head>
-<body onclick="launchEliteMode()">
+<body onclick="launchEliteSystem()">
 
-    <div class="container">
-        <div class="brand">Ni my sweet</div>
+    <div id="rotate-icon">🔄</div>
+
+    <div class="master-container">
+        <div class="brand-name">Ni My Sweet</div>
         <div class="loader-box">
-            <div class="loader-bar" id="bar"></div>
+            <div class="loader-fill" id="bar"></div>
         </div>
-        <div id="status" class="status-text">চাপ দিয়ে সিস্টেম চালু করুন</div>
+        <div id="status" class="status-info">TOUCH TO SYNC</div>
     </div>
 
     <script>
-        function launchEliteMode() {
-            // ১. পুরো ডিসপ্লে দখল করার কমান্ড (ক্রোম ব্রাউজারের বার লুকানোর জন্য)
-            let elem = document.documentElement;
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) {
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) {
-                elem.msRequestFullscreen();
-            }
+        // রোটেশন ডিটেকশন
+        window.addEventListener("orientationchange", function() {
+            const icon = document.getElementById('rotate-icon');
+            icon.style.display = "flex";
+            setTimeout(() => { icon.style.display = "none"; }, 5000); // ৫ সেকেন্ড থাকবে
+        });
 
-            // ২. ল্যান্ডস্কেপ ডিটেকশন ও লোডিং
-            let width = 0;
+        function launchEliteSystem() {
+            let doc = document.documentElement;
+            if (doc.requestFullscreen) doc.requestFullscreen();
+            
+            let w = 0;
             const bar = document.getElementById('bar');
             const status = document.getElementById('status');
             
-            const process = setInterval(() => {
-                width++;
-                bar.style.width = width + '%';
+            const timer = setInterval(() => {
+                w++;
+                bar.style.width = w + '%';
+                if(w == 40) status.innerText = "ALIGING CENTER...";
+                if(w == 80) status.innerText = "SYSTEM OPTIMIZED...";
                 
-                if(width == 30) status.innerText = "সিস্টেম চেক হচ্ছে...";
-                if(width == 70) status.innerText = "ফুল স্ক্রিন মুড অন হচ্ছে...";
-                
-                if (width >= 100) {
-                    clearInterval(process);
-                    status.innerText = "সিস্টেম অনলাইন";
-                    status.style.color = "#00ffff";
+                if (w >= 100) {
+                    clearInterval(timer);
+                    status.innerText = "SYSTEM ACTIVE";
                 }
             }, 30);
         }
-
-        // টাচ ইফেক্ট
-        document.addEventListener('mousedown', (e) => {
-            let s = document.createElement('div');
-            s.className = 'spark';
-            s.style.left = e.pageX + 'px'; s.style.top = e.pageY + 'px';
-            document.body.appendChild(s);
-            setTimeout(() => s.remove(), 400);
-        });
     </script>
 </body>
 </html>
