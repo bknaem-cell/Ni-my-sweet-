@@ -2,10 +2,9 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ni My Sweet</title>
     <style>
-        /* ১. ফুল স্ক্রিন ও ল্যান্ডস্কেপ মোড সেটিংস */
         body, html {
             margin: 0;
             padding: 0;
@@ -17,11 +16,11 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* ফুল ডিসপ্লে লুকের জন্য */
-            cursor: pointer;
+            overflow: hidden;
+            font-family: sans-serif;
         }
 
-        /* ২. চিকন জীবন্ত বর্ডার */
+        /* চিকন জীবন্ত বর্ডার */
         #living-border {
             position: fixed;
             top: 4px;
@@ -29,12 +28,18 @@
             right: 4px;
             bottom: 4px;
             border: 0.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
+            border-radius: 25px;
             pointer-events: none;
             z-index: 9999;
+            animation: breathe 5s infinite ease-in-out;
         }
 
-        /* ৩. ছোট সাদা ফোটা (Ripple) */
+        @keyframes breathe {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.5; box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1); }
+        }
+
+        /* ছোট সাদা ফোটা (ক্লিক ফিডব্যাক) */
         .white-dot {
             position: fixed;
             width: 5px;
@@ -50,48 +55,93 @@
             to { transform: scale(4); opacity: 0; }
         }
 
-        h1 { letter-spacing: 5px; font-size: 2rem; }
+        /* লোডিং বার স্টাইল */
+        .status-container {
+            width: 200px;
+            text-align: center;
+        }
+
+        .progress-bg {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: white;
+            transition: width 0.5s linear;
+        }
+
+        #status {
+            font-size: 14px;
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        h1 { letter-spacing: 5px; font-size: 2rem; margin-bottom: 20px; }
     </style>
 </head>
-<body onclick="toggleFullScreen()">
+<body onclick="enableAutoSystem()">
 
-    <div style="text-align: center;">
+    <div class="main-content">
         <h1>NI MY SWEET</h1>
-        <p id="status">System Active</p>
+        <div class="status-container">
+            <div class="progress-bg">
+                <div id="progress-bar"></div>
+            </div>
+            <p id="status">System Active</p>
+        </div>
     </div>
 
     <div id="living-border"></div>
 
     <script>
-        // ১. এক ক্লিকে ফুল স্ক্রিন ও ল্যান্ডস্কেপ করার ফাংশন
-        async function toggleFullScreen() {
+        const progressBar = document.getElementById('progress-bar');
+        const statusLabel = document.getElementById('status');
+        const messages = ["System Active", "Connecting...", "Syncing...", "Finishing...", "Ready"];
+        
+        // অটোমেটিক লোডিং ফাংশন
+        function startAutoLoading() {
+            let step = 0;
+            let interval = setInterval(() => {
+                if (step < messages.length) {
+                    statusLabel.innerText = messages[step];
+                    progressBar.style.width = ((step + 1) * 20) + "%";
+                    step++;
+                } else {
+                    // লোডিং শেষ হলে আবার শুরু হবে অথবা স্থির থাকবে
+                    setTimeout(() => {
+                        step = 0;
+                        progressBar.style.width = "0%";
+                    }, 2000);
+                }
+            }, 2500); // প্রতি ২.৫ সেকেন্ড পর পর পরিবর্তন হবে
+        }
+
+        // প্রথম ক্লিকে ফুল স্ক্রিন এবং অটো লোডিং শুরু
+        function enableAutoSystem() {
             if (!document.fullscreenElement) {
-                try {
-                    await document.documentElement.requestFullscreen();
-                    // ল্যান্ডস্কেপ মোড লক করা (যদি ব্রাউজার সাপোর্ট করে)
-                    if (screen.orientation && screen.orientation.lock) {
-                        await screen.orientation.lock('landscape');
-                    }
-                } catch (err) {
-                    console.log("ফুল স্ক্রিন মুডে সমস্যা হয়েছে");
+                document.documentElement.requestFullscreen().catch(e => console.log(e));
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(e => console.log(e));
                 }
             }
         }
 
-        // ২. ক্লিক ফিডব্যাক (সাদা ফোটা)
+        // পেজ লোড হওয়ার সাথে সাথেই অটো লোডিং শুরু হবে
+        window.onload = startAutoLoading;
+
+        // সাদা ফোটা ইফেক্ট (শুধুমাত্র ক্লিক করলে দেখাবে)
         document.addEventListener('click', function(e) {
             let dot = document.createElement('div');
             dot.className = 'white-dot';
             dot.style.left = (e.clientX - 2.5) + 'px';
             dot.style.top = (e.clientY - 2.5) + 'px';
             document.body.appendChild(dot);
-
-            // টেক্সট পরিবর্তন
-            const status = document.getElementById('status');
-            const msgs = ["System Active", "Connecting...", "Syncing...", "Finishing..."];
-            let idx = msgs.indexOf(status.innerText);
-            status.innerText = msgs[(idx + 1) % msgs.length];
-
             setTimeout(() => dot.remove(), 400);
         });
     </script>
