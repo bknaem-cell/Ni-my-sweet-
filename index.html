@@ -13,41 +13,50 @@
             user-select: none;
         }
 
-        /* রোটেশন আইকন - একদম নিচে মাঝ বরাবর */
-        #rotate-icon {
+        /* ১. লোগো - আপনার কথা মতো সবসময় একদম উপরে মাঝখানে থাকবে */
+        #top-fixed-logo {
             position: fixed; 
-            bottom: 40px; /* নিচ থেকে সঠিক দূরত্ব */
-            left: 50%;
+            top: 25px; left: 50%;
             transform: translateX(-50%);
             width: 50px; height: 50px; 
-            background: rgba(255,255,255,0.08);
-            border-radius: 50%; display: none; justify-content: center;
-            align-items: center; border: 1.5px solid rgba(255,255,255,0.6);
-            animation: pulse 2s infinite; z-index: 999;
-            font-size: 24px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center; 
+            border: 1px solid rgba(255,255,255,0.3);
+            z-index: 1000; font-size: 24px;
+            animation: pulse-glow 2s infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: translateX(-50%) scale(1); opacity: 0.5; }
-            50% { transform: translateX(-50%) scale(1.15); opacity: 1; }
-            100% { transform: translateX(-50%) scale(1); opacity: 0.5; }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px rgba(255,255,255,0.2); opacity: 0.6; }
+            50% { box-shadow: 0 0 20px rgba(0,255,255,0.3); opacity: 1; }
+            100% { box-shadow: 0 0 5px rgba(255,255,255,0.2); opacity: 0.6; }
         }
 
-        .master-container {
-            text-align: center; width: 90%;
-            display: flex; flex-direction: column; align-items: center;
+        /* ২. গাইডেন্স স্ক্রিন (প্রথম ধাপ) */
+        #guide-screen { text-align: center; z-index: 100; }
+        .guide-btn {
+            margin-top: 20px; padding: 12px 40px;
+            background: #fff; color: #000; font-weight: bold;
+            border-radius: 30px; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.3s;
         }
 
-        /* আপনার দেওয়া সঠিক নাম ফরম্যাট */
+        /* ৩. মূল সিস্টেম (দ্বিতীয় ধাপ) - আগের সব ডিজাইন এখানে আছে */
+        #main-system {
+            display: none; text-align: center; width: 90%;
+            flex-direction: column; align-items: center;
+        }
+
         .brand-name {
-            font-size: clamp(30px, 10vw, 50px);
-            font-weight: 700; margin-bottom: 30px;
-            color: #ffffff; letter-spacing: 2px;
-            text-shadow: 0 0 20px rgba(255,255,255,0.4);
+            font-size: clamp(32px, 10vw, 55px);
+            font-weight: 700; margin-bottom: 25px;
+            text-shadow: 0 0 25px rgba(255,255,255,0.4);
+            letter-spacing: 2px;
         }
 
         .loader-box {
-            width: 100%; max-width: 320px; height: 3px;
+            width: 100%; max-width: 300px; height: 2px;
             background: #111; position: relative; border-radius: 10px;
         }
 
@@ -56,37 +65,37 @@
             background: #fff; box-shadow: 0 0 15px #fff;
             transition: width 0.05s linear;
         }
-
-        .status-info {
-            margin-top: 20px; font-size: 12px; color: #00ffff;
-            letter-spacing: 3px; text-transform: uppercase; font-weight: bold;
-        }
     </style>
 </head>
-<body onclick="launchEliteSystem()">
+<body>
 
-    <div id="rotate-icon">🔄</div>
+    <div id="top-fixed-logo">🔄</div>
 
-    <div class="master-container">
+    <div id="guide-screen">
+        <p style="font-size: 12px; color: #555; letter-spacing: 3px;">PORTRAIT / LANDSCAPE</p>
+        <div class="guide-btn" onclick="startSystem()">ACTIVATE SYSTEM</div>
+    </div>
+
+    <div id="main-system">
         <div class="brand-name">Ni My Sweet</div>
         <div class="loader-box">
             <div class="loader-fill" id="bar"></div>
         </div>
-        <div id="status" class="status-info">TOUCH TO SYNC</div>
+        <div id="status" style="margin-top:20px; color:#00ffff; font-size:11px; letter-spacing: 3px; font-weight: bold;">SYSTEM ACTIVE</div>
     </div>
 
     <script>
-        // রোটেশন ডিটেকশন
-        window.addEventListener("orientationchange", function() {
-            const icon = document.getElementById('rotate-icon');
-            icon.style.display = "flex";
-            setTimeout(() => { icon.style.display = "none"; }, 5000); // ৫ সেকেন্ড থাকবে
-        });
+        function startSystem() {
+            // ১. স্ক্রিন বদলানো (আগের ডিজাইন ফিরিয়ে আনা)
+            document.getElementById('guide-screen').style.display = 'none';
+            document.getElementById('main-system').style.display = 'flex';
 
-        function launchEliteSystem() {
+            // ২. ফুল স্ক্রিন করা
             let doc = document.documentElement;
             if (doc.requestFullscreen) doc.requestFullscreen();
-            
+            else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
+
+            // ৩. লোডিং এনিমেশন
             let w = 0;
             const bar = document.getElementById('bar');
             const status = document.getElementById('status');
@@ -94,12 +103,11 @@
             const timer = setInterval(() => {
                 w++;
                 bar.style.width = w + '%';
-                if(w == 40) status.innerText = "ALIGING CENTER...";
-                if(w == 80) status.innerText = "SYSTEM OPTIMIZED...";
-                
+                if(w == 30) status.innerText = "HARDWARE SYNCING...";
+                if(w == 70) status.innerText = "ALIGING DISPLAY...";
                 if (w >= 100) {
                     clearInterval(timer);
-                    status.innerText = "SYSTEM ACTIVE";
+                    status.innerText = "SYSTEM READY";
                 }
             }, 30);
         }
