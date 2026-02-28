@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Naeem's System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape">
+    <title>Naeem Sweet System</title>
     <style>
-        /* পুরো স্ক্রিনের ব্যাকগ্রাউন্ড এবং ল্যান্ডস্কেপ ঠিক রাখা */
         body {
             margin: 0;
             padding: 0;
@@ -15,7 +14,6 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            /* আপনার পছন্দের সেই ডিজিটাল গ্রিড ব্যাকগ্রাউন্ড */
             background-image: radial-gradient(circle, #1a1a1a 1px, transparent 1px);
             background-size: 30px 30px;
         }
@@ -26,49 +24,66 @@
 
         .text {
             color: white;
-            font-size: 24px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin-bottom: 20px;
-            letter-spacing: 8px;
+            font-size: 35px;
+            font-family: Arial, sans-serif;
+            margin-bottom: 30px;
+            letter-spacing: 10px;
             font-weight: bold;
         }
 
-        /* আপনার সেই সাদা বর্ডারযুক্ত লোডিং বক্স */
+        /* আপনার পছন্দের সেই লোডিং বক্সের ডিজাইন */
         .loading-box {
-            width: 300px;
-            height: 10px;
-            border: 1px solid white;
+            width: 400px;
+            height: 30px; /* উচ্চতা কিছুটা বাড়ানো হয়েছে যেন পার্সেন্ট দেখা যায় */
+            border: 2px solid white;
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
         .loading-bar {
             height: 100%;
             background-color: white;
             width: 0%;
-            animation: load 4s cubic-bezier(0.42, 0, 0.58, 1) forwards;
+            position: absolute;
+            left: 0;
+            top: 0;
+            animation: load 5s linear forwards;
+        }
+
+        /* বক্সের ভেতরের পার্সেন্টেজ টেক্সট */
+        .percent-text {
+            color: white;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            z-index: 2;
+            mix-blend-mode: difference; /* এটি বার বাড়ার সাথে সাথে টেক্সটের রঙ অটো পরিবর্তন করবে */
+            font-weight: bold;
         }
 
         @keyframes load {
             to { width: 100%; }
         }
 
-        /* ক্লিক করার স্থানে নিওন আলোর আভা */
+        /* ক্লিক গ্লো ইফেক্ট */
         .click-glow {
             position: absolute;
-            width: 15px;
-            height: 15px;
-            background: rgba(0, 255, 255, 0.8);
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 255, 255, 0.7);
             border-radius: 50%;
             pointer-events: none;
             transform: translate(-50%, -50%);
             animation: glow-out 0.6s ease-out forwards;
-            box-shadow: 0 0 20px 8px rgba(0, 255, 255, 0.6);
+            box-shadow: 0 0 15px 5px rgba(0, 255, 255, 0.5);
             z-index: 9999;
         }
 
         @keyframes glow-out {
             0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
         }
     </style>
 </head>
@@ -78,12 +93,24 @@
         <div class="text">NAEEM SWEET SYSTEM</div>
         <div class="loading-box">
             <div class="loading-bar"></div>
+            <div class="percent-text" id="percent">0%</div>
         </div>
     </div>
 
     <script>
-        // ক্লিক করলে আলোর আভা তৈরি করার সিস্টেম
-        document.addEventListener('mousedown', function(e) {
+        // পার্সেন্টেজ আপডেট করার ফাংশন
+        let percentElement = document.getElementById('percent');
+        let count = 0;
+        let interval = setInterval(() => {
+            count++;
+            percentElement.innerText = count + '%';
+            if (count >= 100) {
+                clearInterval(interval);
+            }
+        }, 50); // লোডিং বারের গতির সাথে মিলিয়ে বাড়ানো কমানো যাবে
+
+        // ক্লিক ইফেক্ট
+        document.addEventListener('click', function(e) {
             let glow = document.createElement('div');
             glow.className = 'click-glow';
             glow.style.left = e.pageX + 'px';
