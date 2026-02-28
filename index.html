@@ -5,97 +5,138 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ni My Sweet</title>
     <style>
-        /* আপনার আগের ইন্টারফেস ফিরিয়ে আনা */
-        body {
-            background-color: black;
-            color: white;
+        /* ১. বডি সেটিংস - ল্যান্ডস্কেপ ও ব্যাক বাটন সচল রাখতে */
+        body, html {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            font-family: sans-serif;
-            /* ব্যাক বাটন ও স্ক্রল সচল রাখা */
-            overflow: auto; 
+            overflow: hidden; /* স্ক্রিন যেন বেশি নড়াচড়া না করে */
         }
 
-        /* ১. চুলের মতো চিকন জীবন্ত বর্ডার */
+        /* ২. চুলের মতো চিকন ও জীবন্ত বর্ডার */
         #living-border {
             position: fixed;
-            top: 5px;
-            left: 5px;
-            right: 5px;
-            bottom: 5px;
-            border: 0.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            pointer-events: none; /* যাতে ক্লিক আটকে না যায় */
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 0.5px solid rgba(255, 255, 255, 0.15); /* চুলের মতো চিকন */
+            border-radius: 30px;
+            pointer-events: none; /* যাতে ক্লিকে বাধা না দেয় */
             z-index: 9999;
-            animation: breathe 5s infinite;
+            animation: breathe 5s infinite ease-in-out;
         }
 
         @keyframes breathe {
             0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.5; }
+            50% { opacity: 0.6; box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05); }
         }
 
-        /* ২. ক্লিকে সাদা ছোট ফোটা (সোনালী নয়) */
-        .click-dot {
+        /* ৩. ক্লিক করলে চিকন সাদা ফোটা (ভিডিওর মতো) */
+        .white-dot {
             position: fixed;
-            width: 6px; /* ছোট ফোটা */
-            height: 6px;
-            background: white; /* সাদা রঙ */
+            width: 4px; /* একদম ছোট ফোটা */
+            height: 4px;
+            background: white;
             border-radius: 50%;
             pointer-events: none;
             z-index: 10000;
             transform: scale(0);
-            animation: ripple 0.4s ease-out;
+            animation: dotFade 0.5s ease-out;
         }
 
-        @keyframes ripple {
-            to { transform: scale(4); opacity: 0; }
+        @keyframes dotFade {
+            to { transform: scale(6); opacity: 0; }
         }
 
-        /* ৩. কাজ করলে বর্ডারের ধাপ (কালার চেঞ্জ) */
-        .border-flash {
-            border-color: white !important;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        /* ৪. মেইন কন্টেন্ট স্টাইল */
+        .content {
+            text-align: center;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 2rem;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        /* ৫. লোডিং প্রগ্রেস বার ও টেক্সট */
+        .progress-box {
+            width: 200px;
+            margin: 0 auto;
+        }
+
+        .bar-bg {
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .bar-fill {
+            width: 0%;
+            height: 100%;
+            background: white;
+            transition: width 0.4s ease;
+        }
+
+        .status-msg {
+            font-size: 11px;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            text-transform: capitalize; /* প্রথম অক্ষর বড় হাতের */
         }
     </style>
 </head>
 <body>
 
-    <div style="text-align: center;">
-        <h1 style="letter-spacing: 5px;">NI MY SWEET</h1>
-        <p id="status" style="font-size: 14px; opacity: 0.7;">System Active</p>
-    </div>
-
     <div id="living-border"></div>
 
+    <div class="content">
+        <h1>NI MY SWEET</h1>
+        <div class="progress-box">
+            <div class="bar-bg">
+                <div id="fill" class="bar-fill"></div>
+            </div>
+            <div id="status-text" class="status-msg">System Active</div>
+        </div>
+    </div>
+
     <script>
+        const fill = document.getElementById('fill');
+        const statusText = document.getElementById('status-text');
+        const messages = ["System Active", "Connecting...", "Syncing...", "Finishing...", "Success"];
+        let step = 0;
+
         document.addEventListener('click', function(e) {
-            // সাদা ছোট ফোটা তৈরি
-            let dot = document.createElement('div');
-            dot.className = 'click-dot';
-            dot.style.left = (e.clientX - 3) + 'px';
-            dot.style.top = (e.clientY - 3) + 'px';
-            document.body.appendChild(dot);
+            // ১. ছোট সাদা ফোটা তৈরি করা
+            let d = document.createElement('div');
+            d.className = 'white-dot';
+            d.style.left = e.clientX + 'px';
+            d.style.top = e.clientY + 'px';
+            document.body.appendChild(d);
 
-            // বর্ডারে সাদা ধাপ মারা
-            const border = document.getElementById('living-border');
-            border.classList.add('border-flash');
+            // ২. স্ট্যাটাস ও বার আপডেট করা
+            step = (step + 1) % messages.length;
+            statusText.innerText = messages[step];
+            fill.style.width = ((step + 1) * 20) + "%";
 
-            // টেক্সট পরিবর্তন (প্রথম অক্ষর বড় হাতের)
-            const status = document.getElementById('status');
-            const messages = ["System Active", "Connecting...", "Syncing...", "Finishing..."];
-            let current = messages.indexOf(status.innerText);
-            status.innerText = messages[(current + 1) % messages.length];
+            // ৩. ফোটা রিমুভ করা
+            setTimeout(() => { d.remove(); }, 500);
 
-            setTimeout(() => {
-                dot.remove();
-                border.classList.remove('border-flash');
-            }, 400);
+            // কাজ শেষ হলে রিসেট
+            if(step === 4) {
+                setTimeout(() => { fill.style.width = "0%"; }, 1000);
+            }
         });
     </script>
 </body>
