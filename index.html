@@ -1,81 +1,161 @@
-<style>
-    /* ১. ফুল ডিসপ্লে রাউন্ড বর্ডার (চুলের মতো চিকন) */
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden; /* স্ক্রিন যেন নড়াচড়া না করে */
-        background-color: black; /* ব্যাকগ্রাউন্ড কালো */
-    }
-
-    .living-border {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        border: 1px solid rgba(255, 255, 255, 0.3); /* খুব চিকন সাদা বর্ডার */
-        pointer-events: none; /* যাতে ক্লিকে বাধা না দেয় */
-        z-index: 9999;
-        border-radius: 20px; /* ফোনের রাউন্ড শেপ অনুযায়ী (পরিবর্তনযোগ্য) */
-        box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        animation: breathe 4s infinite ease-in-out; /* জীবন্ত অনুভব */
-    }
-
-    /* ২. ব্রিদিং বা জীবন্ত অ্যানিমেশন */
-    @keyframes breathe {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 0.8; box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
-    }
-
-    /* ৩. কাজ শেষ হলে কালার "ধাপ" মারা (Action Pulse) */
-    .border-pulse {
-        border-color: #ffd700 !important; /* সোনালী কালার ধাপ */
-        box-shadow: 0 0 20px #ffd700 !important;
-    }
-
-    /* ৪. ক্লিক করলে সোনালী ফোটা (Ripple Effect) */
-    .click-dot {
-        position: absolute;
-        width: 15px;
-        height: 15px;
-        background: rgba(255, 215, 0, 0.7); /* সোনালী ফোটা */
-        border-radius: 50%;
-        transform: scale(0);
-        animation: ripple 0.6s linear;
-        pointer-events: none;
-        z-index: 10000;
-    }
-
-    @keyframes ripple {
-        to {
-            transform: scale(4);
-            opacity: 0;
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ni My Sweet</title>
+    <style>
+        /* ১. ব্যাকগ্রাউন্ড এবং বডি সেটিংস */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
         }
-    }
-</style>
 
-<div id="main-border" class="living-border"></div>
+        /* ২. জীবন্ত চিকন বর্ডার */
+        .living-border {
+            position: fixed;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px; /* ফোনের রাউন্ড শেপ অনুযায়ী */
+            pointer-events: none; /* যাতে ক্লিকে বাধা না দেয় */
+            z-index: 9999;
+            transition: all 0.3s ease;
+            animation: breathe 4s infinite ease-in-out;
+        }
 
-<script>
-    // ৫. ক্লিকে সোনালী ফোটা এবং বর্ডার কালার পরিবর্তনের লজিক
-    document.addEventListener('click', function(e) {
-        // ফোটা তৈরি
-        let dot = document.createElement('div');
-        dot.classList.add('click-dot');
-        dot.style.left = e.pageX - 7.5 + 'px';
-        dot.style.top = e.pageY - 7.5 + 'px';
-        document.body.appendChild(dot);
+        @keyframes breathe {
+            0%, 100% { opacity: 0.3; box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1); }
+            50% { opacity: 0.7; box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.2); }
+        }
 
-        // বর্ডারে "ধাপ" মারা
-        const border = document.getElementById('main-border');
-        border.classList.add('border-pulse');
+        /* ৩. কাজ শেষে বর্ডারের ধাপ (Flash) */
+        .border-pulse {
+            border-color: #ffd700 !important;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6) !important;
+            opacity: 1 !important;
+        }
 
-        // নির্দিষ্ট সময় পর আগের অবস্থায় ফেরা
-        setTimeout(() => {
-            dot.remove();
-            border.classList.remove('border-pulse');
-        }, 600);
-    });
-</script>
+        /* ৪. মাঝখানের টেক্সট স্টাইল */
+        .main-content {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+        }
+
+        /* ৫. লোডিং বার এবং সিস্টেম টেক্সট (ভিডিওর মতো) */
+        .status-container {
+            width: 250px;
+            text-align: center;
+        }
+
+        .loading-bar-bg {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .loading-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: white;
+            transition: width 0.5s ease;
+        }
+
+        .status-text {
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: capitalize; /* প্রথম অক্ষর বড় হাতের */
+        }
+
+        /* ৬. ক্লিক করলে সোনালী ফোটা */
+        .click-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: rgba(255, 215, 0, 0.8);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        @keyframes ripple {
+            to { transform: scale(5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-content">
+        <h1>NI MY SWEET</h1>
+        <div class="status-container">
+            <div class="loading-bar-bg">
+                <div id="progress-bar" class="loading-bar-fill"></div>
+            </div>
+            <div id="status-label" class="status-text">System Active</div>
+        </div>
+    </div>
+
+    <div id="main-border" class="living-border"></div>
+
+    <script>
+        const progressBar = document.getElementById('progress-bar');
+        const statusLabel = document.getElementById('status-label');
+        const mainBorder = document.getElementById('main-border');
+
+        const states = ["System Active", "Connecting...", "Syncing...", "Finishing...", "Task Complete"];
+        let currentState = 0;
+
+        document.addEventListener('click', function(e) {
+            // ১. সোনালী ফোটা তৈরি
+            let dot = document.createElement('div');
+            dot.classList.add('click-dot');
+            dot.style.left = (e.clientX - 6) + 'px';
+            dot.style.top = (e.clientY - 6) + 'px';
+            document.body.appendChild(dot);
+
+            // ২. বর্ডারে ধাপ মারা
+            mainBorder.classList.add('border-pulse');
+
+            // ৩. লোডিং এবং টেক্সট পরিবর্তন
+            currentState = (currentState + 1) % states.length;
+            statusLabel.innerText = states[currentState];
+            
+            let progress = (currentState + 1) * 20;
+            progressBar.style.width = progress + "%";
+
+            // ৪. ইফেক্ট রিমুভ করা
+            setTimeout(() => {
+                dot.remove();
+                mainBorder.classList.remove('border-pulse');
+                if(progress >= 100) {
+                    setTimeout(() => { progressBar.style.width = "0%"; }, 500);
+                }
+            }, 600);
+        });
+    </script>
+</body>
+</html>
