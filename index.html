@@ -3,136 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ni My Sweet - 100K Year Legacy</title>
+    <title>Ni My Sweet - Advanced Legacy</title>
     <style>
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #000; overflow: hidden;
-            font-family: 'Segoe UI', sans-serif; color: white;
+            display: flex; justify-content: center; align-items: center;
+            font-family: 'Courier New', monospace; color: white;
             user-select: none;
         }
 
-        /* ১. ওরিয়েন্টেশন লক (পোর্ট্রেট মোডে থাকলে এটি দেখাবে) */
-        #orientation-blocker {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center;
-        }
-
-        .phone-animation {
-            font-size: 50px; margin-bottom: 20px;
-            animation: rotateDevice 2s infinite ease-in-out;
-        }
-
-        @keyframes rotateDevice {
-            0% { transform: rotate(0deg); }
-            50% { transform: rotate(-90deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        /* ২. মূল ইন্টারফেস (ল্যান্ডস্কেপ মোডের জন্য) */
-        #main-ui {
-            display: none; width: 100%; height: 100%;
-            flex-direction: column; justify-content: center; align-items: center;
-        }
-
-        /* আপনার প্রিয় টপ ফিক্সড লোগো */
-        #top-logo {
+        /* ১. টপ লোগো - আপনার পছন্দের জায়গা */
+        #fixed-logo {
             position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
             width: 50px; height: 50px; background: rgba(255,255,255,0.03);
-            border-radius: 50%; border: 1.5px solid rgba(0,255,255,0.2);
+            border-radius: 50%; border: 1px solid rgba(0,255,255,0.3);
             display: flex; justify-content: center; align-items: center; font-size: 22px;
-            box-shadow: 0 0 15px rgba(0,255,255,0.1);
+            z-index: 1000;
         }
 
-        /* সিস্টেম নাম - স্ক্রিনশট অনুযায়ী মাঝখানে */
-        .brand-title {
-            font-size: clamp(35px, 11vw, 60px);
-            font-weight: 800; letter-spacing: 3px;
-            text-shadow: 0 0 30px rgba(255,255,255,0.5);
-            margin-bottom: 15px;
+        /* ২. সেন্ট্রাল সিস্টেম */
+        .core-interface {
+            text-align: center; width: 85%; max-width: 500px;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* ফিউচারিস্টিক নিয়ন লোডিং বার */
-        .loading-container {
-            width: 80%; max-width: 400px; height: 1.5px;
-            background: rgba(255,255,255,0.05); position: relative;
+        .system-name {
+            font-size: clamp(30px, 10vw, 60px);
+            font-weight: 900; margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+            letter-spacing: 5px; color: #fff;
+            animation: pulse-text 3s infinite;
         }
 
-        .loading-fill {
-            height: 100%; width: 0%; 
-            background: linear-gradient(90deg, #fff, #00ffff);
-            box-shadow: 0 0 20px #00ffff;
-            transition: width 0.1s linear;
+        @keyframes pulse-text {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.02); }
         }
 
-        .ai-status {
-            margin-top: 30px; font-size: 10px; color: #00ffff;
-            letter-spacing: 5px; font-weight: 900;
-            text-transform: uppercase;
+        /* লোডিং বার ও পার্সেন্টেজ */
+        .loading-section { width: 100%; margin: 20px 0; }
+        
+        .track {
+            width: 100%; height: 2px; background: #111;
+            position: relative; overflow: hidden;
+        }
+
+        .fill {
+            height: 100%; width: 0%; background: #00ffff;
+            box-shadow: 0 0 15px #00ffff; transition: width 0.1s;
+        }
+
+        .pct-text {
+            font-size: 14px; color: #00ffff; margin-top: 10px;
+            font-weight: bold; letter-spacing: 2px;
+        }
+
+        /* ৩. ডেটা স্ট্রিম (নতুন ফিউচার) */
+        .data-stream {
+            height: 40px; font-size: 9px; color: #333;
+            overflow: hidden; margin-top: 15px; width: 100%;
+            text-align: left; opacity: 0.6;
+        }
+
+        .status-msg {
+            margin-top: 20px; color: #fff; font-size: 10px;
+            letter-spacing: 3px; font-weight: bold; text-transform: uppercase;
         }
     </style>
 </head>
-<body onclick="requestFS()">
+<body onclick="launchMasterSystem()">
 
-    <div id="orientation-blocker">
-        <div class="phone-animation">📱</div>
-        <p style="letter-spacing: 3px;">ROTATE FOR LEGACY EXPERIENCE</p>
-    </div>
+    <div id="fixed-logo">🔄</div>
 
-    <div id="main-ui">
-        <div id="top-logo">🔄</div>
-        <div class="brand-title">Ni My Sweet</div>
-        <div class="loading-container">
-            <div class="loading-fill" id="bar"></div>
+    <div class="core-interface">
+        <div class="system-name">Ni My Sweet</div>
+        
+        <div class="loading-section">
+            <div class="track"><div class="fill" id="bar"></div></div>
+            <div class="pct-text" id="pct">0%</div>
         </div>
-        <div id="status" class="ai-status">SYSTEM STANDBY</div>
+
+        <div id="status" class="status-msg">SYSTEM STANDBY</div>
+
+        <div class="data-stream" id="stream"></div>
     </div>
 
     <script>
-        function checkMode() {
-            const blocker = document.getElementById('orientation-blocker');
-            const ui = document.getElementById('main-ui');
-            if (window.innerWidth > window.innerHeight) {
-                blocker.style.display = 'none';
-                ui.style.display = 'flex';
-                runSystem();
-            } else {
-                blocker.style.display = 'flex';
-                ui.style.display = 'none';
-            }
-        }
+        let running = false;
+        const codes = [
+            "CONNECTING TO GLOBAL_SERVER...", "ENCRYPTING DATA_PACKETS...",
+            "SYNCING NEURAL_LINK...", "LOADING ASSETS...", "OPTIMIZING UI...",
+            "ESTABLISHING LEGACY_V1.0..."
+        ];
 
-        window.addEventListener('resize', checkMode);
-        window.addEventListener('load', checkMode);
+        function launchMasterSystem() {
+            if (running) return;
+            running = true;
 
-        function requestFS() {
+            // ফুল স্ক্রিন
             let d = document.documentElement;
             if (d.requestFullscreen) d.requestFullscreen();
-            else if (d.webkitRequestFullscreen) d.webkitRequestFullscreen();
-        }
 
-        let isRunning = false;
-        function runSystem() {
-            if(isRunning) return;
-            isRunning = true;
-            
             let p = 0;
             const bar = document.getElementById('bar');
+            const pct = document.getElementById('pct');
             const status = document.getElementById('status');
+            const stream = document.getElementById('stream');
             
             const timer = setInterval(() => {
                 p++;
                 bar.style.width = p + '%';
-                if(p == 20) status.innerText = "LINKING NEURAL NET...";
-                if(p == 60) status.innerText = "SYNCING GLOBAL SERVERS...";
-                if(p >= 100) {
+                pct.innerText = p + '%';
+                
+                // ডেটা স্ট্রিম আপডেট
+                if(p % 15 == 0) {
+                    let randomCode = codes[Math.floor(Math.random()*codes.length)];
+                    stream.innerHTML += `<div>> ${randomCode}</div>`;
+                    stream.scrollTop = stream.scrollHeight;
+                }
+
+                if(p == 20) status.innerText = "LINKING HARDWARE...";
+                if(p == 50) status.innerText = "BYPASSING FIREWALL...";
+                if(p == 85) status.innerText = "FINALIZING SYSTEM...";
+                
+                if (p >= 100) {
                     clearInterval(timer);
                     status.innerText = "SYSTEM ACTIVE";
                     status.style.color = "#00ff00";
                 }
-            }, 40);
+            }, 50);
         }
     </script>
 </body>
