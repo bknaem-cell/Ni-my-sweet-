@@ -1,184 +1,81 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ni My Sweet - Pro Loading</title>
-    <style>
-        /* বেসিক সেটআপ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            overflow: hidden;
+<style>
+    /* ১. ফুল ডিসপ্লে রাউন্ড বর্ডার (চুলের মতো চিকন) */
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden; /* স্ক্রিন যেন নড়াচড়া না করে */
+        background-color: black; /* ব্যাকগ্রাউন্ড কালো */
+    }
+
+    .living-border {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 1px solid rgba(255, 255, 255, 0.3); /* খুব চিকন সাদা বর্ডার */
+        pointer-events: none; /* যাতে ক্লিকে বাধা না দেয় */
+        z-index: 9999;
+        border-radius: 20px; /* ফোনের রাউন্ড শেপ অনুযায়ী (পরিবর্তনযোগ্য) */
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        animation: breathe 4s infinite ease-in-out; /* জীবন্ত অনুভব */
+    }
+
+    /* ২. ব্রিদিং বা জীবন্ত অ্যানিমেশন */
+    @keyframes breathe {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 0.8; box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); }
+    }
+
+    /* ৩. কাজ শেষ হলে কালার "ধাপ" মারা (Action Pulse) */
+    .border-pulse {
+        border-color: #ffd700 !important; /* সোনালী কালার ধাপ */
+        box-shadow: 0 0 20px #ffd700 !important;
+    }
+
+    /* ৪. ক্লিক করলে সোনালী ফোটা (Ripple Effect) */
+    .click-dot {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: rgba(255, 215, 0, 0.7); /* সোনালী ফোটা */
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        pointer-events: none;
+        z-index: 10000;
+    }
+
+    @keyframes ripple {
+        to {
+            transform: scale(4);
+            opacity: 0;
         }
+    }
+</style>
 
-        body {
-            background-color: #000; /* গভীর কালো ব্যাকগ্রাউন্ড */
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: white;
-            cursor: pointer;
-        }
+<div id="main-border" class="living-border"></div>
 
-        /* চুলের মতো চিকন বর্ডার লাইটিং (Hairline Glow) */
-        .border-glow {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border: 1.5px solid rgba(0, 150, 255, 0.5);
-            pointer-events: none;
-            z-index: 1000;
-            animation: pulse-border 2s infinite ease-in-out;
-        }
+<script>
+    // ৫. ক্লিকে সোনালী ফোটা এবং বর্ডার কালার পরিবর্তনের লজিক
+    document.addEventListener('click', function(e) {
+        // ফোটা তৈরি
+        let dot = document.createElement('div');
+        dot.classList.add('click-dot');
+        dot.style.left = e.pageX - 7.5 + 'px';
+        dot.style.top = e.pageY - 7.5 + 'px';
+        document.body.appendChild(dot);
 
-        @keyframes pulse-border {
-            0% { border-color: rgba(0, 150, 255, 0.5); box-shadow: inset 0 0 10px rgba(0, 150, 255, 0.2); }
-            50% { border-color: rgba(255, 0, 0, 0.8); box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.4); }
-            100% { border-color: rgba(0, 150, 255, 0.5); box-shadow: inset 0 0 10px rgba(0, 150, 255, 0.2); }
-        }
+        // বর্ডারে "ধাপ" মারা
+        const border = document.getElementById('main-border');
+        border.classList.add('border-pulse');
 
-        /* মেইন কন্টেইনার */
-        .container {
-            text-align: center;
-            transition: transform 0.3s ease; /* ০.৩০ সেকেন্ড রেসপন্স */
-            z-index: 10;
-        }
-
-        /* প্রোফাইল কার্ড আইকন */
-        .profile-card {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            border: 2px solid white;
-            margin: 0 auto 25px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: card-glow 1.5s infinite alternate;
-        }
-
-        @keyframes card-glow {
-            from { box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); transform: scale(1); }
-            to { box-shadow: 0 0 25px rgba(255, 255, 255, 0.5); transform: scale(1.05); }
-        }
-
-        h1 {
-            font-size: 32px;
-            letter-spacing: 4px;
-            margin-bottom: 40px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-        }
-
-        /* প্রোগ্রেস বার */
-        .loading-bar-container {
-            width: 280px;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 0 auto 20px;
-            position: relative;
-            border-radius: 5px;
-        }
-
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: white;
-            box-shadow: 0 0 15px white;
-            transition: width 0.05s linear;
-        }
-
-        .status-text {
-            font-size: 18px;
-            font-weight: 300;
-        }
-
-        /* ল্যান্ডস্কেপ মোড (গেমের মতো ফিক্স) */
-        @media screen and (orientation: landscape) {
-            .container {
-                transform: scale(1.1);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-    </style>
-</head>
-<body onclick="initSystem()">
-
-    <div class="border-glow" id="glow"></div>
-
-    <div class="container">
-        <div class="profile-card">
-            <svg width="50" height="50" viewBox="0 0 24 24" fill="white">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-            </svg>
-        </div>
-
-        <h1>NI MY SWEET</h1>
-
-        <div class="loading-bar-container">
-            <div class="progress-fill" id="progress"></div>
-        </div>
-
-        <div class="status-text">
-            <span id="percent">০%</span> <br>
-            <small id="status" style="opacity: 0.7;">চালু হচ্ছে...</small>
-        </div>
-    </div>
-
-    <script>
-        async function initSystem() {
-            // ১. ফুল স্ক্রিন মোড চালু করা
-            if (document.documentElement.requestFullscreen) {
-                await document.documentElement.requestFullscreen();
-            }
-
-            // ২. ল্যান্ডস্কেপ মোডে লক করা (ফ্রী ফায়ার গেমের মতো)
-            if (screen.orientation && screen.orientation.lock) {
-                try {
-                    await screen.orientation.lock('landscape');
-                } catch (err) {
-                    console.log("মোবাইল ব্রাউজার ওরিয়েন্টেশন লক সাপোর্ট করছে না।");
-                }
-            }
-
-            startLoading();
-        }
-
-        function startLoading() {
-            let progressBar = document.getElementById('progress');
-            let percentText = document.getElementById('percent');
-            let statusText = document.getElementById('status');
-            let glow = document.getElementById('glow');
-            let width = 0;
-
-            // ডিভাইসের হার্ডওয়্যার অনুযায়ী সুপার ফাস্ট স্পিড
-            let interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    statusText.innerText = "সিস্টেম সক্রিয়";
-                    glow.style.borderColor = "gold";
-                } else {
-                    width++;
-                    progressBar.style.width = width + '%';
-                    percentText.innerText = width + '%';
-
-                    // প্রতি ১০% ধাপে কালার পালস (ধাপ মারবে)
-                    if (width % 10 === 0) {
-                        glow.style.boxShadow = "inset 0 0 40px rgba(255, 0, 0, 0.7)";
-                        setTimeout(() => glow.style.boxShadow = "none", 100);
-                    }
-                }
-            }, 30); // ০.৩০ সেকেন্ডের টার্গেট পূরণ করার টাইমিং
-        }
-    </script>
-</body>
-</html>
+        // নির্দিষ্ট সময় পর আগের অবস্থায় ফেরা
+        setTimeout(() => {
+            dot.remove();
+            border.classList.remove('border-pulse');
+        }, 600);
+    });
+</script>
