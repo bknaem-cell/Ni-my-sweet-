@@ -3,118 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ni My Sweet - Elite</title>
+    <title>Ni My Sweet - 100K Year Legacy</title>
     <style>
+        /* পিওর ডার্কনেস এবং ফিউচারিস্টিক ডিজাইন */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
             background-color: #000; overflow: hidden;
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Segoe UI', sans-serif; color: white;
-            user-select: none;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: white; user-select: none;
         }
 
-        /* আপনার পছন্দমতো আইকনটি একদম উপরে মাঝ বরাবর */
-        #top-fixed-logo {
+        /* আপনার প্রিয় টপ ফিক্সড লোগো - ইউনিভার্সাল পজিশন */
+        #legacy-logo {
             position: fixed; 
-            top: 25px; left: 50%;
+            top: 30px; left: 50%;
             transform: translateX(-50%);
-            width: 50px; height: 50px; 
-            background: rgba(255,255,255,0.05);
+            width: 55px; height: 55px; 
+            background: rgba(255,255,255,0.02);
             border-radius: 50%; display: flex; justify-content: center; align-items: center; 
-            border: 1px solid rgba(255,255,255,0.3);
-            z-index: 1000; font-size: 24px;
-            animation: pulse-glow 2s infinite;
+            border: 1px solid rgba(255,255,255,0.15);
+            z-index: 1000; font-size: 26px;
+            animation: eternal-glow 3s infinite ease-in-out;
         }
 
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 5px rgba(255,255,255,0.2); opacity: 0.6; }
-            50% { box-shadow: 0 0 20px rgba(0,255,255,0.3); opacity: 1; }
-            100% { box-shadow: 0 0 5px rgba(255,255,255,0.2); opacity: 0.6; }
+        @keyframes eternal-glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255,255,255,0.1); opacity: 0.4; }
+            50% { box-shadow: 0 0 30px rgba(0,255,255,0.2); opacity: 1; }
         }
 
-        /* মেইন কন্টেইনার */
-        .master-box {
-            text-align: center;
-            width: 90%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        /* সেন্টার ইন্টারফেস - আপনার ড্রয়িং অনুযায়ী একদম মাঝখানে */
+        .system-core {
+            text-align: center; width: 90%;
+            display: flex; flex-direction: column; align-items: center;
             z-index: 10;
         }
 
-        .brand-name {
-            font-size: clamp(32px, 10vw, 55px);
-            font-weight: 700; margin-bottom: 25px;
-            text-shadow: 0 0 25px rgba(255,255,255,0.4);
-            letter-spacing: 2px;
+        .system-name {
+            font-size: clamp(35px, 12vw, 65px);
+            font-weight: 800; margin-bottom: 20px;
+            text-shadow: 0 0 40px rgba(255,255,255,0.5);
+            letter-spacing: 3px; color: #fff;
         }
 
-        .loader-box {
-            width: 100%; max-width: 300px; height: 3px;
-            background: #111; position: relative; border-radius: 10px;
+        /* লোডিং বার - আরও প্রফেশনাল ও চিকন */
+        .loading-track {
+            width: 100%; max-width: 350px; height: 1.5px;
+            background: #0a0a0a; position: relative; overflow: hidden;
         }
 
-        .loader-fill {
+        .loading-progress {
             position: absolute; height: 100%; width: 0%;
-            background: #fff; box-shadow: 0 0 15px #fff;
-            transition: width 0.05s linear;
+            background: #fff; box-shadow: 0 0 20px #fff;
+            transition: width 0.08s ease-out;
         }
 
-        .status-text {
-            margin-top: 20px; color: #00ffff; font-size: 11px;
-            letter-spacing: 3px; font-weight: bold;
-            cursor: pointer;
+        .ai-status {
+            margin-top: 30px; color: #00ffff; font-size: 10px;
+            letter-spacing: 5px; font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        /* অ্যাক্টিভেশন হিন্ট */
+        #hint {
+            position: fixed; bottom: 40px; font-size: 11px;
+            color: #222; letter-spacing: 2px;
         }
     </style>
 </head>
-<body onclick="launchSystem()">
+<body onclick="igniteSystem()">
 
-    <div id="top-fixed-logo">🔄</div>
+    <div id="legacy-logo">🔄</div>
 
-    <div class="master-box">
-        <div class="brand-name">Ni My Sweet</div>
-        <div class="loader-box">
-            <div class="loader-fill" id="bar"></div>
+    <div class="system-core">
+        <div class="system-name">Ni My Sweet</div>
+        <div class="loading-track">
+            <div class="loading-progress" id="bar"></div>
         </div>
-        <div id="status" class="status-text">TAP TO START SYSTEM</div>
+        <div id="status" class="ai-status">WAITING FOR COMMAND</div>
     </div>
 
+    <div id="hint">TOUCH TO ACTIVATE LEGACY</div>
+
     <script>
-        let isStarted = false;
+        let activated = false;
 
-        function launchSystem() {
-            if (isStarted) return;
-            isStarted = true;
+        function igniteSystem() {
+            if (activated) return;
+            activated = true;
 
-            // ফুল স্ক্রিন রিকোয়েস্ট
-            let doc = document.documentElement;
-            if (doc.requestFullscreen) doc.requestFullscreen();
-            else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
+            // ফুল স্ক্রিন মোড
+            let el = document.documentElement;
+            if (el.requestFullscreen) el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
 
-            // লোডিং শুরু
-            let w = 0;
+            document.getElementById('hint').style.display = 'none';
+
+            let p = 0;
             const bar = document.getElementById('bar');
             const status = document.getElementById('status');
             
             const timer = setInterval(() => {
-                w++;
-                bar.style.width = w + '%';
+                p++;
+                bar.style.width = p + '%';
                 
-                if(w == 30) status.innerText = "ALIGING HARDWARE...";
-                if(w == 70) status.innerText = "OPTIMIZING DISPLAY...";
+                if(p == 25) status.innerText = "INITIALIZING CORE...";
+                if(p == 60) status.innerText = "SYNCING GLOBAL DATA...";
+                if(p == 90) status.innerText = "ESTABLISHING LEGACY...";
                 
-                if (w >= 100) {
+                if (p >= 100) {
                     clearInterval(timer);
                     status.innerText = "SYSTEM ACTIVE";
+                    status.style.color = "#00ffcc";
                 }
-            }, 30);
+            }, 35);
         }
-
-        // ফোন ঘোরালে আইকনটি উজ্জ্বল হবে
-        window.addEventListener("orientationchange", function() {
-            const status = document.getElementById('status');
-            if(!isStarted) status.innerText = "ORIENTATION CHANGED - TAP TO START";
-        });
     </script>
 </body>
 </html>
