@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ni My Sweet - Loading</title>
+    <title>Ni My Sweet - Pro Loading</title>
     <style>
         /* বেসিক সেটআপ */
         * {
@@ -14,171 +14,170 @@
         }
 
         body {
-            background-color: #000; /* একদম গভীর কালো ব্যাকগ্রাউন্ড */
+            background-color: #000; /* গভীর কালো ব্যাকগ্রাউন্ড */
             height: 100vh;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             color: white;
+            cursor: pointer;
         }
 
-        /* চুলের মতো চিকন বর্ডার লাইটিং (Hairline Border) */
+        /* চুলের মতো চিকন বর্ডার লাইটিং (Hairline Glow) */
         .border-glow {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            border: 1.5px solid transparent;
+            border: 1.5px solid rgba(0, 150, 255, 0.5);
             pointer-events: none;
             z-index: 1000;
-            animation: pulse-glow 2s infinite ease-in-out;
+            animation: pulse-border 2s infinite ease-in-out;
         }
 
-        @keyframes pulse-glow {
-            0% { border-color: rgba(0, 100, 255, 0.5); box-shadow: inset 0 0 5px rgba(0, 100, 255, 0.2); }
-            50% { border-color: rgba(255, 0, 0, 0.8); box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.4); }
-            100% { border-color: rgba(0, 100, 255, 0.5); box-shadow: inset 0 0 5px rgba(0, 100, 255, 0.2); }
+        @keyframes pulse-border {
+            0% { border-color: rgba(0, 150, 255, 0.5); box-shadow: inset 0 0 10px rgba(0, 150, 255, 0.2); }
+            50% { border-color: rgba(255, 0, 0, 0.8); box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.4); }
+            100% { border-color: rgba(0, 150, 255, 0.5); box-shadow: inset 0 0 10px rgba(0, 150, 255, 0.2); }
         }
 
-        /* কন্টেন্ট কন্টেইনার - যা সবসময় মাঝখানে থাকবে */
+        /* মেইন কন্টেইনার */
         .container {
             text-align: center;
-            width: 90%;
-            max-width: 400px;
-            transition: all 0.3s ease; /* ০.৩০ সেকেন্ড স্পিড লজিক */
+            transition: transform 0.3s ease; /* ০.৩০ সেকেন্ড রেসপন্স */
+            z-index: 10;
         }
 
-        /* আপনার প্রোফাইল কার্ড আইকন */
+        /* প্রোফাইল কার্ড আইকন */
         .profile-card {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            border: 2px solid white; /* উজ্জ্বল সাদা বর্ডার */
-            margin: 0 auto 20px;
+            border: 2px solid white;
+            margin: 0 auto 25px;
+            background: rgba(255, 255, 255, 0.05);
             display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(255, 255, 255, 0.1);
-            animation: card-pulse 1.5s infinite;
+            animation: card-glow 1.5s infinite alternate;
         }
 
-        @keyframes card-pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
-            100% { transform: scale(1); opacity: 0.8; }
+        @keyframes card-glow {
+            from { box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); transform: scale(1); }
+            to { box-shadow: 0 0 25px rgba(255, 255, 255, 0.5); transform: scale(1.05); }
         }
 
         h1 {
-            font-size: 28px;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            font-weight: bold;
+            font-size: 32px;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
-        /* লোডিং বার */
-        .loading-box {
-            width: 100%;
-            height: 4px;
+        /* প্রোগ্রেস বার */
+        .loading-bar-container {
+            width: 280px;
+            height: 3px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            margin: 0 auto 20px;
             position: relative;
-            margin-bottom: 15px;
+            border-radius: 5px;
         }
 
-        .progress {
+        .progress-fill {
             width: 0%;
             height: 100%;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 10px white;
+            box-shadow: 0 0 15px white;
             transition: width 0.05s linear;
         }
 
-        /* স্ট্যাটাস টেক্সট */
-        .status-container {
-            font-size: 16px;
+        .status-text {
+            font-size: 18px;
             font-weight: 300;
         }
 
-        /* ল্যান্ডস্কেপ মোড ফিক্স */
+        /* ল্যান্ডস্কেপ মোড (গেমের মতো ফিক্স) */
         @media screen and (orientation: landscape) {
             .container {
+                transform: scale(1.1);
                 display: flex;
-                flex-direction: row;
+                flex-direction: column;
                 align-items: center;
-                justify-content: center;
-                max-width: 80%;
             }
-            .profile-card { margin: 0 30px 0 0; }
-            h1 { margin-bottom: 0; margin-right: 30px; }
-            .loading-box { width: 200px; margin-bottom: 0; margin-right: 20px; }
         }
     </style>
 </head>
-<body onclick="startLoading()">
+<body onclick="initSystem()">
 
-    <div class="border-glow"></div>
+    <div class="border-glow" id="glow"></div>
 
     <div class="container">
         <div class="profile-card">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
+            <svg width="50" height="50" viewBox="0 0 24 24" fill="white">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
             </svg>
         </div>
 
         <h1>NI MY SWEET</h1>
 
-        <div class="loading-box">
-            <div class="progress" id="progress"></div>
+        <div class="loading-bar-container">
+            <div class="progress-fill" id="progress"></div>
         </div>
 
-        <div class="status-container">
+        <div class="status-text">
             <span id="percent">০%</span> <br>
-            <small id="status">চালু হচ্ছে...</small>
+            <small id="status" style="opacity: 0.7;">চালু হচ্ছে...</small>
         </div>
     </div>
 
     <script>
-        // ফুল স্ক্রিন ফাংশন
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error attempting to enable full-screen mode: ${err.message}`);
-                });
+        async function initSystem() {
+            // ১. ফুল স্ক্রিন মোড চালু করা
+            if (document.documentElement.requestFullscreen) {
+                await document.documentElement.requestFullscreen();
             }
+
+            // ২. ল্যান্ডস্কেপ মোডে লক করা (ফ্রী ফায়ার গেমের মতো)
+            if (screen.orientation && screen.orientation.lock) {
+                try {
+                    await screen.orientation.lock('landscape');
+                } catch (err) {
+                    console.log("মোবাইল ব্রাউজার ওরিয়েন্টেশন লক সাপোর্ট করছে না।");
+                }
+            }
+
+            startLoading();
         }
 
-        // লোডিং শুরু করার ফাংশন (০.৩০ স্পিড লজিক সহ)
         function startLoading() {
-            toggleFullScreen();
-            let progress = document.getElementById('progress');
+            let progressBar = document.getElementById('progress');
             let percentText = document.getElementById('percent');
+            let statusText = document.getElementById('status');
+            let glow = document.getElementById('glow');
             let width = 0;
-            
-            // ডিভাইসের নেটওয়ার্ক ও ফোন অনুযায়ী স্পিড নির্ধারণ
-            let speed = 20; // ডিফল্ট হাই স্পিড
 
-            let interval = setInterval(function() {
+            // ডিভাইসের হার্ডওয়্যার অনুযায়ী সুপার ফাস্ট স্পিড
+            let interval = setInterval(() => {
                 if (width >= 100) {
                     clearInterval(interval);
-                    document.getElementById('status').innerText = "সম্পন্ন";
-                    // এখানে পরবর্তী পেইজের লিঙ্ক দিতে পারেন
+                    statusText.innerText = "সিস্টেম সক্রিয়";
+                    glow.style.borderColor = "gold";
                 } else {
                     width++;
-                    progress.style.width = width + '%';
+                    progressBar.style.width = width + '%';
                     percentText.innerText = width + '%';
-                    
-                    // বর্ডারের রঙ পরিবর্তনের পালস
-                    if(width % 10 == 0) {
-                        document.querySelector('.border-glow').style.boxShadow = "inset 0 0 30px rgba(255, 0, 0, 0.6)";
-                        setTimeout(() => {
-                            document.querySelector('.border-glow').style.boxShadow = "none";
-                        }, 100);
+
+                    // প্রতি ১০% ধাপে কালার পালস (ধাপ মারবে)
+                    if (width % 10 === 0) {
+                        glow.style.boxShadow = "inset 0 0 40px rgba(255, 0, 0, 0.7)";
+                        setTimeout(() => glow.style.boxShadow = "none", 100);
                     }
                 }
-            }, speed);
+            }, 30); // ০.৩০ সেকেন্ডের টার্গেট পূরণ করার টাইমিং
         }
     </script>
 </body>
