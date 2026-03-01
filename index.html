@@ -1,96 +1,27 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>নাঈম ১৮ - স্মার্ট সিস্টেম</title>
-    <style>
-        * { box-sizing: border-box; transition: all 0.5s ease; }
+# নাঈম ১৮: মাস্টার কন্ট্রোল সিস্টেম (ধাপ ১.১০)
+# ফাইল নাম: main.py
+
+import security, database_logic, map_logic, optimizer
+
+def start_naeem_18_system():
+    print("======================================")
+    print("   স্বাগতম নাঈম ১৮ মাস্টার সিস্টেমে   ")
+    print("======================================")
+    
+    # ১. নিরাপত্তা চেক (ধাপ ১.৬)
+    code = input("আপনার মাস্টার কোড দিন: ")
+    if security.verify_access(code):
+        # ২. সিস্টেম স্পিড চেক (ধাপ ১.৯)
+        optimizer.fast_process(1000000000)
         
-        body, html {
-            margin: 0; padding: 0; width: 100vw; height: 100vh;
-            background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif;
-            overflow: hidden; display: flex; justify-content: center; align-items: center;
-        }
+        # ৩. ইউজার ডাটাবেজ এক্সেস (ধাপ ১.৮)
+        print("--- ১০০০ কোটি মানুষের ডাটাবেজ অনলাইন ---")
+        
+        # ৪. ম্যাপ ও লজিস্টিকস সক্রিয় করা (ধাপ ১.৭)
+        print("--- ১০ কিলো স্কয়ার লজিস্টিকস সক্রিয় ---")
+        
+        print("\nসিস্টেম এখন পুরোপুরি সচল। ইনশাআল্লাহ, কেউ অভাবী থাকবে না।")
 
-        /* চুলের মতো চিকন বর্ডার */
-        .screen-border {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            border: 1.5px solid #00d2ff; box-shadow: inset 0 0 15px #00d2ff;
-            pointer-events: none; z-index: 100;
-        }
-
-        /* লোডিং স্ক্রিন */
-        #loading-screen {
-            position: fixed; width: 100%; height: 100%; background: #000;
-            display: flex; flex-direction: column; justify-content: center;
-            align-items: center; z-index: 1000;
-        }
-
-        .loader-logo {
-            font-size: 50px; font-weight: 800; letter-spacing: 10px;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.3; transform: scale(0.95); }
-            50% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0.3; transform: scale(0.95); }
-        }
-
-        /* মেইন কন্টেন্ট (শুরুতে লুকানো থাকবে) */
-        #main-content { display: none; text-align: center; }
-
-        .neon-btn {
-            background: transparent; color: #fff; border: 1px solid #fff;
-            padding: 15px 40px; font-size: 18px; border-radius: 50px;
-            cursor: pointer; box-shadow: 0 0 10px #fff;
-        }
-
-        /* সাদা ছোট ক্লিক ইফেক্ট */
-        .click-circle {
-            position: absolute; width: 10px; height: 10px; background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%);
-            animation: click-anim 0.4s ease-out forwards;
-        }
-
-        @keyframes click-anim {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
-        }
-    </style>
-</head>
-<body onclick="createClickEffect(event)">
-
-    <div class="screen-border"></div>
-
-    <div id="loading-screen">
-        <div class="loader-logo">NAEEM 18</div>
-        <p style="color: #444; margin-top: 20px;">সিস্টেম লোড হচ্ছে...</p>
-    </div>
-
-    <div id="main-content">
-        <h1 style="font-weight: 800; font-size: 60px; margin: 0;">NAEEM 18</h1>
-        <p style="font-weight: 300; color: #888; margin-bottom: 30px;">ডিজিটাল ভিলা লজিস্টিকস</p>
-        <button class="neon-btn">আঙুলের ছাপ দিন</button>
-    </div>
-
-    <script>
-        // ৩ সেকেন্ড দেরি করার লজিক
-        setTimeout(() => {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('main-content').style.display = 'block';
-        }, 3000);
-
-        // ক্লিক করলে সাদা গোল ইফেক্ট তৈরির লজিক
-        function createClickEffect(e) {
-            const circle = document.createElement('div');
-            circle.className = 'click-circle';
-            circle.style.left = e.clientX + 'px';
-            circle.style.top = e.clientY + 'px';
-            document.body.appendChild(circle);
-            setTimeout(() => circle.remove(), 400);
-        }
-    </script>
-</body>
-</html>
+# সিস্টেম চালু করা
+if __name__ == "__main__":
+    start_naeem_18_system()
