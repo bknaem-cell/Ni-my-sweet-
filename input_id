@@ -1,0 +1,34 @@
+# নাঈম ১৮: ১০০০ কোটি মানুষের ফোন-লেস সিস্টেম (প্রোটোটাইপ)
+# এটি একটি ডেমো ডাটাবেজ যেখানে মানুষের তথ্য জমা আছে
+
+users_database = {
+    "101": {
+        "name": "নাঈম ইব্রাহিম",
+        "profession": "সিস্টেম ডিজাইনার",
+        "tokens": 5000,
+        "daily_routine": "সকাল ৮টা: প্রজেক্ট রিভিউ, দুপুর ২টা: লজিক ডিজাইন"
+    },
+    "102": {
+        "name": "কামাল হোসেন",
+        "profession": "কৃষক (ধান চাষ)",
+        "tokens": 1200,
+        "daily_routine": "সকাল ৭টা: জমিতে সেচ, বিকাল ৪টা: ফসল সংগ্রহ"
+    }
+}
+
+def access_profile(fingerprint_id):
+    # এই ফাংশনটি বায়োমেট্রিক আইডির মাধ্যমে প্রোফাইল খুঁজে বের করে
+    if fingerprint_id in users_database:
+        user = users_database[fingerprint_id]
+        print(f"--- স্বাগতম, {user['name']} ---")
+        print(f"আপনার পেশা: {user['profession']}")
+        print(f"আপনার বর্তমান টোকেন: {user['tokens']}")
+        print(f"আজকের রুটিন: {user['daily_routine']}")
+        print("-" * 30)
+    else:
+        print("দুঃখিত! এই আইডিটি সিস্টেমে পাওয়া যায়নি।")
+
+# সিস্টেম পরীক্ষা করার জন্য ইউজার আইডি ইনপুট
+print("--- নাঈম ১৮ বায়োমেট্রিক টার্মিনাল ---")
+input_id = input("আপনার আঙুলের ছাপ বা আইডি কোড দিন: ")
+access_profile(input_id)
