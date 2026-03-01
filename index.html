@@ -2,99 +2,95 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>NI-TEN: ১০ কিলো স্কয়ার</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>নাঈম ১৮ - স্মার্ট সিস্টেম</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background-color: #000;
-            color: #00f3ff;
-            font-family: sans-serif;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+        * { box-sizing: border-box; transition: all 0.5s ease; }
+        
+        body, html {
+            margin: 0; padding: 0; width: 100vw; height: 100vh;
+            background-color: #000; color: #fff; font-family: 'Segoe UI', sans-serif;
+            overflow: hidden; display: flex; justify-content: center; align-items: center;
         }
 
-        /* ইউজার আইডি কার্ড */
-        .id-card {
-            position: fixed;
-            top: env(safe-area-inset-top, 10px);
-            right: 10px;
-            padding: 8px;
-            border: 1px solid #39ff14;
-            background: rgba(0,0,0,0.8);
-            font-size: 10px;
-            z-index: 100;
+        /* চুলের মতো চিকন বর্ডার */
+        .screen-border {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            border: 1.5px solid #00d2ff; box-shadow: inset 0 0 15px #00d2ff;
+            pointer-events: none; z-index: 100;
         }
 
-        /* প্রধান জগত - যেখানে ঘর ও মাটি থাকবে */
-        .game-world {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+        /* লোডিং স্ক্রিন */
+        #loading-screen {
+            position: fixed; width: 100%; height: 100%; background: #000;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; z-index: 1000;
         }
 
-        .house {
-            width: 120px;
-            height: 90px;
-            border: 1px solid #00f3ff;
-            background: repeating-linear-gradient(0deg, rgba(0,243,255,0.05) 0px, rgba(0,243,255,0.05) 1px, transparent 1px, transparent 10px);
+        .loader-logo {
+            font-size: 50px; font-weight: 800; letter-spacing: 10px;
+            animation: pulse 1.5s infinite;
         }
 
-        .ground {
-            width: 100%;
-            height: 2px;
-            background: rgba(255,255,255,0.3);
-            margin: 10px 0;
+        @keyframes pulse {
+            0% { opacity: 0.3; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0.3; transform: scale(0.95); }
         }
 
-        .roots {
-            width: 2px;
-            height: 60px;
-            background: linear-gradient(to bottom, #39ff14, transparent);
+        /* মেইন কন্টেন্ট (শুরুতে লুকানো থাকবে) */
+        #main-content { display: none; text-align: center; }
+
+        .neon-btn {
+            background: transparent; color: #fff; border: 1px solid #fff;
+            padding: 15px 40px; font-size: 18px; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 0 10px #fff;
         }
 
-        /* কন্ট্রোল বাটন নিচে ফিক্সড */
-        .controls {
-            padding-bottom: env(safe-area-inset-bottom, 20px);
-            display: flex;
-            justify-content: space-around;
-            background: rgba(0,0,0,0.5);
-            width: 100%;
+        /* সাদা ছোট ক্লিক ইফেক্ট */
+        .click-circle {
+            position: absolute; width: 10px; height: 10px; background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%);
+            animation: click-anim 0.4s ease-out forwards;
         }
 
-        .btn {
-            border: 1px solid #00f3ff;
-            padding: 8px;
-            font-size: 10px;
-            color: #00f3ff;
-            background: none;
+        @keyframes click-anim {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
         }
     </style>
 </head>
-<body>
-    <div class="id-card">
-        <p style="color:#39ff14">NAME: নাঈম ইব্রাহিম</p>
-        <p>ID: নাঈম 18</p>
-        <p>STATUS: প্রজেক্ট লিডার</p>
+<body onclick="createClickEffect(event)">
+
+    <div class="screen-border"></div>
+
+    <div id="loading-screen">
+        <div class="loader-logo">NAEEM 18</div>
+        <p style="color: #444; margin-top: 20px;">সিস্টেম লোড হচ্ছে...</p>
     </div>
 
-    <div class="game-world">
-        <div class="house"></div>
-        <div class="ground"></div>
-        <div class="roots"></div>
-        <p style="font-size: 9px; color:#39ff14">ROOTS ACTIVE</p>
+    <div id="main-content">
+        <h1 style="font-weight: 800; font-size: 60px; margin: 0;">NAEEM 18</h1>
+        <p style="font-weight: 300; color: #888; margin-bottom: 30px;">ডিজিটাল ভিলা লজিস্টিকস</p>
+        <button class="neon-btn">আঙুলের ছাপ দিন</button>
     </div>
 
-    <div class="controls">
-        <button class="btn">ইঞ্জিনিয়ারিং</button>
-        <button class="btn">কৃষি মিশন</button>
-        <button class="btn">লিগ্যাসি</button>
-    </div>
+    <script>
+        // ৩ সেকেন্ড দেরি করার লজিক
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+        }, 3000);
+
+        // ক্লিক করলে সাদা গোল ইফেক্ট তৈরির লজিক
+        function createClickEffect(e) {
+            const circle = document.createElement('div');
+            circle.className = 'click-circle';
+            circle.style.left = e.clientX + 'px';
+            circle.style.top = e.clientY + 'px';
+            document.body.appendChild(circle);
+            setTimeout(() => circle.remove(), 400);
+        }
+    </script>
 </body>
 </html>
